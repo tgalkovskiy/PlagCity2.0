@@ -28,7 +28,7 @@ public class MainScript : MonoBehaviour
     private float MouseScrollWheel, CameraX, CameraY, TimeGame;
     [HideInInspector] public GameObject NowGameObj;
     private bool FirstClic = false, GUIAKTIV = false, MainMap = true;
-    private int DayGame, Money, AllDeathPeople, AllViolPeople, Infected, Buried, AllPeople;
+    private int Money, AllDeathPeople, AllViolPeople, Infected, Buried, AllPeople;
     [HideInInspector] public string NameDistrict, NumberPeopleDistrict, NumbersOfViolent, NumbersOfDeath;
 
 
@@ -37,7 +37,6 @@ public class MainScript : MonoBehaviour
         //комопонент камеры
         MainCamera = GetComponent<Camera>();
         //City = GetComponent<StateOBJ>();
-        DayGame = 1;
         TimeGame = 0;
         DeathStat.Money = 5000;
         Vacina.text = "50";
@@ -55,6 +54,13 @@ public class MainScript : MonoBehaviour
         GuiPanel.SetActive(false);
         
     }
+
+    private void Start()
+    {
+        SenderManager.Instance.CheckConditions();
+        LettersManager.Instance.CheckLettersToShow();
+    }
+
     /// <summary>
     /// Вызов панели сообщений
     /// </summary>
@@ -239,7 +245,7 @@ public class MainScript : MonoBehaviour
     /// </summary>
     public void NextDay()
     {
-        DayGame += 1;
+        DeathStat.Day += 1;
         TimeGame = 0;
         DeathStat.Vacina += 3;
         City.CountDeath = DeathStat.AllDeath;
@@ -247,17 +253,23 @@ public class MainScript : MonoBehaviour
         MoneyCalculate();
         DemoViol[0].NextDayStateObj();
         CameraTransforDefold();
+        SenderManager.Instance.CheckConditions();
+        LettersManager.Instance.CheckLettersToShow();
+
+        Debug.Log($"Day: {DeathStat.Day}");
     }
+
     private void TextInfoAll()
     {
         TimeGameText.text =((int)TimeGame).ToString();
-        DayText.text = "Day: " + DayGame.ToString();
+        DayText.text = "Day: " + DeathStat.Day.ToString();
         MoneyText.text = DeathStat.Money.ToString();
         NameDistrictText.text = NameDistrict;
         AllPeopleDistrictText.text = "People: " + NumberPeopleDistrict;
         NumbersOfViolentText.text = "Vialent: " + NumbersOfViolent;
         NumbersOfDeathText.text = "Death: " + NumbersOfDeath;
     }
+
     void Update()
     {
         TimeGame += Time.deltaTime/3;

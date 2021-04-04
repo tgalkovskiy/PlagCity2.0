@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DeathStat : MonoBehaviour
 {
-
+    [HideInInspector] static public int Day = 1;
     //Все умершие люди
     [HideInInspector]static public int AllDeath=0;
     //Все похороненные люди

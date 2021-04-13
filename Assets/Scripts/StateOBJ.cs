@@ -17,7 +17,9 @@ public class StateOBJ : MonoBehaviour
     public int CountDeath = 0;
     public bool Lock = false;
     public bool StateViol = false;
+    public bool AllDead = false;
     public GameObject ViolLine;
+    public GameObject LockSprite;
 
     private void Awake()
     {
@@ -41,7 +43,7 @@ public class StateOBJ : MonoBehaviour
     {
         if (StateViol)
         {
-            if (CountViol >0)
+            if (CountViol > 0)
             {
                 var probabilityD = Random.Range(0, 100);
                 if (probabilityD <= 65)
@@ -52,8 +54,11 @@ public class StateOBJ : MonoBehaviour
                     CountViol -= 1;
                     //глобальное увеличение умерших
                     DeathStat.AllDeath += 1;
+                    //Если все померли то дом помечается как вымерший
+                    if (CountDeath == CountPeople)
+                        AllDead = true;
                     //сброс заражения если в дому нет зараженных
-                    if(CountViol == 0)
+                    if (CountViol == 0)
                     {
                         StateViol = false;
                     }
@@ -70,6 +75,7 @@ public class StateOBJ : MonoBehaviour
             {
                 CountViol -= 1;
             }
+
             if (CountViol == 0)
             {
                 StateViol = false;
@@ -80,15 +86,41 @@ public class StateOBJ : MonoBehaviour
     {
         Lock = false;
     }
+
     public void IconViol()
     {
-        if (CountDeath > 0)
+        switch(TypeStateDis)
         {
-            ViolLine.SetActive(true);
-        }
-        else
-        {
-            ViolLine.SetActive(false);
+            case TypeState.Houses:
+                if (CountDeath > 0 && StateViol)
+                {
+                    ViolLine.SetActive(true);
+                }
+                else
+                {
+                    ViolLine.SetActive(false);
+                }
+
+                if (LockSprite != null)
+                    if (Lock)
+                    {
+                        LockSprite.SetActive(true);
+                    }
+                    else
+                    {
+                        LockSprite.SetActive(false);
+                    }
+                break;
+            case TypeState.Districd:
+                if(CountViol > 0)
+                {
+                    ViolLine.SetActive(true);
+                }
+                else
+                {
+                    ViolLine.SetActive(false);
+                }
+                break;
         }
     }
 }

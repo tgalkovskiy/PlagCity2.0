@@ -66,7 +66,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: aed6b9372c6b8b342bf8f0999dbd38f8, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 41aaad933a11ef74db8c0a69fba03c86, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -89,6 +89,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IsActual: 1
+  LifeTimeInDays: 1
   ActualSprite: {fileID: 21300000, guid: 2231f459d71755941bed6188dd1da022, type: 3}
   UnactualSprite: {fileID: 21300000, guid: bc0a31e059113df479e92aa5938afd9a, type: 3}
   AnswerActualSprite: {fileID: 21300000, guid: 1066f1670362f0e4098c24acc3ab38ec, type: 3}
@@ -96,8 +97,6 @@ MonoBehaviour:
     type: 3}
   ActionSprite: {fileID: 21300000, guid: 050c7131a2339b94894aadc4447af885, type: 3}
   mainText: 
-  answer_1: {fileID: 0}
-  answer_2: {fileID: 0}
 --- !u!114 &3745596262270505089
 MonoBehaviour:
   m_ObjectHideFlags: 0

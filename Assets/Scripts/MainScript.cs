@@ -38,7 +38,7 @@ public class MainScript : MonoBehaviour
         MainCamera = GetComponent<Camera>();
         //City = GetComponent<StateOBJ>();
         TimeGame = 0;
-        DeathStat.Money = 5000;
+        DeathStat.Money = 500;
         Vacina.text = "50";
         //AllDeathPeople = 0;
         //AllViolPeople = 0;
@@ -59,6 +59,9 @@ public class MainScript : MonoBehaviour
     {
         SenderManager.Instance.CheckConditions();
         LettersManager.Instance.CheckLettersToShow();
+
+
+        UpdateUI();
     }
 
     /// <summary>
@@ -82,12 +85,12 @@ public class MainScript : MonoBehaviour
             MainCamera.transform.position = new Vector3(-78, 13, -10);
             DemoViol[0].ActiveDistrict = true;
         }
-        else if (NameDistrict == "grandstream")
+        else if (NameDistrict == "west river")
         {
             MainCamera.transform.position = new Vector3(-78, -19, -10);
             DemoViol[1].ActiveDistrict = true;
         }
-        else if (NameDistrict == "west river")
+        else if (NameDistrict == "grandstream")
         {
             MainCamera.transform.position = new Vector3(-78, -52, -10);
             DemoViol[2].ActiveDistrict = true;
@@ -202,6 +205,7 @@ public class MainScript : MonoBehaviour
                     NameDistrict = "Portstream";
                 }
             }
+            Debug.Log($"Выбран {NameDistrict}");
         }
     }
    
@@ -240,23 +244,75 @@ public class MainScript : MonoBehaviour
         //Переписать
         Money += AllPeople - AllDeathPeople;
     }
+
+
+    public Slider impRepSlider;
+    public Slider peopleRepSlider;
+
+    public Image impRepFillImage;
+    public Image peopleRepFillImage;
+
+    public Text policeMax;
+    public Text policeCur;
+    public Text doctorMax;
+    public Text doctorCur;
+    public Text volontMax;
+    public Text volontCur;
+
     /// <summary>
     /// Кнопка нового дня
     /// </summary>
     public void NextDay()
     {
+        DeathStat.OnNewDay();
         DeathStat.Day += 1;
         TimeGame = 0;
         DeathStat.Vacina += 3;
         City.CountDeath = DeathStat.AllDeath;
-        Vacina.text = DeathStat.Vacina.ToString();
         MoneyCalculate();
-        DemoViol[0].NextDayStateObj();
-        CameraTransforDefold();
-        SenderManager.Instance.CheckConditions();
-        LettersManager.Instance.CheckLettersToShow();
 
+
+        foreach (var d in DemoViol)
+            d.NextDayStateObj();
+
+        CameraTransforDefold();
+
+        LettersManager.Instance.OnNewDay();
+        SenderManager.Instance.CheckConditions();
+
+        UpdateUI();
+
+        isDayDone = false;
         Debug.Log($"Day: {DeathStat.Day}");
+    }
+
+    public void UpdateUI()
+    {
+        Vacina.text = DeathStat.Vacina.ToString();
+
+        impRepSlider.value = DeathStat.ImperatorReputation;
+        peopleRepSlider.value = DeathStat.RegionReputation;
+
+        if (impRepSlider.value <= 15)
+            impRepFillImage.color = Color.red;
+        else if (impRepSlider.value <= 50 && impRepSlider.value > 15)
+            impRepFillImage.color = Color.yellow;
+        else
+            impRepFillImage.color = Color.green;
+
+        if (peopleRepSlider.value <= 15)
+            peopleRepFillImage.color = Color.red;
+        else if (peopleRepSlider.value <= 50 && peopleRepSlider.value > 15)
+            peopleRepFillImage.color = Color.yellow;
+        else
+            peopleRepFillImage.color = Color.green;
+
+        policeMax.text = DeathStat.MaxPolicemen.ToString();
+        policeCur.text = DeathStat.Policemen.ToString();
+        doctorMax.text = DeathStat.MaxDoctors.ToString();
+        doctorCur.text = DeathStat.Doctors.ToString();
+        volontMax.text = DeathStat.MaxVolunteers.ToString();
+        volontCur.text = DeathStat.Volunteers.ToString();
     }
 
     private void TextInfoAll()
@@ -270,12 +326,15 @@ public class MainScript : MonoBehaviour
         NumbersOfDeathText.text = "Death: " + NumbersOfDeath;
     }
 
+    bool isDayDone = false; //чтобы 300 раз не подписывался на НекстДей
+
     void Update()
     {
         TimeGame += Time.deltaTime/3;
         TextInfoAll();
-        if (Input.GetKeyDown(KeyCode.Space) || TimeGame >= 24)
+        if ((Input.GetKeyDown(KeyCode.Space) /*|| TimeGame >= 24*/) && !isDayDone)
         {
+            isDayDone = true;
             //подписка на события загрузки камеры
             Event.LoadElement += NextDay;
             //анимация с двумя ивентами(то что подписали в ивент, и отписка от ивента)

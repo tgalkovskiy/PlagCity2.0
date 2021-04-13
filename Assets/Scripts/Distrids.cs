@@ -120,6 +120,7 @@ public class Distrids : MonoBehaviour
         }
 
     }
+
     public void CastRiver()
     {
         if (CastRiverViol < 100)

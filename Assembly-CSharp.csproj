@@ -71,7 +71,8 @@
     <Compile Include="Assets\Scripts\Event.cs" />
     <Compile Include="Assets\Scripts\House.cs" />
     <Compile Include="Assets\Scripts\Letters\Answer.cs" />
-    <Compile Include="Assets\Scripts\Letters\AnswerPrice.cs" />
+    <Compile Include="Assets\Scripts\Letters\AnswerCondition.cs" />
+    <Compile Include="Assets\Scripts\Letters\AnswerReaction.cs" />
     <Compile Include="Assets\Scripts\Letters\Letter.cs" />
     <Compile Include="Assets\Scripts\Letters\LetterSender.cs" />
     <Compile Include="Assets\Scripts\Letters\LettersManager.cs" />

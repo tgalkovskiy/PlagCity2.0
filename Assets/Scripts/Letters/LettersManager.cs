@@ -7,15 +7,20 @@ public class LettersManager : MonoBehaviour
 {
     public static LettersManager Instance;
 
+    public MainScript main;
+
     //Список всех хранящихся писем
     private List<Letter> Letters;
     //Очередь писем на вывод на экран (Письма, которые активируются сразу, если их несколько пришло)
     private List<Letter> LettersToShow;
 
+    private List<AnswerReaction> Reactions;   
+
     //Объекты для отображения письма на экране
     [SerializeField] private GameObject LetterView;
     [SerializeField] private Image LetterMainImage;
     [SerializeField] private Text LetterMainText;
+    [SerializeField] private Text LetterSenderName;
     [SerializeField] private Image LetterAnswer1Image;
     [SerializeField] private Text LetterAnswer1Text;
     [SerializeField] private Text LetterAnswer1ErrorText;
@@ -24,6 +29,11 @@ public class LettersManager : MonoBehaviour
     [SerializeField] private Text LetterAnswer2ErrorText;
     [SerializeField] private Image LetterActionPut;
     [SerializeField] private Image LetterActionThrow;
+
+    public string itogiText;
+
+    [SerializeField] private GameObject ItogiView;
+    [SerializeField] private Text ItogiText;
 
     //Текущее письмо, которое отображается на экране
     [SerializeField] private Letter curLetter;
@@ -44,6 +54,16 @@ public class LettersManager : MonoBehaviour
     [SerializeField] private int maxY;
     [SerializeField] private int deltaX;
 
+    private enum State
+    {
+        City,
+        Office
+    }
+
+    private State state;
+
+
+
     private void Awake()
     {
         if (Instance == null)
@@ -53,17 +73,12 @@ public class LettersManager : MonoBehaviour
 
         Letters = new List<Letter>();
         LettersToShow = new List<Letter>();
+        Reactions = new List<AnswerReaction>();
 
         ScrollViewRect = ScrollViewOfLetters.GetComponent<ScrollRect>();
         ScrollViewContent = ScrollViewRect.content;
-    }
 
-    /// <summary>
-    /// Просто убрать текущее письмо
-    /// </summary>
-    public void PutLetter()
-    {
-        LetterView.SetActive(false);
+        state = State.City;
     }
     
     /// <summary>
@@ -81,14 +96,16 @@ public class LettersManager : MonoBehaviour
     /// </summary>
     public void DeleteLetter()
     {
-        LetterView.SetActive(false);
         Letters.Remove(curLetter);
 
         curLetter.LetterSelected -= OnSelectedLetter;
+        curLetter.OnDelete();
 
         Destroy(curLetter.gameObject);
 
         curLetter = null;
+
+        CloseLetterView();
     }
 
     /// <summary>
@@ -96,7 +113,9 @@ public class LettersManager : MonoBehaviour
     /// </summary>
     public void OnChooseAnswer_1()
     {
-        curLetter.Answer_1.AnswerChosen();
+        if(curLetter.IsActual)
+            curLetter.Answer_1.AnswerChosen();
+        DeleteLetter();
     }
 
     /// <summary>
@@ -104,7 +123,9 @@ public class LettersManager : MonoBehaviour
     /// </summary>
     public void OnChooseAnswer_2()
     {
-        curLetter.Answer_2.AnswerChosen();
+        if (curLetter.IsActual)
+            curLetter.Answer_2.AnswerChosen();
+        DeleteLetter();
     }
 
     /// <summary>
@@ -129,26 +150,33 @@ public class LettersManager : MonoBehaviour
             LetterAnswer2Image.sprite = curLetter.AnswerUnactualSprite;
         }
 
-        if(!curLetter.Answer_1.IsConditionDone)
+        if(!curLetter.Answer_1.IsConditionsDone)
         {
             LetterAnswer1Image.GetComponent<Button>().interactable = false;
             LetterAnswer1ErrorText.gameObject.SetActive(true);
         }
         else
+        {
+            LetterAnswer1Image.GetComponent<Button>().interactable = true;
             LetterAnswer1ErrorText.gameObject.SetActive(false);
+        }
 
-        if (!curLetter.Answer_2.IsConditionDone)
+        if (!curLetter.Answer_2.IsConditionsDone)
         {
             LetterAnswer2Image.GetComponent<Button>().interactable = false;
             LetterAnswer2ErrorText.gameObject.SetActive(true);
         }
         else
+        {
+            LetterAnswer2Image.GetComponent<Button>().interactable = true;
             LetterAnswer2ErrorText.gameObject.SetActive(false);
+        }
 
         LetterActionPut.sprite = curLetter.ActionSprite;
         LetterActionThrow.sprite = curLetter.ActionSprite;
 
         LetterMainText.text = curLetter.mainText;
+        LetterSenderName.text = curLetter.SenderName;
         LetterAnswer1Text.text = curLetter.Answer_1.Text;
         LetterAnswer2Text.text = curLetter.Answer_2.Text;
         
@@ -184,7 +212,10 @@ public class LettersManager : MonoBehaviour
     public void CloseLetterView()
     {
         LetterView.SetActive(false);
-        CheckLettersToShow();
+        if (state == State.Office)
+            ShowScrollView();
+        else
+            CheckLettersToShow();
     }
 
     /// <summary>
@@ -199,14 +230,21 @@ public class LettersManager : MonoBehaviour
             OnSelectedLetter(curLetter);
         }
     }
-
+    
     /// <summary>
     /// Показать ящик с письмами
     /// </summary>
     public void ShowScrollView()
     {
+        state = State.Office;
         UpdateContentView();
         ScrollViewOfLetters.SetActive(true);
+    }
+    
+    public void CloseScrollView()
+    {
+        state = State.City;
+        ScrollViewOfLetters.SetActive(false);
     }
 
     /// <summary>
@@ -223,5 +261,58 @@ public class LettersManager : MonoBehaviour
 
             transform.SetPositionAndRotation(new Vector3((i + 1) * deltaX, Random.Range(minY, maxY), 0), Quaternion.identity);
         }
+    }
+
+    public void AddConditions(AnswerCondition[] conditions)
+    {
+        foreach (var c in conditions)
+            c.ApplyCondition();
+
+        main.UpdateUI();
+    }
+
+    public void AddReactions(AnswerReaction[] reactions)
+    {
+        Reactions.AddRange(reactions);
+    }
+
+    public void CheckReactions()
+    {
+        foreach (var c in Reactions)
+        {
+            c.ApplyReaction();
+        }
+
+        if (itogiText == "")
+            itogiText = "Ничего не произошло";
+
+        Reactions.Clear();
+    }
+
+    public void ShowItogi()
+    {
+        ItogiView.SetActive(true);
+        ItogiText.text = itogiText;
+        itogiText = "";
+    }
+
+    public void OnNewDay()
+    {
+        state = State.City;
+        LetterView.SetActive(false);
+        ItogiView.SetActive(false);
+        ScrollViewOfLetters.SetActive(false);
+
+        foreach(var l in Letters)
+            if(l.IsActual)
+            {
+                l.LifeTimeInDays--;
+                if (l.LifeTimeInDays <= 0)
+                    l.Ignored();
+            }
+
+        CheckReactions();
+
+        ShowItogi();
     }
 }

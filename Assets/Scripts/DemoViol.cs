@@ -25,7 +25,7 @@ public class DemoViol : MonoBehaviour
     private int AnotherDistrCoef = 35;
     public int CorpsCount = 0;
     private int NumberHouse;
-    private List<StateOBJ> NumberViolHouses = new List<StateOBJ>();
+    private List<StateOBJ> HousesToViol = new List<StateOBJ>();
     private void Awake()
     {
         DistricdStateObj1 = GetComponent<StateOBJ>();
@@ -36,10 +36,13 @@ public class DemoViol : MonoBehaviour
 
     private void Start()
     {
-        int I = Random.Range(0, Houses.Length);
-        Houses[I].GetComponent<StateOBJ>().StateViol = true;
-        Houses[I].GetComponent<StateOBJ>().CountViol += 3;
-        Debug.Log(I);
+        if (ThisViol)
+        {
+            int I = Random.Range(0, Houses.Length);
+            Houses[I].GetComponent<StateOBJ>().StateViol = true;
+            Houses[I].GetComponent<StateOBJ>().CountViol += 3;
+            Debug.Log($"House {I} in {DistricdStateObj2} is viol now");
+        }
         DistricdState();
     }
 
@@ -47,16 +50,16 @@ public class DemoViol : MonoBehaviour
     {
         //расчет аффекта
         CalculateAffect();
-        Debug.Log(NumberViolHouses.Count);
+        Debug.Log($"Houses to viol count = {HousesToViol.Count}");
         //передача в новый дом
-        if (NumberViolHouses.Count>0)
+        if (HousesToViol.Count>0)
         {
             for (int i = 0; i < CountViolHouses; i++)
             {
-                if (NumberViolHouses.Count > 0)
+                if (HousesToViol.Count > 0)
                 {
                     //Расчет случайного дома
-                    var NowObj = NumberViolHouses[Random.Range(0, NumberViolHouses.Count)];
+                    var NowObj = HousesToViol[Random.Range(0, HousesToViol.Count)];
                     //расчет шанса заражения
                     var probabilityV_H = Random.Range(0, 100);
                     if (!NowObj.Lock && probabilityV_H <= 70)
@@ -64,9 +67,15 @@ public class DemoViol : MonoBehaviour
                         //заражение нового дома
                         NowObj.StateViol = true;
                         //добавление больных
-                        NowObj.CountViol += 3;
+                        int freePeople = NowObj.CountPeople - NowObj.CountDeath - NowObj.CountViol;
+                        if (freePeople >= 3)
+                            NowObj.CountViol += 3;
+                        else
+                            NowObj.CountViol += freePeople;
                         //обнуле спика не зараженных домов
-                        NumberViolHouses.Remove(NowObj);
+                        HousesToViol.Remove(NowObj);
+
+                        Debug.Log($"В {DistricdStateObj1} заразился новый дом {NowObj}. CountViol = {NowObj.CountViol}");
                     }
                 }
                 else
@@ -77,11 +86,15 @@ public class DemoViol : MonoBehaviour
         }
         CountViolHouses = 0;
         //очистка списка 
-        NumberViolHouses.Clear();
+        HousesToViol.Clear();
         //Действия внутри домов
         for (int i = 0; i < Houses.Length; i++)
         {
             var NowObj = Houses[i]?.GetComponent<StateOBJ>();
+            //Если дом вымерший, не надо ничего делать
+            if (NowObj.AllDead)
+                continue;
+
             //Лечим
             NowObj.Recovery();
             //Убиваем
@@ -106,19 +119,20 @@ public class DemoViol : MonoBehaviour
         for (int i = 0; i < Houses.Length; i++)
         {
             var NowHouses = Houses[i].GetComponent<StateOBJ>();
-            if (NowHouses.StateViol && !NowHouses.Lock) //И ДОМ НЕ В КАРАНТИНЕ!!!
+            if (NowHouses.StateViol && !NowHouses.Lock ) //И ДОМ НЕ В КАРАНТИНЕ!!!
             {
                 CountViolHouses += 1;
                 //КОРОЧЕ ВОТ ТУТ ВОТ ОН СЧИТАЕТ, ЧТО ДОМ НЕ В КАРАНТИНЕ, ХОТЯ ДОЛЖЕН БЫТЬ
             }
-            else
+            else if(!NowHouses.AllDead)
             {
                 DeathStat.Money += 3;
-                NumberViolHouses.Add(NowHouses);
+                HousesToViol.Add(NowHouses);
             }
         }
         return CountViolHouses;
     }
+
     private void DistricdState()
     {
         int CountPeopleDistricd = 0;
@@ -140,7 +154,7 @@ public class DemoViol : MonoBehaviour
         DistricdStateObj2.CountViol = CountViolDistricd;
         DistricdStateObj2.IconViol();
         //расчет степени заражения
-        float powerColor = (float)CountDeathDistricd/(float)CountPeopleDistricd;
+        float powerColor = (float)((CountViolDistricd + CountDeathDistricd) * 2)/(float)CountPeopleDistricd;
         //изменение альфы района на шлобальной карте
         DistricdStateObj2.ViolLine.GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, powerColor);
 

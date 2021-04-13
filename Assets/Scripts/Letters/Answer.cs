@@ -7,16 +7,34 @@ public class Answer
 {
     public event Action Chosen;
     public string Text { get; private set; }
-    public bool IsConditionDone { get { return CheckCondition(); } }
-
+    public bool IsConditionsDone { get { return CheckCondition(); } }
+    public AnswerCondition[] Conditions;
+    public AnswerReaction[] Reactions;
+    public string ReactionText;
 
     public void AnswerChosen()
     {
         Chosen?.Invoke();
+
+        if (Conditions != null)
+            LettersManager.Instance.AddConditions(Conditions);
+
+        if (Reactions != null)
+        {
+            LettersManager.Instance.AddReactions(Reactions);
+            LettersManager.Instance.itogiText += ReactionText + "\n";
+        }
     }
 
     public virtual bool CheckCondition()
     {
+        if (Conditions == null)
+            return true;
+
+        foreach (var c in Conditions)
+            if (!c.IsConditionDone)
+                return false;
+
         return true;
     }
 

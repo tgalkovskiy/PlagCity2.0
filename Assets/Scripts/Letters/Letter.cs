@@ -6,7 +6,12 @@ using UnityEngine.UI;
 
 public class Letter : MonoBehaviour
 {
+    public enum Type { letter, human}
+
     public bool IsActual;
+    public int LifeTimeInDays;
+
+    public string SenderName;
 
     public Sprite ActualSprite;
     public Sprite UnactualSprite;
@@ -20,32 +25,28 @@ public class Letter : MonoBehaviour
     public Answer Answer_2;
 
     public event Action<Letter> LetterSelected;
-
-    public void ThrowAwayLetter()
-    {
-        Destroy(gameObject);
-    }
-
-    public void OnChooseAnswer_1()
-    {
-        Answer_1.AnswerChosen();
-    }
-
-    public void OnChooseAnswer_2()
-    {
-        Answer_2.AnswerChosen();
-    }
+    public AnswerReaction[] IgnorReactions;
+    public string IgnorText;
     
     public void SelectLetter()
     {
         LetterSelected?.Invoke(this);
     }
 
-    public void LetterIsBroken()
+    public void Ignored()
     {
-        //    LetterUnactual.sprite = LetterUnactualSprite;
+        IsActual = false;
 
-        //    answer_1.GetComponent<Image>().sprite = LetterAnswerUnactualSprite;
-        //    answer_2.GetComponent<Image>().sprite = LetterAnswerUnactualSprite;
+        if (IgnorReactions != null)
+        {
+            LettersManager.Instance.AddReactions(IgnorReactions);
+            LettersManager.Instance.itogiText += IgnorText + "\n";
+        }
+    }
+
+    public void OnDelete()
+    {
+        //if (IsActual)
+        //    Ignored();
     }
 }

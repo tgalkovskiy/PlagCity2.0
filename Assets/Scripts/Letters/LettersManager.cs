@@ -20,6 +20,9 @@ public class LettersManager : MonoBehaviour
     [SerializeField] private GameObject LetterView;
     [SerializeField] private Image LetterMainImage;
     [SerializeField] private Text LetterMainText;
+
+    [SerializeField] private Image TutorialImage;
+
     [SerializeField] private Text LetterSenderName;
     [SerializeField] private Image LetterAnswer1Image;
     [SerializeField] private Text LetterAnswer1Text;
@@ -34,6 +37,12 @@ public class LettersManager : MonoBehaviour
 
     [SerializeField] private GameObject ItogiView;
     [SerializeField] private Text ItogiText;
+    [SerializeField] private Text DayText;
+    [SerializeField] private Text NewViolText;
+    [SerializeField] private Text NewDeathsText;
+    [SerializeField] private Text AllViolText;
+    [SerializeField] private Text AllDeathsText;
+    [SerializeField] private Text VacinaText;
 
     //Текущее письмо, которое отображается на экране
     [SerializeField] private Letter curLetter;
@@ -108,6 +117,13 @@ public class LettersManager : MonoBehaviour
         CloseLetterView();
     }
 
+    public void IgnorLetter()
+    {
+        curLetter.Ignored();
+        DeleteLetter();
+
+    }
+
     /// <summary>
     /// Выбор первого варианта ответа
     /// </summary>
@@ -135,6 +151,19 @@ public class LettersManager : MonoBehaviour
     public void OnSelectedLetter(Letter letter)
     {
         curLetter = letter;
+
+        var rect = LetterMainText.GetComponent<RectTransform>();
+        if (curLetter.TutorialSprite != null)
+        {
+            TutorialImage.gameObject.SetActive(true);
+            TutorialImage.sprite = curLetter.TutorialSprite;
+            rect.offsetMin = new Vector2(rect.offsetMin.x, 560f);
+        }
+        else
+        {
+            TutorialImage.gameObject.SetActive(false);
+            rect.offsetMin = new Vector2(rect.offsetMin.x, 101f);
+        }
 
         //Настройка картиночек и текста для письма
         if (curLetter.IsActual) //Если письмо еще актуальное(не просрочилось)
@@ -252,7 +281,7 @@ public class LettersManager : MonoBehaviour
     /// </summary>
     public void UpdateContentView()
     {
-        ScrollViewContent.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal,(Letters.Count + 1) * deltaX);
+        ScrollViewContent.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal,(Letters.Count) * deltaX * 2 + deltaX);
         ScrollViewRect.horizontalNormalizedPosition = 0;
 
         for (int i = 0; i < Letters.Count; i++)
@@ -284,7 +313,7 @@ public class LettersManager : MonoBehaviour
         }
 
         if (itogiText == "")
-            itogiText = "Ничего не произошло";
+            itogiText = "Особых событий не произошло";
 
         Reactions.Clear();
     }
@@ -293,6 +322,13 @@ public class LettersManager : MonoBehaviour
     {
         ItogiView.SetActive(true);
         ItogiText.text = itogiText;
+        DayText.text = DeathStat.Day.ToString();
+        NewViolText.text = DeathStat.NewViolPeople.ToString();
+        NewDeathsText.text = DeathStat.NewDeadPeople.ToString();
+        AllViolText.text = DeathStat.AllViol.ToString();
+        AllDeathsText.text = DeathStat.AllDeath.ToString();
+        VacinaText.text = DeathStat.Vacina.ToString();
+
         itogiText = "";
     }
 

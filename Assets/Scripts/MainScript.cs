@@ -8,6 +8,8 @@ using UnityEngine.UI;
 
 public class MainScript : MonoBehaviour
 {
+    public static MainScript Instance;
+
     public GameObject[] DistrictRed, District;
     [SerializeField] private SoundScript SoundScript;
     [SerializeField] private LayerMask MaskUI;
@@ -34,11 +36,16 @@ public class MainScript : MonoBehaviour
 
     private void Awake()
     {
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(gameObject);
+
         //комопонент камеры
         MainCamera = GetComponent<Camera>();
         //City = GetComponent<StateOBJ>();
         TimeGame = 0;
-        DeathStat.Money = 500;
+        DeathStat.Money = 250;
         Vacina.text = "50";
         //AllDeathPeople = 0;
         //AllViolPeople = 0;
@@ -47,16 +54,17 @@ public class MainScript : MonoBehaviour
         //AllPeople = 2100;
         //NumberDistrict = 0;
         //отключение всех зараженых маркеров сразу
-        for(int i=0; i< DistrictRed.Length; i++)
+        for (int i = 0; i < DistrictRed.Length; i++)
         {
             Districts.Add(District[i]);
         }
         GuiPanel.SetActive(false);
-        
+
     }
 
     private void Start()
     {
+
         SenderManager.Instance.CheckConditions();
         LettersManager.Instance.CheckLettersToShow();
 
@@ -78,27 +86,62 @@ public class MainScript : MonoBehaviour
         Sequence1.Join(GuiPanel.transform.DOScale(Vector3.one * 1.2f, 1f));
 
     }
+
+    public DemoViol curDemoViol;
+    public GameObject buttonSearch;
+    public GameObject buttonUnsearch;
+
+    public void SearchDemoViol()
+    {
+        buttonSearch.SetActive(false);
+        buttonUnsearch.SetActive(true);
+        curDemoViol.SearchDistrict();
+    }
+    public void UnSearchDemoViol()
+    {
+        buttonSearch.SetActive(true);
+        buttonUnsearch.SetActive(false);
+        curDemoViol.UnsearchDistrict();
+    }
+
     private void CameraTransform()
     {
         if (NameDistrict == "sunland")
         {
             MainCamera.transform.position = new Vector3(-78, 13, -10);
             DemoViol[0].ActiveDistrict = true;
+            curDemoViol = DemoViol[0];
         }
         else if (NameDistrict == "west river")
         {
             MainCamera.transform.position = new Vector3(-78, -19, -10);
             DemoViol[1].ActiveDistrict = true;
+            curDemoViol = DemoViol[1];
         }
         else if (NameDistrict == "grandstream")
         {
             MainCamera.transform.position = new Vector3(-78, -52, -10);
             DemoViol[2].ActiveDistrict = true;
+            curDemoViol = DemoViol[2];
+        }
+
+
+        if (curDemoViol.IsOnSearch)
+        {
+            buttonSearch.SetActive(false);
+            buttonUnsearch.SetActive(true);
+        }
+        else
+        {
+            buttonSearch.SetActive(true);
+            buttonUnsearch.SetActive(false);
         }
     }
 
     private void CameraTransforDefold()
     {
+        buttonSearch.SetActive(false);
+        buttonUnsearch.SetActive(false);
         //Смотреть в миро
         MainCamera.transform.position = new Vector3(0, 0, -10);
         for (int i = 0; i < DemoViol.Length; i++)
@@ -110,7 +153,7 @@ public class MainScript : MonoBehaviour
 
     public void TransformCamera()
     {
-        
+
         if (MainMap)
         {
             //подписка на события загрузки камеры
@@ -208,26 +251,26 @@ public class MainScript : MonoBehaviour
             Debug.Log($"Выбран {NameDistrict}");
         }
     }
-   
+
     /// <summary>
     /// движение камеры(настроил+Делагаты)
     /// </summary>
     private void ControlCamera()
     {
-        if(Input.GetAxis("Mouse ScrollWheel") != 0)
+        if (Input.GetAxis("Mouse ScrollWheel") != 0)
         {
             //считывание вращения колесика
             MouseScrollWheel = Input.GetAxis("Mouse ScrollWheel");
             //приближение и отдаление
             Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize + MouseScrollWheel * 2, 5, 14);
             //при максимальном отдалении уход на стартовую позицию камеры
-            if(Camera.main.orthographicSize == 14 && MainMap == true)
+            if (Camera.main.orthographicSize == 14 && MainMap == true)
             {
-                transform.position = new Vector3(0,0, transform.position.z);
+                transform.position = new Vector3(0, 0, transform.position.z);
             }
         }
         //движение камеры
-        if (Input.GetMouseButton(1) && Camera.main.orthographicSize<14 && MainMap==true)
+        if (Input.GetMouseButton(1) && Camera.main.orthographicSize < 14 && MainMap == true)
         {
             CameraX = Input.GetAxis("Mouse X") * CameraSens;
             CameraY = Input.GetAxis("Mouse Y") * CameraSens;
@@ -236,13 +279,13 @@ public class MainScript : MonoBehaviour
             float CameraPosY = Mathf.Clamp(CameraY + transform.position.y, -10f, 10f);
             transform.position = new Vector3(CameraPosX, CameraPosY, transform.position.z);
         }
-        
+
     }
 
     private void MoneyCalculate()
     {
         //Переписать
-        Money += AllPeople - AllDeathPeople;
+        DeathStat.Money += 120;
     }
 
 
@@ -264,22 +307,27 @@ public class MainScript : MonoBehaviour
     /// </summary>
     public void NextDay()
     {
-        DeathStat.OnNewDay();
         DeathStat.Day += 1;
         TimeGame = 0;
         DeathStat.Vacina += 3;
         City.CountDeath = DeathStat.AllDeath;
         MoneyCalculate();
 
+        CheckDistrictsToSearch();
 
         foreach (var d in DemoViol)
             d.NextDayStateObj();
 
         CameraTransforDefold();
 
+        if (ViolWestRiver)
+            ViolWestRiverNow();
+
         LettersManager.Instance.OnNewDay();
         SenderManager.Instance.CheckConditions();
 
+
+        DeathStat.OnNewDay();
         UpdateUI();
 
         isDayDone = false;
@@ -317,7 +365,7 @@ public class MainScript : MonoBehaviour
 
     private void TextInfoAll()
     {
-        TimeGameText.text =((int)TimeGame).ToString();
+        TimeGameText.text = ((int)TimeGame).ToString();
         DayText.text = "Day: " + DeathStat.Day.ToString();
         MoneyText.text = DeathStat.Money.ToString();
         NameDistrictText.text = NameDistrict;
@@ -327,14 +375,21 @@ public class MainScript : MonoBehaviour
     }
 
     bool isDayDone = false; //чтобы 300 раз не подписывался на НекстДей
+    bool IsGoNextDay = false;
+
+    public void GoNextDay()
+    {
+        IsGoNextDay = true;
+    }
 
     void Update()
     {
-        TimeGame += Time.deltaTime/3;
+        TimeGame += Time.deltaTime / 4;
         TextInfoAll();
-        if ((Input.GetKeyDown(KeyCode.Space) /*|| TimeGame >= 24*/) && !isDayDone)
+        if ((Input.GetKeyDown(KeyCode.Space) || TimeGame >= 24 || IsGoNextDay) && !isDayDone)
         {
             isDayDone = true;
+            IsGoNextDay = false;
             //подписка на события загрузки камеры
             Event.LoadElement += NextDay;
             //анимация с двумя ивентами(то что подписали в ивент, и отписка от ивента)
@@ -342,9 +397,53 @@ public class MainScript : MonoBehaviour
         }
         Ray();
         ControlCamera();
-        if(DeathStat.Vacina >= 100)
+        if (DeathStat.Vacina >= 100)
         {
             Debug.Log("Победа");
         }
+    }
+
+    public List<DemoViol> districsToSearch = new List<DemoViol>();
+
+    public void CheckDistrictsToSearch()
+    {
+        if (districsToSearch.Count == 0)
+            return;
+
+        foreach (var d in districsToSearch)
+        {
+            var HousesDistrict = d.Houses;
+            for (int i = 0; i < HousesDistrict.Length; i++)
+            {
+                var HousesDistrictNow = HousesDistrict[i].GetComponent<StateOBJ>();
+                if (HousesDistrictNow.CountHideViol > 0)
+                {
+                    HousesDistrictNow.ViolLine.SetActive(true);
+                    HousesDistrictNow.SearchHouse();
+                }
+            }
+
+            d.IsOnSearch = false;
+        }
+
+        districsToSearch.Clear();
+    }
+
+    public bool ViolWestRiver = false;
+    public void ViolWestRiverNow()
+    {
+        ViolWestRiver = false;
+
+        DemoViol[1].Houses[3].GetComponent<StateOBJ>().CountDeath += 1;
+        DemoViol[1].Houses[3].GetComponent<StateOBJ>().CountViol += 3;
+        DeathStat.AllDeath += 1;
+        DeathStat.AllViol += 3;
+        DeathStat.NewDeadPeople += 1;
+        DeathStat.NewViolPeople += 3;
+        DemoViol[1].Houses[3].GetComponent<StateOBJ>().IsHide = false;
+        DemoViol[1].Houses[3].GetComponent<StateOBJ>().StateViol = true;
+        DemoViol[1].Houses[3].GetComponent<StateOBJ>().IconViol();
+
+        DemoViol[1].DistricdState();
     }
 }

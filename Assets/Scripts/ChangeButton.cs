@@ -28,19 +28,10 @@ public class ChangeButton : MonoBehaviour
 
             //Пока криво работает
 
-            //if(NowGameObj.tag == "Global" && NowGameObj.GetComponent<DemoViol>())
+            //if (NowGameObj.tag == "Global" && NowGameObj.GetComponent<DemoViol>())
             //{
-            //    var HousesDistrict = NowGameObj.GetComponent<DemoViol>().Houses;
-            //    for(int i=0; i<HousesDistrict.Length; i++)
-            //    {
-            //        var HousesDistrictNow = HousesDistrict[i].GetComponent<StateOBJ>();
-            //        if (HousesDistrictNow.CountViol > 0)
-            //        {
-            //            HousesDistrictNow.ViolLine.SetActive(true);
-            //        }
-            //    }
             //}
-            
         }
     }
+
 }

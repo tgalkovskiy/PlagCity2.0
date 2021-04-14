@@ -32,7 +32,7 @@ public class AnswerCondition
                 if (DeathStat.Policemen >= Count)
                     return true;
                 break;
-            case "Volunteer":
+            case "Volonteer":
                 if (DeathStat.Volunteers >= Count)
                     return true;
                 break;
@@ -57,7 +57,7 @@ public class AnswerCondition
             case "Policeman":
                 DeathStat.Policemen -= Count;
                 break;
-            case "Volunteer":
+            case "Volonteer":
                 DeathStat.Volunteers -= Count;
                 break;
         }

@@ -38,10 +38,14 @@ public class DemoViol : MonoBehaviour
     {
         if (ThisViol)
         {
-            int I = Random.Range(0, Houses.Length);
-            Houses[I].GetComponent<StateOBJ>().StateViol = true;
-            Houses[I].GetComponent<StateOBJ>().CountViol += 3;
-            Debug.Log($"House {I} in {DistricdStateObj2} is viol now");
+            for (int i = 0; i < 2; i++)
+            {
+                int I = Random.Range(0, Houses.Length);
+                Houses[I].GetComponent<StateOBJ>().StateViol = true;
+                Houses[I].GetComponent<StateOBJ>().CountHideViol += 3;
+
+                Debug.Log($"House {I} in {DistricdStateObj2} is viol now");
+            }
         }
         DistricdState();
     }
@@ -67,11 +71,11 @@ public class DemoViol : MonoBehaviour
                         //заражение нового дома
                         NowObj.StateViol = true;
                         //добавление больных
-                        int freePeople = NowObj.CountPeople - NowObj.CountDeath - NowObj.CountViol;
+                        int freePeople = NowObj.CountPeople - NowObj.CountDeath - NowObj.CountViol - NowObj.CountHideViol;
                         if (freePeople >= 3)
-                            NowObj.CountViol += 3;
+                            NowObj.CountHideViol += 3;
                         else
-                            NowObj.CountViol += freePeople;
+                            NowObj.CountHideViol += freePeople;
                         //обнуле спика не зараженных домов
                         HousesToViol.Remove(NowObj);
 
@@ -126,14 +130,14 @@ public class DemoViol : MonoBehaviour
             }
             else if(!NowHouses.AllDead)
             {
-                DeathStat.Money += 3;
+                //DeathStat.Money += 3;
                 HousesToViol.Add(NowHouses);
             }
         }
         return CountViolHouses;
     }
 
-    private void DistricdState()
+    public void DistricdState()
     {
         int CountPeopleDistricd = 0;
         int CountDeathDistricd = 0;
@@ -157,8 +161,29 @@ public class DemoViol : MonoBehaviour
         float powerColor = (float)((CountViolDistricd + CountDeathDistricd) * 2)/(float)CountPeopleDistricd;
         //изменение альфы района на шлобальной карте
         DistricdStateObj2.ViolLine.GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, powerColor);
+    }
 
 
+
+    public bool IsOnSearch = false;
+
+    public void SearchDistrict()
+    {
+        if (DeathStat.Volunteers == 0)
+            return;
+
+        IsOnSearch = true;
+        DeathStat.Volunteers -= 1;
+        MainScript.UpdateUI();
+        MainScript.districsToSearch.Add(this);
+    }
+
+    public void UnsearchDistrict()
+    {
+        IsOnSearch = false;
+        DeathStat.Volunteers += 1;
+        MainScript.UpdateUI();
+        MainScript.districsToSearch.Remove(this);
     }
 }
 

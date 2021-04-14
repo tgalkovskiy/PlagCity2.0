@@ -27,7 +27,9 @@ public class Letter : MonoBehaviour
     public event Action<Letter> LetterSelected;
     public AnswerReaction[] IgnorReactions;
     public string IgnorText;
-    
+
+    public Sprite TutorialSprite;
+
     public void SelectLetter()
     {
         LetterSelected?.Invoke(this);

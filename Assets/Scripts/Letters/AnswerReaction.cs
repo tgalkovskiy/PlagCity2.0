@@ -30,6 +30,11 @@ public class AnswerReaction
             case "Vacina":
                 DeathStat.Vacina += Count;
                 break;
+            case "Volonteer":
+                DeathStat.MaxVolunteers += Count;
+                DeathStat.Volunteers += Count;
+                MainScript.Instance.UpdateUI();
+                break;
         }
     }
 }

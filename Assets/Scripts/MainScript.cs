@@ -6,32 +6,45 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum GameState
+{
+    City,
+    Office,
+    Pause
+}
+
 public class MainScript : MonoBehaviour
 {
     public static MainScript Instance;
 
     public GameObject[] DistrictRed, District;
-    [SerializeField] private SoundScript SoundScript;
+    [SerializeField] private SoundController SoundController;
     [SerializeField] private LayerMask MaskUI;
     [SerializeField] private float CameraSens;
     [SerializeField] private GameObject GuiPanel;
     [SerializeField] private Text DayText, TimeGameText, MoneyText, NameDistrictText, AllPeopleDistrictText, NumbersOfViolentText, NumbersOfDeathText, Vacina;
     [SerializeField] Transform PlaceGuiPanelActiv;
     [SerializeField] Transform PlaceGuiPanelDeactiv;
-    [SerializeField] private DemoViol[] DemoViol;
-    [SerializeField] private ChangeButton[] ChangeButton;
+    [SerializeField] private DemoViol[] AllDistricts;
+    [SerializeField] private DemoViol[] RichDistricts;
+    public List<DemoViol> RichUnriotDistricts = new List<DemoViol>();
+    [SerializeField] private HumanResourсeManager[] ChangeButton;
     [SerializeField] private Animator Animator;
     //удалить потом лист
     private List<GameObject> Districts = new List<GameObject>();
     //private SpriteRenderer SpriteRendererDistrict;
     private Camera MainCamera;
-    private Vector3 ClicPosition;
+    private Vector3 ClickPosition;
     public StateOBJ City;
     private float MouseScrollWheel, CameraX, CameraY, TimeGame;
     [HideInInspector] public GameObject NowGameObj;
-    private bool FirstClic = false, GUIAKTIV = false, MainMap = true;
+    [HideInInspector] public StateOBJ NowStateObj;
+    private bool FirstClick = false, GUIAKTIV = false, MainMap = true;
     private int Money, AllDeathPeople, AllViolPeople, Infected, Buried, AllPeople;
     [HideInInspector] public string NameDistrict, NumberPeopleDistrict, NumbersOfViolent, NumbersOfDeath;
+
+
+    public GameState state;
 
 
     private void Awake()
@@ -45,7 +58,7 @@ public class MainScript : MonoBehaviour
         MainCamera = GetComponent<Camera>();
         //City = GetComponent<StateOBJ>();
         TimeGame = 0;
-        DeathStat.Money = 250;
+        MainData.Money = 250;
         Vacina.text = "50";
         //AllDeathPeople = 0;
         //AllViolPeople = 0;
@@ -66,8 +79,9 @@ public class MainScript : MonoBehaviour
     {
 
         SenderManager.Instance.CheckConditions();
-        LettersManager.Instance.CheckLettersToShow();
+        VisitorsManager.Instance.CheckVisitorToShow();
 
+        RichUnriotDistricts.AddRange(RichDistricts);
 
         UpdateUI();
     }
@@ -88,66 +102,52 @@ public class MainScript : MonoBehaviour
     }
 
     public DemoViol curDemoViol;
-    public GameObject buttonSearch;
-    public GameObject buttonUnsearch;
 
-    public void SearchDemoViol()
-    {
-        buttonSearch.SetActive(false);
-        buttonUnsearch.SetActive(true);
-        curDemoViol.SearchDistrict();
-    }
-    public void UnSearchDemoViol()
-    {
-        buttonSearch.SetActive(true);
-        buttonUnsearch.SetActive(false);
-        curDemoViol.UnsearchDistrict();
-    }
 
     private void CameraTransform()
     {
-        if (NameDistrict == "sunland")
+        if (NameDistrict == "Sunland")
         {
             MainCamera.transform.position = new Vector3(-78, 13, -10);
-            DemoViol[0].ActiveDistrict = true;
-            curDemoViol = DemoViol[0];
+            AllDistricts[0].ActiveDistrict = true;
+            curDemoViol = AllDistricts[0];
         }
-        else if (NameDistrict == "west river")
+        else if (NameDistrict == "West River")
         {
             MainCamera.transform.position = new Vector3(-78, -19, -10);
-            DemoViol[1].ActiveDistrict = true;
-            curDemoViol = DemoViol[1];
+            AllDistricts[1].ActiveDistrict = true;
+            curDemoViol = AllDistricts[1];
         }
-        else if (NameDistrict == "grandstream")
+        else if (NameDistrict == "Grandstream")
         {
             MainCamera.transform.position = new Vector3(-78, -52, -10);
-            DemoViol[2].ActiveDistrict = true;
-            curDemoViol = DemoViol[2];
-        }
-
-
-        if (curDemoViol.IsOnSearch)
-        {
-            buttonSearch.SetActive(false);
-            buttonUnsearch.SetActive(true);
+            AllDistricts[2].ActiveDistrict = true;
+            curDemoViol = AllDistricts[2];
         }
         else
         {
-            buttonSearch.SetActive(true);
-            buttonUnsearch.SetActive(false);
+            MainMap = true;
+            return;
         }
+
+        if(curDemoViol.IsRiot)
+            SoundController.Instance.PlayRiotDistrict();
+
+        foreach (var a in ActionButtons)
+            a.OnDistrictChange();
+
     }
 
-    private void CameraTransforDefold()
+    private void CameraTransformDefold()
     {
-        buttonSearch.SetActive(false);
-        buttonUnsearch.SetActive(false);
         //Смотреть в миро
         MainCamera.transform.position = new Vector3(0, 0, -10);
-        for (int i = 0; i < DemoViol.Length; i++)
+        for (int i = 0; i < AllDistricts.Length; i++)
         {
-            DemoViol[i].ActiveDistrict = false;
+            AllDistricts[i].ActiveDistrict = false;
         }
+
+        SoundController.Instance.StopPlayingLowerSounds();
         AnShowPanel();
     }
 
@@ -165,7 +165,7 @@ public class MainScript : MonoBehaviour
         }
         else
         {
-            Event.LoadElement += CameraTransforDefold;
+            Event.LoadElement += CameraTransformDefold;
             //анимация с двумя ивентами(то что подписали в ивент, и отписка от ивента)
             Animator.SetTrigger("NewWindow");
             //CameraTransforDefold();
@@ -196,58 +196,169 @@ public class MainScript : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            SoundScript.ClickAudioSource.PlayOneShot(SoundScript.ClickSound);
             if (GUIAKTIV == false)
             {
                 //позиция выстрела луча
-                ClicPosition = MainCamera.ScreenToWorldPoint(Input.mousePosition);
+                ClickPosition = MainCamera.ScreenToWorldPoint(Input.mousePosition);
                 //создение масива хитов для записи полученых данных 
-                RaycastHit2D[] hit2D = Physics2D.RaycastAll(ClicPosition, Vector2.zero);
+                RaycastHit2D[] hit2D = Physics2D.RaycastAll(ClickPosition, Vector2.zero);
                 //проверка хитов
                 GuiPanelMetod();
                 //вывод инфы о районах/домах/кварталах и прочей херне(написал универсально, сам горжусь) 
                 if (hit2D.Length > 0)
                 {
-                    if (hit2D.Length > 1)
-                    {
-                        hit2D[1].collider.GetComponent<SpriteRenderer>().sortingOrder = 1;
-                        NameDistrict = hit2D[1].collider.name;
-                        if (FirstClic == false)
-                        {
-                            NowGameObj = hit2D[1].collider.gameObject;
-                            FirstClic = true;
-                        }
-                        if (FirstClic == true && NowGameObj != hit2D[1].collider.gameObject)
-                        {
+                    Debug.Log($"Hits count = {hit2D.Length}");
 
-                            NowGameObj.GetComponent<SpriteRenderer>().sortingOrder = -1;
-                            NowGameObj = hit2D[1].collider.gameObject;
-                        }
-                        if (hit2D[1].collider.gameObject?.GetComponent<StateOBJ>())
+
+                    foreach (var h in hit2D)
+                        Debug.Log($"{h.collider.gameObject}");
+
+                    foreach (var h in hit2D)
+                        if (h.collider.GetComponent<ActionButton>())
                         {
-                            NowGameObj = hit2D[1].collider.gameObject;
-                            NumberPeopleDistrict = NowGameObj?.GetComponent<StateOBJ>().CountPeople.ToString();
-                            NumbersOfDeath = NowGameObj?.GetComponent<StateOBJ>().CountDeath.ToString();
-                            NumbersOfViolent = NowGameObj?.GetComponent<StateOBJ>().CountViol.ToString();
+                            if (h.collider.GetComponent<ActionButton>().IsActivated)
+                            {
+                                h.collider.GetComponent<ActionButton>().OnClick();
+                                return;
+                            }
                         }
-                    }
-                    else
+
+                    if (curDemoViol != null)
                     {
-                        if (hit2D[0].collider.gameObject?.GetComponent<StateOBJ>())
+                        foreach (var a in ActionButtons)
+                            a.Deactivate();
+                        //Кладбище всегда активно
+                        ActionButtons[0].Activate();
+                        curDemoViol.DeactivateRoads();
+                        curDemoViol = null;
+                    }
+
+
+                    if (NowGameObj != null && NowStateObj != null)
+                    {
+                        if (NowStateObj.TypeStateDis != TypeState.City && NowStateObj.TypeStateDis != TypeState.LocalDistrict)
                         {
-                            NowGameObj = hit2D[0].collider.gameObject;
-                            NameDistrict = NowGameObj.name;
-                            NumbersOfDeath = NowGameObj?.GetComponent<StateOBJ>().CountDeath.ToString();
-                            NumbersOfViolent = NowGameObj?.GetComponent<StateOBJ>().CountViol.ToString();
-                            NumberPeopleDistrict = NowGameObj?.GetComponent<StateOBJ>().CountPeople.ToString();
+                            NowGameObj.GetComponent<SpriteRenderer>().sortingOrder = -1;
+                            NowGameObj = null;
+                            NowStateObj = null;
                         }
                     }
+
+                    GameObject temp = null;
+
+                    foreach (var h in hit2D)
+                    {
+                        if (NowStateObj == null)
+                        {
+                            NowGameObj = h.collider.gameObject;
+                            NowStateObj = NowGameObj.GetComponent<StateOBJ>();
+
+                            if (NowStateObj.TypeStateDis != TypeState.City && NowStateObj.TypeStateDis != TypeState.LocalDistrict)
+                            {
+                                NowGameObj.GetComponent<SpriteRenderer>().sortingOrder = 1;
+                            }
+
+                            NameDistrict = NowGameObj.name;
+                            NumberPeopleDistrict = NowStateObj.CountPeople.ToString();
+                            NumbersOfDeath = NowStateObj.CountDeath.ToString();
+                            NumbersOfViolent = NowStateObj.CountInfected.ToString();
+                        }
+                        else
+                        {
+                            temp = NowGameObj;
+
+                            NowGameObj = h.collider.gameObject;
+                            NowStateObj = NowGameObj.GetComponent<StateOBJ>();
+
+                            if (NowStateObj.TypeStateDis != TypeState.City && NowStateObj.TypeStateDis != TypeState.LocalDistrict)
+                            {
+                                NowGameObj.GetComponent<SpriteRenderer>().sortingOrder = 1;
+
+                                NameDistrict = NowGameObj.name;
+                                NumberPeopleDistrict = NowStateObj.CountPeople.ToString();
+                                NumbersOfDeath = NowStateObj.CountDeath.ToString();
+                                NumbersOfViolent = NowStateObj.CountInfected.ToString();
+                            }
+                        }
+
+                        if (curDemoViol == null)
+                        {
+                            curDemoViol = NowGameObj.GetComponentInChildren<DemoViol>();
+                            if (curDemoViol != null)
+                                foreach (var a in ActionButtons)
+                                    a.OnDistrictChange();
+                        }
+
+                        if(!(NowStateObj.TypeStateDis != TypeState.City && NowStateObj.TypeStateDis != TypeState.LocalDistrict) && temp != null)
+                        {
+                            NowGameObj = temp;
+                            NowStateObj = NowGameObj.GetComponent<StateOBJ>();
+                        }
+                    }
+
+                    //if (hit2D.Length > 1)
+                    //{
+                    //    hit2D[1].collider.GetComponent<SpriteRenderer>().sortingOrder = 1;
+                    //    NameDistrict = hit2D[1].collider.name;
+                    //    if (FirstClick == false)
+                    //    {
+                    //        NowGameObj = hit2D[1].collider.gameObject;
+                    //        FirstClick = true;
+                    //    }
+                    //    if (FirstClick == true && NowGameObj != hit2D[1].collider.gameObject)
+                    //    {
+                    //        NowGameObj.GetComponent<SpriteRenderer>().sortingOrder = -1;
+                    //        NowGameObj = hit2D[1].collider.gameObject;
+                    //    }
+                    //    if (hit2D[1].collider.gameObject?.GetComponent<StateOBJ>())
+                    //    {
+                    //        NowGameObj = hit2D[1].collider.gameObject;
+                    //        NumberPeopleDistrict = NowGameObj?.GetComponent<StateOBJ>().CountPeople.ToString();
+                    //        NumbersOfDeath = NowGameObj?.GetComponent<StateOBJ>().CountDeath.ToString();
+                    //        NumbersOfViolent = NowGameObj?.GetComponent<StateOBJ>().CountInfected.ToString();
+                    //    }
+                    //    curDemoViol = NowGameObj.GetComponentInChildren<DemoViol>();
+                    //    if (curDemoViol != null)
+                    //        foreach (var a in ActionButtons)
+                    //            a.OnDistrictChange();
+                    //    NowGameObj.GetComponent<SpriteRenderer>().sortingOrder = 1;
+                    //}
+                    //else
+                    //{
+                    //    if (hit2D[0].collider.gameObject?.GetComponent<StateOBJ>())
+                    //    {
+                    //        if (NowGameObj != null)
+                    //            if (NowGameObj != hit2D[0].collider.gameObject)
+                    //                if (NowGameObj.GetComponent<StateOBJ>().TypeStateDis != TypeState.City)
+                    //                    NowGameObj.GetComponent<SpriteRenderer>().sortingOrder = -1;
+
+                    //        NowGameObj = hit2D[0].collider.gameObject;
+                    //        curDemoViol = NowGameObj.GetComponentInChildren<DemoViol>();
+                    //        if (curDemoViol != null)
+                    //        {
+                    //            if (!curDemoViol.ActiveDistrict)
+                    //                NowGameObj.GetComponent<SpriteRenderer>().sortingOrder = 1;
+                    //            foreach (var a in ActionButtons)
+                    //                a.OnDistrictChange();
+                    //        }
+                    //        NameDistrict = NowGameObj.name;
+                    //        NumbersOfDeath = NowGameObj?.GetComponent<StateOBJ>().CountDeath.ToString();
+                    //        NumbersOfViolent = NowGameObj?.GetComponent<StateOBJ>().CountInfected.ToString();
+                    //        NumberPeopleDistrict = NowGameObj?.GetComponent<StateOBJ>().CountPeople.ToString();
+                    //    }
+                    //}
                 }
                 else
                 {
                     NameDistrict = "Portstream";
                 }
             }
+
+            if (curDemoViol != null)
+                curDemoViol.ActivateRoads();
+
+            SoundController.PlayClickInGame();
+
             Debug.Log($"Выбран {NameDistrict}");
         }
     }
@@ -262,7 +373,7 @@ public class MainScript : MonoBehaviour
             //считывание вращения колесика
             MouseScrollWheel = Input.GetAxis("Mouse ScrollWheel");
             //приближение и отдаление
-            Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize + MouseScrollWheel * 2, 5, 14);
+            Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize - MouseScrollWheel * 4, 5, 14);
             //при максимальном отдалении уход на стартовую позицию камеры
             if (Camera.main.orthographicSize == 14 && MainMap == true)
             {
@@ -270,13 +381,13 @@ public class MainScript : MonoBehaviour
             }
         }
         //движение камеры
-        if (Input.GetMouseButton(1) && Camera.main.orthographicSize < 14 && MainMap == true)
+        if ((Input.GetMouseButton(1) || Input.GetMouseButton(2)) && Camera.main.orthographicSize < 14 && MainMap == true)
         {
             CameraX = Input.GetAxis("Mouse X") * CameraSens;
             CameraY = Input.GetAxis("Mouse Y") * CameraSens;
             //добавить делегат для новой карты
-            float CameraPosX = Mathf.Clamp(CameraX + transform.position.x, -11f, 11f);
-            float CameraPosY = Mathf.Clamp(CameraY + transform.position.y, -10f, 10f);
+            float CameraPosX = Mathf.Clamp(-CameraX + transform.position.x, -11f, 11f);
+            float CameraPosY = Mathf.Clamp(-CameraY + transform.position.y, -10f, 10f);
             transform.position = new Vector3(CameraPosX, CameraPosY, transform.position.z);
         }
 
@@ -284,16 +395,26 @@ public class MainScript : MonoBehaviour
 
     private void MoneyCalculate()
     {
-        //Переписать
-        DeathStat.Money += 120;
+        foreach (var d in RichDistricts)
+            if (!d.IsRiot)
+                MainData.Money += MainData.MoneyPerRichDistrict;
+            else
+                MainData.Money += MainData.MoneyPerRiotRichDistrict;
     }
 
+    [Header("UI")]
 
     public Slider impRepSlider;
-    public Slider peopleRepSlider;
-
     public Image impRepFillImage;
-    public Image peopleRepFillImage;
+
+    public Slider workersRepSlider;
+    public Image workersRepFillImage;
+
+    public Slider richRepSlider;
+    public Image richRepFillImage;
+
+    public Slider poorRepSlider;
+    public Image poorRepFillImage;
 
     public Text policeMax;
     public Text policeCur;
@@ -302,44 +423,108 @@ public class MainScript : MonoBehaviour
     public Text volontMax;
     public Text volontCur;
 
+    public Text UnburiedPeople;
     /// <summary>
     /// Кнопка нового дня
     /// </summary>
+
+    [SerializeField] private ActionButton[] ActionButtons;
+
     public void NextDay()
     {
-        DeathStat.Day += 1;
+        SoundController.PlayNewDay();
+
+        MainMap = true;
+        MainData.Day += 1;
         TimeGame = 0;
-        DeathStat.Vacina += 3;
-        City.CountDeath = DeathStat.AllDeath;
-        MoneyCalculate();
+        MainData.Vacina += 3;
+        City.CountDeath = MainData.AllDeath;
+
 
         CheckDistrictsToSearch();
 
-        foreach (var d in DemoViol)
+        foreach (var d in AllDistricts)
             d.NextDayStateObj();
+        
+        if(NowGameObj != null)
+        {
+            FirstClick = false;
+            if (NowGameObj != null && NowStateObj != null)
+            {
+                if (NowStateObj.TypeStateDis != TypeState.City && NowStateObj.TypeStateDis != TypeState.LocalDistrict)
+                {
+                    NowGameObj.GetComponent<SpriteRenderer>().sortingOrder = -1;
+                    NowGameObj = null;
+                    NowStateObj = null;
+                }
+            }
+            if (curDemoViol != null)
+                curDemoViol.DeactivateRoads();
+            curDemoViol = null;
+        }
 
-        CameraTransforDefold();
+        CameraTransformDefold();
 
         if (ViolWestRiver)
             ViolWestRiverNow();
+
+        if (InfectTwoHousesInSunland)
+            InfectTwoHousesInSunlandNow();
+
+        if (TimeStartDayPlus4)
+        {
+            TimeGame = 4;
+            TimeStartDayPlus4 = false;
+        }
+
+        if (InfectRandomHouse)
+            InfectRandomHouseNow();
+
+        if (Recovery5Houses)
+            Recovery5HousesNow();
 
         LettersManager.Instance.OnNewDay();
         SenderManager.Instance.CheckConditions();
 
 
-        DeathStat.OnNewDay();
+        if(MainData.RichReputation <= MainData.MinRichReputation)
+        {
+            if(RichUnriotDistricts.Count > 0)
+            {
+                int i = UnityEngine.Random.Range(0, RichUnriotDistricts.Count);
+                RichUnriotDistricts[i].MakeRiot();
+                RichUnriotDistricts.RemoveAt(i);
+            }
+        }
+
+        foreach (var d in AllDistricts)
+            if (d.IsOnSuppressRiot)
+                d.SuppressRiot();
+
+        MoneyCalculate();
+
+        MainData.OnNewDay();
+
+        foreach(var a in ActionButtons)
+            a.OnNewDay();
+
         UpdateUI();
+        TextInfoAll();
 
         isDayDone = false;
-        Debug.Log($"Day: {DeathStat.Day}");
+
+        state = GameState.Pause;
+        Debug.Log($"Day: {MainData.Day}");
     }
 
     public void UpdateUI()
     {
-        Vacina.text = DeathStat.Vacina.ToString();
+        Vacina.text = MainData.Vacina.ToString();
 
-        impRepSlider.value = DeathStat.ImperatorReputation;
-        peopleRepSlider.value = DeathStat.RegionReputation;
+        impRepSlider.value = MainData.ImperatorReputation;
+        workersRepSlider.value = MainData.WorkersReputation;
+        richRepSlider.value = MainData.RichReputation;
+        poorRepSlider.value = MainData.PoorReputation;
 
         if (impRepSlider.value <= 15)
             impRepFillImage.color = Color.red;
@@ -348,30 +533,46 @@ public class MainScript : MonoBehaviour
         else
             impRepFillImage.color = Color.green;
 
-        if (peopleRepSlider.value <= 15)
-            peopleRepFillImage.color = Color.red;
-        else if (peopleRepSlider.value <= 50 && peopleRepSlider.value > 15)
-            peopleRepFillImage.color = Color.yellow;
+        if (workersRepSlider.value <= MainData.MinWorkersReputation)
+            workersRepFillImage.color = Color.red;
+        else if (workersRepSlider.value <= 50 && workersRepSlider.value > MainData.MinWorkersReputation)
+            workersRepFillImage.color = Color.yellow;
         else
-            peopleRepFillImage.color = Color.green;
+            workersRepFillImage.color = Color.green;
 
-        policeMax.text = DeathStat.MaxPolicemen.ToString();
-        policeCur.text = DeathStat.Policemen.ToString();
-        doctorMax.text = DeathStat.MaxDoctors.ToString();
-        doctorCur.text = DeathStat.Doctors.ToString();
-        volontMax.text = DeathStat.MaxVolunteers.ToString();
-        volontCur.text = DeathStat.Volunteers.ToString();
+        if (richRepSlider.value <= MainData.MinRichReputation)
+            richRepFillImage.color = Color.red;
+        else if (richRepSlider.value <= 50 && richRepSlider.value > MainData.MinRichReputation)
+            richRepFillImage.color = Color.yellow;
+        else
+            richRepFillImage.color = Color.green;
+
+        if (poorRepSlider.value <= MainData.MinPoorReputation)
+            poorRepFillImage.color = Color.red;
+        else if (poorRepSlider.value <= 50 && poorRepSlider.value > MainData.MinPoorReputation)
+            poorRepFillImage.color = Color.yellow;
+        else
+            poorRepFillImage.color = Color.green;
+
+        policeMax.text = MainData.MaxPolicemen.ToString();
+        policeCur.text = MainData.Policemen.ToString();
+        doctorMax.text = MainData.MaxDoctors.ToString();
+        doctorCur.text = MainData.Doctors.ToString();
+        volontMax.text = MainData.MaxVolunteers.ToString();
+        volontCur.text = MainData.Volunteers.ToString();
+
+        UnburiedPeople.text = MainData.UnburiedPeople.ToString();
     }
 
     private void TextInfoAll()
     {
         TimeGameText.text = ((int)TimeGame).ToString();
-        DayText.text = "Day: " + DeathStat.Day.ToString();
-        MoneyText.text = DeathStat.Money.ToString();
+        DayText.text = "День: " + MainData.Day.ToString();
+        MoneyText.text = MainData.Money.ToString();
         NameDistrictText.text = NameDistrict;
-        AllPeopleDistrictText.text = "People: " + NumberPeopleDistrict;
-        NumbersOfViolentText.text = "Vialent: " + NumbersOfViolent;
-        NumbersOfDeathText.text = "Death: " + NumbersOfDeath;
+        AllPeopleDistrictText.text = "Всего людей: " + NumberPeopleDistrict;
+        NumbersOfViolentText.text = "Заражённых: " + NumbersOfViolent;
+        NumbersOfDeathText.text = "Умерших: " + NumbersOfDeath;
     }
 
     bool isDayDone = false; //чтобы 300 раз не подписывался на НекстДей
@@ -382,9 +583,22 @@ public class MainScript : MonoBehaviour
         IsGoNextDay = true;
     }
 
+    public void PauseGame()
+    {
+        state = GameState.Pause;
+    }
+
+    public void UnpauseGame()
+    {
+        state = GameState.City;
+    }
+
     void Update()
     {
-        TimeGame += Time.deltaTime / 4;
+        if (state == GameState.Pause)
+            return;
+
+        TimeGame += Time.deltaTime / MainData.DayTimeScale;
         TextInfoAll();
         if ((Input.GetKeyDown(KeyCode.Space) || TimeGame >= 24 || IsGoNextDay) && !isDayDone)
         {
@@ -397,7 +611,7 @@ public class MainScript : MonoBehaviour
         }
         Ray();
         ControlCamera();
-        if (DeathStat.Vacina >= 100)
+        if (MainData.Vacina >= 100)
         {
             Debug.Log("Победа");
         }
@@ -412,11 +626,23 @@ public class MainScript : MonoBehaviour
 
         foreach (var d in districsToSearch)
         {
+            switch(d.type)
+            {
+                case DistrictType.Poor:
+                    MainData.PoorReputation -= MainData.RepPerSearch;
+                    break;
+                case DistrictType.Workers:
+                    MainData.WorkersReputation -= MainData.RepPerSearch;
+                    break;
+                case DistrictType.Rich:
+                    MainData.RichReputation -= MainData.RepPerSearch;
+                    break;
+            }
             var HousesDistrict = d.Houses;
             for (int i = 0; i < HousesDistrict.Length; i++)
             {
                 var HousesDistrictNow = HousesDistrict[i].GetComponent<StateOBJ>();
-                if (HousesDistrictNow.CountHideViol > 0)
+                if (HousesDistrictNow.CountHideInfected > 0)
                 {
                     HousesDistrictNow.ViolLine.SetActive(true);
                     HousesDistrictNow.SearchHouse();
@@ -434,16 +660,141 @@ public class MainScript : MonoBehaviour
     {
         ViolWestRiver = false;
 
-        DemoViol[1].Houses[3].GetComponent<StateOBJ>().CountDeath += 1;
-        DemoViol[1].Houses[3].GetComponent<StateOBJ>().CountViol += 3;
-        DeathStat.AllDeath += 1;
-        DeathStat.AllViol += 3;
-        DeathStat.NewDeadPeople += 1;
-        DeathStat.NewViolPeople += 3;
-        DemoViol[1].Houses[3].GetComponent<StateOBJ>().IsHide = false;
-        DemoViol[1].Houses[3].GetComponent<StateOBJ>().StateViol = true;
-        DemoViol[1].Houses[3].GetComponent<StateOBJ>().IconViol();
+        for (int i = 0; i < AllDistricts[1].Houses.Length; i++)
+        {
+            var house = AllDistricts[1].Houses[i].GetComponent<StateOBJ>();
+            if (!house.IsInfected)
+            {
+                house.CountHideInfected += 3;
+                house.IsInfected = true;
+                house.CountDeath += 1;
+                house.CountInfected += 3;
+                MainData.AllDeath += 1;
+                MainData.AllInfected += 3;
+                MainData.NewDeadPeople += 1;
+                MainData.NewInfectedPeople += 3;
+                house.IsHide = false;
+                house.IsInfected = true;
+                house.UpdateIcons();
+                AllDistricts[1].DistricdState();
+                break;
+            }
+        }
 
-        DemoViol[1].DistricdState();
+    }
+
+    public bool InfectTwoHousesInSunland = false;
+
+    public void InfectTwoHousesInSunlandNow()
+    {
+        InfectTwoHousesInSunland = false;
+
+        int c = 2;
+
+        for(int i = 0; i < AllDistricts[0].Houses.Length; i++)
+        {
+            var house = AllDistricts[0].Houses[i].GetComponent<StateOBJ>();
+            if (!house.IsInfected)
+            {
+                house.CountHideInfected += 3;
+                house.IsInfected = true;
+            }
+            c--;
+            if (c == 0)
+                break;
+        }
+    }
+
+    public bool TimeStartDayPlus4 = false;
+    public bool InfectRandomHouse = false;
+    public bool Recovery5Houses = false;
+
+    public void InfectRandomHouseNow()
+    {
+        InfectRandomHouse = false;
+
+        List<StateOBJ> houses = new List<StateOBJ>();
+
+        foreach(var d in AllDistricts)
+            foreach(var h in d.Houses)
+            {
+                var house = h.GetComponent<StateOBJ>();
+                if (!house.IsInfected)
+                    houses.Add(house);
+            }
+
+        if(houses.Count > 0)
+        {
+            int i = UnityEngine.Random.Range(0, houses.Count);
+            houses[i].CountHideInfected += 3;
+            houses[i].IsInfected = true;
+        }
+    }
+
+    public bool CheckAllRiot()
+    {
+        foreach (var d in AllDistricts)
+            if (!d.IsRiot)
+                return false;
+
+        return true;
+    }
+
+    public bool Check50percentInfectedHouses()
+    {
+        int allCount = 0;
+        int infectedCount = 0;
+
+        foreach(var d in AllDistricts)
+            foreach(var h in d.Houses)
+            {
+                allCount++;
+                if (h.GetComponent<StateOBJ>().IsInfected)
+                    infectedCount++;
+            }
+
+        if (allCount * 0.5 < infectedCount)
+            return true;
+        else
+            return false;
+    }
+    public bool Check60percentInfectedHouses()
+    {
+        int allCount = 0;
+        int infectedCount = 0;
+
+        foreach (var d in AllDistricts)
+            foreach (var h in d.Houses)
+            {
+                allCount++;
+                if (h.GetComponent<StateOBJ>().IsInfected)
+                    infectedCount++;
+            }
+
+        if (allCount * 0.6 < infectedCount)
+            return true;
+        else
+            return false;
+    }
+
+    private void Recovery5HousesNow()
+    {
+        int count = 5;
+        foreach(var h in AllDistricts[0].Houses)
+        {
+            var house = h.GetComponent<StateOBJ>();
+            if(house.IsInfected)
+            {
+                house.CountInfected = 0;
+                house.IsInfected = false;
+                house.IsHide = false;
+                house.UpdateIcons();
+
+                count--;
+            }
+
+            if (count == 0)
+                return;
+        }    
     }
 }

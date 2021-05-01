@@ -3,94 +3,197 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
+public enum DistrictType 
+{
+    Rich,
+    Workers,
+    Poor
+}
+
 public class DemoViol : MonoBehaviour
 {
-
+    public DistrictType type;
     [SerializeField] public GameObject[] Houses;
     //перечень элементов в районе 
     [SerializeField] private MainScript MainScript;
     //отоброженеи и переход в новый день
-    private int CountViolHouses = 0;
-    [SerializeField] public bool ThisViol, ActiveDistrict = false;
-    //[SerializeField] private DemoViol District2;
-    //[SerializeField] private DemoViol District3;
-    private GameObject ViolHouses;
+    private int CountInfectedHouses = 0;
+    public bool InfectOnStart, ActiveDistrict = false;
     private StateOBJ DistricdStateObj1;
     [SerializeField] public StateOBJ DistricdStateObj2;
-    private int TodayViol = 0;
-    private int DistrictCoef = 70;
-    private int HouseCoef = 85;
-    private int DeatdhCoef = 65;
-    private int HealCoef = 25;
-    private int AnotherDistrCoef = 35;
-    public int CorpsCount = 0;
-    private int NumberHouse;
-    private List<StateOBJ> HousesToViol = new List<StateOBJ>();
+    //public int CorpsCount = 0;
+    private List<StateOBJ> HousesToInfect = new List<StateOBJ>();
+    private List<StateOBJ> NeighbourHousesToInfect = new List<StateOBJ>();
+
+    [SerializeField] private LocksRoad[] Roads;
+    [SerializeField] private DemoViol[] NeighbourDistricts;
+
+    public bool IsOnSearch = false;
+    public bool IsRiot = false;
+    public bool IsOnSuppressRiot = false;
+    public bool IsGivenBread = false;
+
+    public Transform RiotButtonPointMap;
+    public Transform RiotButtonPointDistrict;
+
+    public Transform SearchButtonPointMap;
+    public Transform SearchButtonPointDistrict;
+
+    public Transform BreadButtonPointMap;
+    public Transform BreadButtonPointDistrict;
+
+    public Transform LoupeButtonPointMap;
+    public Transform LoupeButtonPointDistrict;
+
+    public GameObject RiotGO;
+
     private void Awake()
     {
         DistricdStateObj1 = GetComponent<StateOBJ>();
-        //заражение одного рандомного дома
-        NumberHouse = Random.Range(0, Houses.Length);
-        ViolHouses = Houses[NumberHouse];
     }
 
     private void Start()
     {
-        if (ThisViol)
+        if (InfectOnStart)
         {
-            for (int i = 0; i < 2; i++)
-            {
-                int I = Random.Range(0, Houses.Length);
-                Houses[I].GetComponent<StateOBJ>().StateViol = true;
-                Houses[I].GetComponent<StateOBJ>().CountHideViol += 3;
-
-                Debug.Log($"House {I} in {DistricdStateObj2} is viol now");
-            }
+            InfectDistrict();
         }
         DistricdState();
+        IsRiot = false;
+        IsOnSuppressRiot = false;
+        IsOnSearch = false;
+        RiotGO.SetActive(false);
     }
+
+    public void ActivateRoads()
+    {
+        foreach(var r in Roads)
+        {
+            r.Activate();
+        }
+    }
+
+    public void DeactivateRoads()
+    {
+        foreach (var r in Roads)
+        {
+            r.Deactivate();
+        }
+    }
+
+    public void InfectDistrict()
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            int I = Random.Range(0, Houses.Length);
+            Houses[I].GetComponent<StateOBJ>().IsInfected = true;
+            Houses[I].GetComponent<StateOBJ>().CountHideInfected += 3;
+
+            Debug.Log($"House {I} in {DistricdStateObj2} is infected now");
+        }
+    }
+
+
+    private bool IsRepPerRoadDone = false;
 
     public void NextDayStateObj()
     {
         //расчет аффекта
         CalculateAffect();
-        Debug.Log($"Houses to viol count = {HousesToViol.Count}");
+        Debug.Log($"Houses to infect count = {HousesToInfect.Count}");
         //передача в новый дом
-        if (HousesToViol.Count>0)
+        for (int i = 0; i < CountInfectedHouses; i++)
         {
-            for (int i = 0; i < CountViolHouses; i++)
+            if (HousesToInfect.Count > 0)
             {
-                if (HousesToViol.Count > 0)
+                //Расчет случайного дома
+                var NowObj = HousesToInfect[Random.Range(0, HousesToInfect.Count)];
+                //расчет шанса заражения
+                var probabilityV_H = Random.Range(0, 100);
+                if (!NowObj.IsLocked && probabilityV_H <= MainData.NewHouseCoef)
                 {
-                    //Расчет случайного дома
-                    var NowObj = HousesToViol[Random.Range(0, HousesToViol.Count)];
-                    //расчет шанса заражения
-                    var probabilityV_H = Random.Range(0, 100);
-                    if (!NowObj.Lock && probabilityV_H <= 70)
-                    {
-                        //заражение нового дома
-                        NowObj.StateViol = true;
-                        //добавление больных
-                        int freePeople = NowObj.CountPeople - NowObj.CountDeath - NowObj.CountViol - NowObj.CountHideViol;
-                        if (freePeople >= 3)
-                            NowObj.CountHideViol += 3;
-                        else
-                            NowObj.CountHideViol += freePeople;
-                        //обнуле спика не зараженных домов
-                        HousesToViol.Remove(NowObj);
-
-                        Debug.Log($"В {DistricdStateObj1} заразился новый дом {NowObj}. CountViol = {NowObj.CountViol}");
-                    }
-                }
-                else
-                {
-                    break;
+                    //заражение нового дома
+                    NowObj.IsInfected = true;
+                    //добавление больных
+                    int freePeople = NowObj.CountPeople - NowObj.CountDeath - NowObj.CountInfected - NowObj.CountHideInfected;
+                    if (freePeople >= 3)
+                        NowObj.CountHideInfected += 3;
+                    else
+                        NowObj.CountHideInfected += freePeople;
+                    //удаление из списка не зараженных домов
+                    HousesToInfect.Remove(NowObj);
                 }
             }
+            else
+            {
+                break;
+            }
         }
-        CountViolHouses = 0;
-        //очистка списка 
-        HousesToViol.Clear();
+        for (int i = 0; i < CountInfectedHouses; i++)
+        {
+            int neighbourNum = Random.Range(0, NeighbourDistricts.Length);
+            var neighbour = NeighbourDistricts[neighbourNum];
+            if (neighbour.Roads[neighbourNum].IsActive)
+            {
+                if (!IsRepPerRoadDone)
+                {
+                    IsRepPerRoadDone = true;
+                    switch (type)
+                    {
+                        case DistrictType.Poor:
+                            MainData.PoorReputation -= MainData.RepPerLockRoad;
+                            break;
+                        case DistrictType.Workers:
+                            MainData.WorkersReputation -= MainData.RepPerLockRoad;
+                            break;
+                        case DistrictType.Rich:
+                            MainData.RichReputation -= MainData.RepPerLockRoad;
+                            break;
+                    }
+                }
+                continue;
+            }
+
+            foreach(var h in neighbour.Houses)
+            {
+                var NowHouses = h.GetComponent<StateOBJ>();
+                if (!NowHouses.IsInfected && !NowHouses.AllDead && !NowHouses.IsLocked)
+                    NeighbourHousesToInfect.Add(NowHouses);
+            }
+
+            if (NeighbourHousesToInfect.Count > 0)
+            {
+                //Расчет случайного дома
+                var NowObj = NeighbourHousesToInfect[Random.Range(0, NeighbourHousesToInfect.Count)];
+                //расчет шанса заражения
+                var probabilityV_H = Random.Range(0, 100);
+                if (!NowObj.IsLocked && probabilityV_H <= MainData.AnotherDistrictCoef)
+                {
+                    //заражение нового дома
+                    NowObj.IsInfected = true;
+                    //добавление больных
+                    int freePeople = NowObj.CountPeople - NowObj.CountDeath - NowObj.CountInfected - NowObj.CountHideInfected;
+                    if (freePeople >= 3)
+                        NowObj.CountHideInfected += 3;
+                    else
+                        NowObj.CountHideInfected += freePeople;
+                    //удаление из спика не зараженных домов 
+                    NeighbourHousesToInfect.Remove(NowObj);
+                }
+            }
+            else
+            {
+                break;
+            }
+        }
+        
+        
+        CountInfectedHouses = 0;
+        //очистка списков
+        HousesToInfect.Clear();
+        NeighbourHousesToInfect.Clear();
+        foreach (var r in Roads)
+            r.IsActive = false;
         //Действия внутри домов
         for (int i = 0; i < Houses.Length; i++)
         {
@@ -104,12 +207,46 @@ public class DemoViol : MonoBehaviour
             //Убиваем
             NowObj.DeathPeople();
             //Заражаем
-            NowObj.ViolPeople();
+            NowObj.InfectPeople();
             //Снимаем блок
-            NowObj.DefendLockValanters();
+            if (NowObj.IsLocked)
+            {
+                switch(type)
+                {
+                    case DistrictType.Poor:
+                        MainData.PoorReputation -= MainData.RepPerLockHouse;
+                        break;
+                    case DistrictType.Workers:
+                        MainData.WorkersReputation -= MainData.RepPerLockHouse;
+                        break;
+                    case DistrictType.Rich:
+                        MainData.RichReputation -= MainData.RepPerLockHouse;
+                        break;
+                }
+                NowObj.DefendLockValanters();
+            }
             //показываем зараженные дома
-            NowObj.IconViol();
+            NowObj.UpdateIcons();
         }
+
+        if(IsGivenBread == true)
+        {
+            IsGivenBread = false;
+            switch (type)
+            {
+                case DistrictType.Poor:
+                    MainData.PoorReputation += MainData.RepPerBread;
+                    break;
+                case DistrictType.Workers:
+                    MainData.WorkersReputation += MainData.RepPerBread;
+                    break;
+                case DistrictType.Rich:
+                    MainData.RichReputation += MainData.RepPerBread;
+                    break;
+
+            }
+        }
+
         DistricdState();
     }
 
@@ -123,67 +260,77 @@ public class DemoViol : MonoBehaviour
         for (int i = 0; i < Houses.Length; i++)
         {
             var NowHouses = Houses[i].GetComponent<StateOBJ>();
-            if (NowHouses.StateViol && !NowHouses.Lock ) //И ДОМ НЕ В КАРАНТИНЕ!!!
+            if (NowHouses.IsInfected && !NowHouses.IsLocked ) //И ДОМ НЕ В КАРАНТИНЕ!!!
             {
-                CountViolHouses += 1;
+                CountInfectedHouses += 1;
                 //КОРОЧЕ ВОТ ТУТ ВОТ ОН СЧИТАЕТ, ЧТО ДОМ НЕ В КАРАНТИНЕ, ХОТЯ ДОЛЖЕН БЫТЬ
             }
-            else if(!NowHouses.AllDead)
+            else if(!NowHouses.IsInfected && !NowHouses.AllDead && !NowHouses.IsLocked)
             {
-                //DeathStat.Money += 3;
-                HousesToViol.Add(NowHouses);
+                HousesToInfect.Add(NowHouses);
             }
         }
-        return CountViolHouses;
+        return CountInfectedHouses;
     }
 
     public void DistricdState()
     {
+        IsRepPerRoadDone = false;
         int CountPeopleDistricd = 0;
         int CountDeathDistricd = 0;
-        int CountViolDistricd = 0;
+        int CountInfectedDistricd = 0;
         for(int i=0; i < Houses.Length; i++)
         {
             CountPeopleDistricd += Houses[i].GetComponent<StateOBJ>().CountPeople;
             CountDeathDistricd += Houses[i].GetComponent<StateOBJ>().CountDeath;
-            CountViolDistricd += Houses[i].GetComponent<StateOBJ>().CountViol;
+            CountInfectedDistricd += Houses[i].GetComponent<StateOBJ>().CountInfected;
         }
         //данные для района внутри
         DistricdStateObj1.CountPeople = CountPeopleDistricd;
         DistricdStateObj1.CountDeath = CountDeathDistricd;
-        DistricdStateObj1.CountViol = CountViolDistricd;
+        DistricdStateObj1.CountInfected = CountInfectedDistricd;
         //данные для глобальной карты
         DistricdStateObj2.CountPeople = CountPeopleDistricd;
         DistricdStateObj2.CountDeath = CountDeathDistricd;
-        DistricdStateObj2.CountViol = CountViolDistricd;
-        DistricdStateObj2.IconViol();
+        DistricdStateObj2.CountInfected = CountInfectedDistricd;
+        DistricdStateObj2.UpdateIcons();
         //расчет степени заражения
-        float powerColor = (float)((CountViolDistricd + CountDeathDistricd) * 2)/(float)CountPeopleDistricd;
+        float powerColor = (float)((CountInfectedDistricd + CountDeathDistricd) * 2)/(float)CountPeopleDistricd;
         //изменение альфы района на шлобальной карте
         DistricdStateObj2.ViolLine.GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, powerColor);
     }
 
 
-
-    public bool IsOnSearch = false;
-
     public void SearchDistrict()
     {
-        if (DeathStat.Volunteers == 0)
+        if (MainData.Volunteers == 0)
             return;
 
         IsOnSearch = true;
-        DeathStat.Volunteers -= 1;
-        MainScript.UpdateUI();
         MainScript.districsToSearch.Add(this);
     }
 
     public void UnsearchDistrict()
     {
         IsOnSearch = false;
-        DeathStat.Volunteers += 1;
-        MainScript.UpdateUI();
         MainScript.districsToSearch.Remove(this);
+    }
+
+    public void SuppressRiot()
+    {
+        IsRiot = false;
+        GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/NormalMap");
+        RiotGO.SetActive(false);
+        IsOnSuppressRiot = false;
+        MainScript.RichUnriotDistricts.Add(this);
+    }
+
+    public void MakeRiot()
+    {
+        IsRiot = true;
+        GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/RiotMap");
+        RiotGO.SetActive(true);
+        IsOnSuppressRiot = false;
     }
 }
 

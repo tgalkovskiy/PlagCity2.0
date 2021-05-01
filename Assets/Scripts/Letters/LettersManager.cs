@@ -8,13 +8,14 @@ public class LettersManager : MonoBehaviour
     public static LettersManager Instance;
 
     public MainScript main;
+    public SoundController SoundController;
 
     //Список всех хранящихся писем
     private List<Letter> Letters;
     //Очередь писем на вывод на экран (Письма, которые активируются сразу, если их несколько пришло)
     private List<Letter> LettersToShow;
 
-    private List<AnswerReaction> Reactions;   
+    private List<AnswerReaction> Reactions;
 
     //Объекты для отображения письма на экране
     [SerializeField] private GameObject LetterView;
@@ -63,14 +64,6 @@ public class LettersManager : MonoBehaviour
     [SerializeField] private int maxY;
     [SerializeField] private int deltaX;
 
-    private enum State
-    {
-        City,
-        Office
-    }
-
-    private State state;
-
 
 
     private void Awake()
@@ -87,9 +80,9 @@ public class LettersManager : MonoBehaviour
         ScrollViewRect = ScrollViewOfLetters.GetComponent<ScrollRect>();
         ScrollViewContent = ScrollViewRect.content;
 
-        state = State.City;
+        main.state = GameState.City;
     }
-    
+
     /// <summary>
     /// Получение нового письма
     /// </summary>
@@ -117,11 +110,22 @@ public class LettersManager : MonoBehaviour
         CloseLetterView();
     }
 
+    public void PutLetter()
+    {
+        SoundController.PlayCloseLetter();
+        CloseLetterView();
+    }
+
+    public void ThrowAwayLetter()
+    {
+        SoundController.PlayThrowawayLetter();
+        IgnorLetter();
+    }
+
     public void IgnorLetter()
     {
-        curLetter.Ignored();
+        curLetter.OnIgnored();
         DeleteLetter();
-
     }
 
     /// <summary>
@@ -129,8 +133,13 @@ public class LettersManager : MonoBehaviour
     /// </summary>
     public void OnChooseAnswer_1()
     {
-        if(curLetter.IsActual)
+        if (curLetter.IsActual)
+        {
+            SoundController.PlayAnswerLetter();
             curLetter.Answer_1.AnswerChosen();
+        }
+        else
+            SoundController.PlayThrowawayLetter();
         DeleteLetter();
     }
 
@@ -140,15 +149,26 @@ public class LettersManager : MonoBehaviour
     public void OnChooseAnswer_2()
     {
         if (curLetter.IsActual)
+        {
+            SoundController.PlayAnswerLetter();
             curLetter.Answer_2.AnswerChosen();
+        }
+        else
+            SoundController.PlayThrowawayLetter();
         DeleteLetter();
     }
 
+    private void OnSelectedLetter(Letter letter)
+    {
+        SoundController.PlayOpenLetter();
+        ShowLetter(letter);
+    }
+
     /// <summary>
-    /// Отображение письма на экране при его выборе
+    /// Отображение письма на экране
     /// </summary>
     /// <param name="letter"></param>
-    public void OnSelectedLetter(Letter letter)
+    public void ShowLetter(Letter letter)
     {
         curLetter = letter;
 
@@ -157,7 +177,7 @@ public class LettersManager : MonoBehaviour
         {
             TutorialImage.gameObject.SetActive(true);
             TutorialImage.sprite = curLetter.TutorialSprite;
-            rect.offsetMin = new Vector2(rect.offsetMin.x, 560f);
+            rect.offsetMin = new Vector2(rect.offsetMin.x, 430f);
         }
         else
         {
@@ -222,6 +242,7 @@ public class LettersManager : MonoBehaviour
 
         ScrollViewOfLetters.SetActive(false);
         LetterView.SetActive(true);
+        
     }
 
     /// <summary>
@@ -241,7 +262,7 @@ public class LettersManager : MonoBehaviour
     public void CloseLetterView()
     {
         LetterView.SetActive(false);
-        if (state == State.Office)
+        if (main.state == GameState.Office)
             ShowScrollView();
         else
             CheckLettersToShow();
@@ -256,7 +277,7 @@ public class LettersManager : MonoBehaviour
         {
             curLetter = LettersToShow[0];
             LettersToShow.RemoveAt(0);
-            OnSelectedLetter(curLetter);
+            ShowLetter(curLetter);
         }
     }
     
@@ -265,14 +286,14 @@ public class LettersManager : MonoBehaviour
     /// </summary>
     public void ShowScrollView()
     {
-        state = State.Office;
+        main.state = GameState.Office;
         UpdateContentView();
         ScrollViewOfLetters.SetActive(true);
     }
     
     public void CloseScrollView()
     {
-        state = State.City;
+        main.state = GameState.City;
         ScrollViewOfLetters.SetActive(false);
     }
 
@@ -322,19 +343,18 @@ public class LettersManager : MonoBehaviour
     {
         ItogiView.SetActive(true);
         ItogiText.text = itogiText;
-        DayText.text = DeathStat.Day.ToString();
-        NewViolText.text = DeathStat.NewViolPeople.ToString();
-        NewDeathsText.text = DeathStat.NewDeadPeople.ToString();
-        AllViolText.text = DeathStat.AllViol.ToString();
-        AllDeathsText.text = DeathStat.AllDeath.ToString();
-        VacinaText.text = DeathStat.Vacina.ToString();
+        DayText.text = MainData.Day.ToString();
+        NewViolText.text = MainData.NewInfectedPeople.ToString();
+        NewDeathsText.text = MainData.NewDeadPeople.ToString();
+        AllViolText.text = MainData.AllInfected.ToString();
+        AllDeathsText.text = MainData.AllDeath.ToString();
+        VacinaText.text = MainData.Vacina.ToString();
 
         itogiText = "";
     }
 
     public void OnNewDay()
     {
-        state = State.City;
         LetterView.SetActive(false);
         ItogiView.SetActive(false);
         ScrollViewOfLetters.SetActive(false);
@@ -344,7 +364,7 @@ public class LettersManager : MonoBehaviour
             {
                 l.LifeTimeInDays--;
                 if (l.LifeTimeInDays <= 0)
-                    l.Ignored();
+                    l.OnIgnored();
             }
 
         CheckReactions();

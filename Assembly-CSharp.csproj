@@ -63,13 +63,20 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Actions\ActionButton.cs" />
+    <Compile Include="Assets\Scripts\Actions\Bread.cs" />
+    <Compile Include="Assets\Scripts\Actions\Graveyard.cs" />
+    <Compile Include="Assets\Scripts\Actions\GraveyardSetVolunteers.cs" />
+    <Compile Include="Assets\Scripts\Actions\LocksRoad.cs" />
+    <Compile Include="Assets\Scripts\Actions\Loupe.cs" />
+    <Compile Include="Assets\Scripts\Actions\RiotDown.cs" />
+    <Compile Include="Assets\Scripts\Actions\SearchDistrict.cs" />
     <Compile Include="Assets\Scripts\ActivElement.cs" />
-    <Compile Include="Assets\Scripts\ChangeButton.cs" />
-    <Compile Include="Assets\Scripts\DeathStat.cs" />
     <Compile Include="Assets\Scripts\DemoViol.cs" />
     <Compile Include="Assets\Scripts\Distrids.cs" />
     <Compile Include="Assets\Scripts\Event.cs" />
     <Compile Include="Assets\Scripts\House.cs" />
+    <Compile Include="Assets\Scripts\HumanResourсeManager.cs" />
     <Compile Include="Assets\Scripts\Letters\Answer.cs" />
     <Compile Include="Assets\Scripts\Letters\AnswerCondition.cs" />
     <Compile Include="Assets\Scripts\Letters\AnswerReaction.cs" />
@@ -77,8 +84,11 @@
     <Compile Include="Assets\Scripts\Letters\LetterSender.cs" />
     <Compile Include="Assets\Scripts\Letters\LettersManager.cs" />
     <Compile Include="Assets\Scripts\Letters\SenderManager.cs" />
+    <Compile Include="Assets\Scripts\Letters\Visitor.cs" />
+    <Compile Include="Assets\Scripts\Letters\VisitorsManager.cs" />
+    <Compile Include="Assets\Scripts\MainData.cs" />
     <Compile Include="Assets\Scripts\MainScript.cs" />
-    <Compile Include="Assets\Scripts\SoundScript.cs" />
+    <Compile Include="Assets\Scripts\SoundController.cs" />
     <Compile Include="Assets\Scripts\StateOBJ.cs" />
     <Reference Include="UnityEngine">
       <HintPath>D:/Unity/2019.4.9f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>

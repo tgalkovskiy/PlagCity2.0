@@ -21,19 +21,19 @@ public class AnswerCondition
         switch(Type)
         {
             case "Money":
-                if (DeathStat.Money >= Count)
+                if (MainData.Money >= Count)
                     return true;
                 break;
             case "Doctor":
-                if (DeathStat.Doctors >= Count)
+                if (MainData.Doctors >= Count)
                     return true;
                 break;
             case "Policeman":
-                if (DeathStat.Policemen >= Count)
+                if (MainData.Policemen >= Count)
                     return true;
                 break;
-            case "Volonteer":
-                if (DeathStat.Volunteers >= Count)
+            case "Volunteer":
+                if (MainData.Volunteers >= Count)
                     return true;
                 break;
             default:
@@ -49,16 +49,16 @@ public class AnswerCondition
         switch (Type)
         {
             case "Money":
-                DeathStat.Money -= Count;
+                MainData.Money -= Count;
                 break;
             case "Doctor":
-                DeathStat.Doctors -= Count;
+                MainData.Doctors -= Count;
                 break;
             case "Policeman":
-                DeathStat.Policemen -= Count;
+                MainData.Policemen -= Count;
                 break;
             case "Volonteer":
-                DeathStat.Volunteers -= Count;
+                MainData.Volunteers -= Count;
                 break;
         }
     }

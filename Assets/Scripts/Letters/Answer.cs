@@ -22,7 +22,12 @@ public class Answer
         if (Reactions != null)
         {
             LettersManager.Instance.AddReactions(Reactions);
-            LettersManager.Instance.itogiText += ReactionText + "\n";
+        }
+
+        if (ReactionText != "" && ReactionText != null)
+        {
+            LettersManager.Instance.itogiText += ReactionText + "\n\n";
+            Debug.Log($"{ReactionText}");
         }
     }
 

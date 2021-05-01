@@ -6,8 +6,6 @@ using UnityEngine.UI;
 
 public class Letter : MonoBehaviour
 {
-    public enum Type { letter, human}
-
     public bool IsActual;
     public int LifeTimeInDays;
 
@@ -30,20 +28,25 @@ public class Letter : MonoBehaviour
 
     public Sprite TutorialSprite;
 
+    public event Action Ignored;
+
     public void SelectLetter()
     {
         LetterSelected?.Invoke(this);
     }
 
-    public void Ignored()
+    public void OnIgnored()
     {
         IsActual = false;
+
+        Ignored?.Invoke();
 
         if (IgnorReactions != null)
         {
             LettersManager.Instance.AddReactions(IgnorReactions);
-            LettersManager.Instance.itogiText += IgnorText + "\n";
         }
+        if(IgnorText != "" && IgnorText != null)
+            LettersManager.Instance.itogiText += IgnorText + "\n\n";
     }
 
     public void OnDelete()

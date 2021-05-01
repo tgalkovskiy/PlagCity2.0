@@ -90,6 +90,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsActual: 1
   LifeTimeInDays: 1
+  SenderName: 
   ActualSprite: {fileID: 21300000, guid: 2231f459d71755941bed6188dd1da022, type: 3}
   UnactualSprite: {fileID: 21300000, guid: bc0a31e059113df479e92aa5938afd9a, type: 3}
   AnswerActualSprite: {fileID: 21300000, guid: 1066f1670362f0e4098c24acc3ab38ec, type: 3}
@@ -97,6 +98,8 @@ MonoBehaviour:
     type: 3}
   ActionSprite: {fileID: 21300000, guid: 050c7131a2339b94894aadc4447af885, type: 3}
   mainText: 
+  IgnorText: 
+  TutorialSprite: {fileID: 0}
 --- !u!114 &3745596262270505089
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -118,7 +121,7 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_HighlightedColor: {r: 0.8018868, g: 0.8018868, b: 0.8018868, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}

@@ -8,6 +8,12 @@ public class AnswerReaction
     private int Count;
 
     public AnswerReaction() { }
+
+    /// <summary>
+    /// Money, ImperatorRep, WorkersRep, RichRep, PoorRep, Vacina, Volunteer
+    /// </summary>
+    /// <param name="type"></param>
+    /// <param name="count"></param>
     public AnswerReaction(string type, int count) 
     {
         Type = type;
@@ -19,20 +25,32 @@ public class AnswerReaction
         switch (Type)
         {
             case "Money":
-                DeathStat.Money += Count;
+                MainData.Money += Count;
                 break;
             case "ImperatorRep":
-                DeathStat.ImperatorReputation += Count;
+                MainData.ImperatorReputation += Count;
                 break;
-            case "RegionRep":
-                DeathStat.RegionReputation += Count;
+            case "WorkersRep":
+                MainData.WorkersReputation += Count;
+                break;
+            case "RichRep":
+                MainData.RichReputation += Count;
+                break;
+            case "PoorRep":
+                MainData.PoorReputation += Count;
                 break;
             case "Vacina":
-                DeathStat.Vacina += Count;
+                MainData.Vacina += Count;
                 break;
-            case "Volonteer":
-                DeathStat.MaxVolunteers += Count;
-                DeathStat.Volunteers += Count;
+            case "InfectIn":
+                MainData.InHouseDopCoef += Count;
+                break;
+            case "InfectOut":
+                MainData.AnotherDistrictDopCoef += Count;
+                break;
+            case "Volunteer":
+                MainData.MaxVolunteers += Count;
+                MainData.Volunteers += Count;
                 MainScript.Instance.UpdateUI();
                 break;
         }

@@ -39,8 +39,8 @@ public class MainData : MonoBehaviour
     public static int InHouseCoef = 85;
     public static int InHouseDefaultCoef = 85;
     public static int InHouseDopCoef = 0;
-    public static int AnotherDistrictCoef = 35;
-    public static int AnotherDistrictDefaultCoef = 35;
+    public static int AnotherDistrictCoef = 25;
+    public static int AnotherDistrictDefaultCoef = 25;
     public static int AnotherDistrictDopCoef = 0;
     public static int DeathCoef = 65;
     public static int RecoveryCoef = 25;

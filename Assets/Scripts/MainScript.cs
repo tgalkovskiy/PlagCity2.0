@@ -130,7 +130,7 @@ public class MainScript : MonoBehaviour
             return;
         }
 
-        if(curDemoViol.IsRiot)
+        if (curDemoViol.IsRiot)
             SoundController.Instance.PlayRiotDistrict();
 
         foreach (var a in ActionButtons)
@@ -196,6 +196,7 @@ public class MainScript : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
+            Debug.Log($"GUIAKTIV: {GUIAKTIV}");
             if (GUIAKTIV == false)
             {
                 //позиция выстрела луча
@@ -289,7 +290,7 @@ public class MainScript : MonoBehaviour
                                     a.OnDistrictChange();
                         }
 
-                        if(!(NowStateObj.TypeStateDis != TypeState.City && NowStateObj.TypeStateDis != TypeState.LocalDistrict) && temp != null)
+                        if (!(NowStateObj.TypeStateDis != TypeState.City && NowStateObj.TypeStateDis != TypeState.LocalDistrict) && temp != null)
                         {
                             NowGameObj = temp;
                             NowStateObj = NowGameObj.GetComponent<StateOBJ>();
@@ -359,7 +360,7 @@ public class MainScript : MonoBehaviour
 
             SoundController.PlayClickInGame();
 
-            Debug.Log($"Выбран {NameDistrict}");
+            //Debug.Log($"Выбран {NameDistrict}");
         }
     }
 
@@ -404,6 +405,8 @@ public class MainScript : MonoBehaviour
 
     [Header("UI")]
 
+    public GameObject menuPanel;
+
     public Slider impRepSlider;
     public Image impRepFillImage;
 
@@ -439,14 +442,14 @@ public class MainScript : MonoBehaviour
         TimeGame = 0;
         MainData.Vacina += 3;
         City.CountDeath = MainData.AllDeath;
-
+        MainData.WorkersReputation -= MainData.WorkersRepPerDay;
 
         CheckDistrictsToSearch();
 
         foreach (var d in AllDistricts)
             d.NextDayStateObj();
-        
-        if(NowGameObj != null)
+
+        if (NowGameObj != null)
         {
             FirstClick = false;
             if (NowGameObj != null && NowStateObj != null)
@@ -487,9 +490,9 @@ public class MainScript : MonoBehaviour
         SenderManager.Instance.CheckConditions();
 
 
-        if(MainData.RichReputation <= MainData.MinRichReputation)
+        if (MainData.RichReputation <= MainData.MinRichReputation)
         {
-            if(RichUnriotDistricts.Count > 0)
+            if (RichUnriotDistricts.Count > 0)
             {
                 int i = UnityEngine.Random.Range(0, RichUnriotDistricts.Count);
                 RichUnriotDistricts[i].MakeRiot();
@@ -505,7 +508,7 @@ public class MainScript : MonoBehaviour
 
         MainData.OnNewDay();
 
-        foreach(var a in ActionButtons)
+        foreach (var a in ActionButtons)
             a.OnNewDay();
 
         UpdateUI();
@@ -581,6 +584,20 @@ public class MainScript : MonoBehaviour
     public void GoNextDay()
     {
         IsGoNextDay = true;
+    }
+
+    public void OpenMenu()
+    {
+        PauseGame();
+        GUIAKTIV = true;
+        menuPanel.SetActive(true);
+    }
+
+    public void CloseMenu()
+    {
+        GUIAKTIV = false;
+        UnpauseGame();
+        menuPanel.SetActive(false);
     }
 
     public void PauseGame()

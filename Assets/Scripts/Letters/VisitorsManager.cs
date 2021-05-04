@@ -162,7 +162,7 @@ public class VisitorsManager : MonoBehaviour
         }
 
         VisitorText.text = curVisitor.Text;
-        VisitorName.text = curVisitor.Name;
+        VisitorName.text = curVisitor.Name + ":";
         VisitorAnswer1Text.text = curVisitor.Answer_1.Text;
         VisitorAnswer2Text.text = curVisitor.Answer_2.Text;
         if(curVisitor.Answer_3 != null)

@@ -51,6 +51,12 @@ public class AnswerReaction
             case "Volunteer":
                 MainData.MaxVolunteers += Count;
                 MainData.Volunteers += Count;
+                if(MainData.MaxVolunteers < 0)
+                {
+                    MainData.MaxVolunteers = 0;
+                    MainData.Volunteers = 0;
+                }
+
                 MainScript.Instance.UpdateUI();
                 break;
         }

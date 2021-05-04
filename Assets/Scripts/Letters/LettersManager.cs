@@ -185,19 +185,6 @@ public class LettersManager : MonoBehaviour
             rect.offsetMin = new Vector2(rect.offsetMin.x, 101f);
         }
 
-        //Настройка картиночек и текста для письма
-        if (curLetter.IsActual) //Если письмо еще актуальное(не просрочилось)
-        {
-            LetterMainImage.sprite = curLetter.ActualSprite;
-            LetterAnswer1Image.sprite = curLetter.AnswerActualSprite;
-            LetterAnswer2Image.sprite = curLetter.AnswerActualSprite;
-        }
-        else
-        {
-            LetterMainImage.sprite = curLetter.UnactualSprite;
-            LetterAnswer1Image.sprite = curLetter.AnswerUnactualSprite;
-            LetterAnswer2Image.sprite = curLetter.AnswerUnactualSprite;
-        }
 
         if(!curLetter.Answer_1.IsConditionsDone)
         {
@@ -219,6 +206,24 @@ public class LettersManager : MonoBehaviour
         {
             LetterAnswer2Image.GetComponent<Button>().interactable = true;
             LetterAnswer2ErrorText.gameObject.SetActive(false);
+        }
+
+        //Настройка картиночек и текста для письма
+        if (curLetter.IsActual) //Если письмо еще актуальное(не просрочилось)
+        {
+            LetterMainImage.sprite = curLetter.ActualSprite;
+            LetterAnswer1Image.sprite = curLetter.AnswerActualSprite;
+            LetterAnswer2Image.sprite = curLetter.AnswerActualSprite;
+            LetterAnswer1Image.GetComponent<Button>().interactable = true;
+            LetterAnswer2Image.GetComponent<Button>().interactable = true;
+        }
+        else
+        {
+            LetterMainImage.sprite = curLetter.UnactualSprite;
+            LetterAnswer1Image.sprite = curLetter.AnswerUnactualSprite;
+            LetterAnswer2Image.sprite = curLetter.AnswerUnactualSprite;
+            LetterAnswer1Image.GetComponent<Button>().interactable = false;
+            LetterAnswer2Image.GetComponent<Button>().interactable = false;
         }
 
         LetterActionPut.sprite = curLetter.ActionSprite;

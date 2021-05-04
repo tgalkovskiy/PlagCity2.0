@@ -57,7 +57,7 @@ public class AnswerCondition
             case "Policeman":
                 MainData.Policemen -= Count;
                 break;
-            case "Volonteer":
+            case "Volunteer":
                 MainData.Volunteers -= Count;
                 break;
         }

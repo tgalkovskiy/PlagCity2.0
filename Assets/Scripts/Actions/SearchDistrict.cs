@@ -56,5 +56,7 @@ public class SearchDistrict : ActionButton
         }
 
         Activate();
+
+        base.OnDistrictChange();
     }
 }

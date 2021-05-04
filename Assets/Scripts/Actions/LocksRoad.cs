@@ -7,11 +7,11 @@ public class LocksRoad : ActionButton
 {
     private void LockRoad()
     {
-        if(MainData.Volunteers > 0)
+        if(MainData.Volunteers >= 2)
         {
             SoundController.Instance.PlayBlockRoad();
             IsActive = true;
-            MainData.Volunteers--;
+            MainData.Volunteers -= 2;
             ActiveGO.SetActive(true);
             UnactiveGO.SetActive(false);
             MainScript.Instance.UpdateUI();
@@ -21,7 +21,7 @@ public class LocksRoad : ActionButton
     private void UnlockRoad()
     {
         IsActive = false;
-        MainData.Volunteers++;
+        MainData.Volunteers += 2;
         ActiveGO.SetActive(false);
         UnactiveGO.SetActive(true);
         MainScript.Instance.UpdateUI();

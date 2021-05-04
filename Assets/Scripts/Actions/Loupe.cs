@@ -43,5 +43,7 @@ public class Loupe : ActionButton
             transform.position = district.LoupeButtonPointMap.position;
 
         Activate();
+
+        base.OnDistrictChange();
     }
 }

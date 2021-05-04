@@ -22,6 +22,7 @@ public class MainData : MonoBehaviour
     [HideInInspector] static public int ImperatorReputation = 50;
     [HideInInspector] static public int WorkersReputation = 60;
     [HideInInspector] static public int MinWorkersReputation = 15;
+    [HideInInspector] public static int WorkersRepPerDay = 5;
     [HideInInspector] static public int RichReputation = 90;
     [HideInInspector] static public int MinRichReputation = 20;
     [HideInInspector] static public int PoorReputation = 40;
@@ -73,6 +74,7 @@ public class MainData : MonoBehaviour
         Volunteers = MaxVolunteers;
         Policemen = MaxPolicemen;
         Doctors = MaxDoctors;
+
 
         DayTimeScale = DayTimeScaleDefault;
 

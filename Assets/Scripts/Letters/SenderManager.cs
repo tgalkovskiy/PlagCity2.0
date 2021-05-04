@@ -34,6 +34,7 @@ public class SenderManager : MonoBehaviour
     private bool OnWorkersRepDone = false;
     private bool OnMoneyLess150Done = false;
     private bool Event10Done = false;
+    private bool Dialog9answer1Done = false;
     private bool Dialog10answer1Done = false;
     private bool Dialog10answer2Done = false;
     private bool Event25answer1Done = false;
@@ -140,7 +141,14 @@ public class SenderManager : MonoBehaviour
             VisitorsManager.Instance.AddVisitorToShow(visitor);
 
             //событие 2
-            tempLetter = Workers.AddLetter(LettersActivate[2], LettersDuration[2], LettersNames[2], LettersTexts[2], Resources.Load<Sprite>("Sprites/Tutorial_Letters"));
+            tempLetter = Workers.AddLetter(LettersActivate[2], LettersDuration[2], LettersNames[2], LettersTexts[2],
+                new Answer(LettersAnswer1Texts[2]),
+                new Answer(LettersAnswer2Texts[2]), Resources.Load<Sprite>("Sprites/Tutorial_Letters"));
+            tempLetter.Answer_1.ReactionText = LettersAnswer1BookTexts[2];
+            tempLetter.Answer_1.Conditions = new AnswerCondition[] { new AnswerCondition("Money", 300) };
+            tempLetter.Answer_1.Reactions = new AnswerReaction[] { new AnswerReaction("Volunteer", 2) };
+            tempLetter.Answer_2.ReactionText = LettersAnswer2BookTexts[2];
+            tempLetter.IgnorText = LettersIgnorTexts[2];
             //событие 3
             tempLetter = Workers.AddLetter(LettersActivate[3], LettersDuration[3], LettersNames[3], LettersTexts[3], Resources.Load<Sprite>("Sprites/Tutorial_LockHouse"));
             //событие 4
@@ -424,7 +432,7 @@ public class SenderManager : MonoBehaviour
             visitor.Answer_2.ReactionText = DialogsAnswer2BookTexts[6];
             visitor.Answer_3 = new Answer(DialogsAnswer3Texts[6]);
             visitor.Answer_3.Reactions = new AnswerReaction[] { new AnswerReaction("ImperatorRep", -10) };
-            visitor.Answer_3.Conditions = new AnswerCondition[] { new AnswerCondition("Volunteer", -2) };
+            visitor.Answer_3.Conditions = new AnswerCondition[] { new AnswerCondition("Volunteer", 2) };
             visitor.Answer_3.ReactionText = DialogsAnswer3BookTexts[6];
             VisitorsManager.Instance.AddVisitorToShow(visitor);
 
@@ -471,6 +479,7 @@ public class SenderManager : MonoBehaviour
             visitor.Name = DialogsNames[9];
             visitor.IgnorReactions = null;
             visitor.Answer_1 = new Answer(DialogsAnswer1Texts[9]);
+            visitor.Answer_1.Chosen += Dialog9answer1;
             visitor.Answer_1.Conditions = new AnswerCondition[] { new AnswerCondition("Money", 60) };
             visitor.Answer_1.ReactionText = DialogsAnswer1BookTexts[9];
             visitor.Answer_2 = new Answer(DialogsAnswer2Texts[9]);
@@ -574,23 +583,26 @@ public class SenderManager : MonoBehaviour
 
         if (MainData.Day == 11 && !OnDay11Done)
         {
-            //диалог 10
-            visitor = Instantiate(VisitorPref, VisitorsManager.Instance.transform).GetComponent<Visitor>();
-            visitor.VisitorSprite = Resources.Load<Sprite>("Sprites/Drinker");
-            visitor.Text = DialogsTexts[10];
-            visitor.IgnorText = DialogsIgnorTexts[10];
-            visitor.Name = DialogsNames[10];
-            visitor.IgnorReactions = null;
-            visitor.Answer_1 = new Answer(DialogsAnswer1Texts[10]);
-            visitor.Answer_1.Conditions = new AnswerCondition[] { new AnswerCondition("Money", 300) };
-            visitor.Answer_1.ReactionText = DialogsAnswer1BookTexts[10];
-            visitor.Answer_1.Chosen += Dialog10answer1;
-            visitor.Answer_2 = new Answer(DialogsAnswer2Texts[10]);
-            visitor.Answer_2.ReactionText = DialogsAnswer2BookTexts[10];
-            visitor.Answer_2.Chosen += Dialog10answer2;
-            visitor.Answer_3 = new Answer(DialogsAnswer3Texts[10]);
-            visitor.Answer_3.ReactionText = DialogsAnswer3BookTexts[10];
-            VisitorsManager.Instance.AddVisitorToShow(visitor);
+            if (Dialog9answer1Done == true)
+            {
+                //диалог 10
+                visitor = Instantiate(VisitorPref, VisitorsManager.Instance.transform).GetComponent<Visitor>();
+                visitor.VisitorSprite = Resources.Load<Sprite>("Sprites/Drinker");
+                visitor.Text = DialogsTexts[10];
+                visitor.IgnorText = DialogsIgnorTexts[10];
+                visitor.Name = DialogsNames[10];
+                visitor.IgnorReactions = null;
+                visitor.Answer_1 = new Answer(DialogsAnswer1Texts[10]);
+                visitor.Answer_1.Conditions = new AnswerCondition[] { new AnswerCondition("Money", 300) };
+                visitor.Answer_1.ReactionText = DialogsAnswer1BookTexts[10];
+                visitor.Answer_1.Chosen += Dialog10answer1;
+                visitor.Answer_2 = new Answer(DialogsAnswer2Texts[10]);
+                visitor.Answer_2.ReactionText = DialogsAnswer2BookTexts[10];
+                visitor.Answer_2.Chosen += Dialog10answer2;
+                visitor.Answer_3 = new Answer(DialogsAnswer3Texts[10]);
+                visitor.Answer_3.ReactionText = DialogsAnswer3BookTexts[10];
+                VisitorsManager.Instance.AddVisitorToShow(visitor);
+            }
 
             //событие 20
             tempLetter = Workers.AddLetter(LettersActivate[20], LettersDuration[20], LettersNames[20], LettersTexts[20],
@@ -938,5 +950,10 @@ public class SenderManager : MonoBehaviour
     private void Dialog10answer2()
     {
         Dialog10answer2Done = true;
+    }
+
+    private void Dialog9answer1()
+    {
+        Dialog9answer1Done = true;
     }
 }

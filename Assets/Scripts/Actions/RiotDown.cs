@@ -65,5 +65,8 @@ public class RiotDown : ActionButton
             IsActive = false;
             Activate();
         }
+
+
+        base.OnDistrictChange();
     }
 }

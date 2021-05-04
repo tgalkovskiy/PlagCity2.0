@@ -47,6 +47,8 @@ public class DemoViol : MonoBehaviour
 
     public GameObject RiotGO;
 
+    public bool InfectAll;
+
     private void Awake()
     {
         DistricdStateObj1 = GetComponent<StateOBJ>();
@@ -58,11 +60,22 @@ public class DemoViol : MonoBehaviour
         {
             InfectDistrict();
         }
+
+        if(InfectAll)
+        {
+            foreach(var h in Houses)
+            {
+                var house = h.GetComponent<StateOBJ>();
+                house.CountInfected = house.CountPeople;
+            }
+        }
+
         DistricdState();
         IsRiot = false;
         IsOnSuppressRiot = false;
         IsOnSearch = false;
-        RiotGO.SetActive(false);
+        if(RiotGO != null)
+            RiotGO.SetActive(false);
     }
 
     public void ActivateRoads()
@@ -88,8 +101,6 @@ public class DemoViol : MonoBehaviour
             int I = Random.Range(0, Houses.Length);
             Houses[I].GetComponent<StateOBJ>().IsInfected = true;
             Houses[I].GetComponent<StateOBJ>().CountHideInfected += 3;
-
-            Debug.Log($"House {I} in {DistricdStateObj2} is infected now");
         }
     }
 
@@ -98,135 +109,138 @@ public class DemoViol : MonoBehaviour
 
     public void NextDayStateObj()
     {
-        //расчет аффекта
-        CalculateAffect();
-        Debug.Log($"Houses to infect count = {HousesToInfect.Count}");
-        //передача в новый дом
-        for (int i = 0; i < CountInfectedHouses; i++)
+        if (type == DistrictType.Rich)
         {
-            if (HousesToInfect.Count > 0)
+
+            //расчет аффекта
+            CalculateAffect();
+            //передача в новый дом
+            for (int i = 0; i < CountInfectedHouses; i++)
             {
-                //Расчет случайного дома
-                var NowObj = HousesToInfect[Random.Range(0, HousesToInfect.Count)];
-                //расчет шанса заражения
-                var probabilityV_H = Random.Range(0, 100);
-                if (!NowObj.IsLocked && probabilityV_H <= MainData.NewHouseCoef)
+                if (HousesToInfect.Count > 0)
                 {
-                    //заражение нового дома
-                    NowObj.IsInfected = true;
-                    //добавление больных
-                    int freePeople = NowObj.CountPeople - NowObj.CountDeath - NowObj.CountInfected - NowObj.CountHideInfected;
-                    if (freePeople >= 3)
-                        NowObj.CountHideInfected += 3;
-                    else
-                        NowObj.CountHideInfected += freePeople;
-                    //удаление из списка не зараженных домов
-                    HousesToInfect.Remove(NowObj);
+                    //Расчет случайного дома
+                    var NowObj = HousesToInfect[Random.Range(0, HousesToInfect.Count)];
+                    //расчет шанса заражения
+                    var probabilityV_H = Random.Range(0, 100);
+                    if (!NowObj.IsLocked && probabilityV_H <= MainData.NewHouseCoef)
+                    {
+                        //заражение нового дома
+                        NowObj.IsInfected = true;
+                        //добавление больных
+                        int freePeople = NowObj.CountPeople - NowObj.CountDeath - NowObj.CountInfected - NowObj.CountHideInfected;
+                        if (freePeople >= 3)
+                            NowObj.CountHideInfected += Random.Range(1, 4);
+                        else
+                            NowObj.CountHideInfected += freePeople;
+                        //удаление из списка не зараженных домов
+                        HousesToInfect.Remove(NowObj);
+                    }
+                }
+                else
+                {
+                    break;
                 }
             }
-            else
+            for (int i = 0; i < CountInfectedHouses; i++)
             {
-                break;
-            }
-        }
-        for (int i = 0; i < CountInfectedHouses; i++)
-        {
-            int neighbourNum = Random.Range(0, NeighbourDistricts.Length);
-            var neighbour = NeighbourDistricts[neighbourNum];
-            if (neighbour.Roads[neighbourNum].IsActive)
-            {
-                if (!IsRepPerRoadDone)
+                int neighbourNum = Random.Range(0, NeighbourDistricts.Length);
+                var neighbour = NeighbourDistricts[neighbourNum];
+                if (neighbour.Roads[neighbourNum].IsActive)
                 {
-                    IsRepPerRoadDone = true;
+                    if (!IsRepPerRoadDone)
+                    {
+                        IsRepPerRoadDone = true;
+                        switch (type)
+                        {
+                            case DistrictType.Poor:
+                                MainData.PoorReputation -= MainData.RepPerLockRoad;
+                                break;
+                            case DistrictType.Workers:
+                                MainData.WorkersReputation -= MainData.RepPerLockRoad;
+                                break;
+                            case DistrictType.Rich:
+                                MainData.RichReputation -= MainData.RepPerLockRoad;
+                                break;
+                        }
+                    }
+                    continue;
+                }
+
+                foreach (var h in neighbour.Houses)
+                {
+                    var NowHouses = h.GetComponent<StateOBJ>();
+                    if (!NowHouses.IsInfected && !NowHouses.AllDead && !NowHouses.IsLocked)
+                        NeighbourHousesToInfect.Add(NowHouses);
+                }
+
+                if (NeighbourHousesToInfect.Count > 0)
+                {
+                    //Расчет случайного дома
+                    var NowObj = NeighbourHousesToInfect[Random.Range(0, NeighbourHousesToInfect.Count)];
+                    //расчет шанса заражения
+                    var probabilityV_H = Random.Range(0, 100);
+                    if (!NowObj.IsLocked && probabilityV_H <= MainData.AnotherDistrictCoef)
+                    {
+                        //заражение нового дома
+                        NowObj.IsInfected = true;
+                        //добавление больных
+                        int freePeople = NowObj.CountPeople - NowObj.CountDeath - NowObj.CountInfected - NowObj.CountHideInfected;
+                        if (freePeople >= 3)    
+                            NowObj.CountHideInfected += Random.Range(1,4);
+                        else
+                            NowObj.CountHideInfected += freePeople;
+                        //удаление из спика не зараженных домов 
+                        NeighbourHousesToInfect.Remove(NowObj);
+                    }
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+
+            CountInfectedHouses = 0;
+            //очистка списков
+            HousesToInfect.Clear();
+            NeighbourHousesToInfect.Clear();
+            foreach (var r in Roads)
+                r.IsActive = false;
+            //Действия внутри домов
+            for (int i = 0; i < Houses.Length; i++)
+            {
+                var NowObj = Houses[i]?.GetComponent<StateOBJ>();
+                //Если дом вымерший, не надо ничего делать
+                if (NowObj.AllDead)
+                    continue;
+
+                //Лечим
+                NowObj.Recovery();
+                //Убиваем
+                NowObj.DeathPeople();
+                //Заражаем
+                NowObj.InfectPeople();
+                //Снимаем блок
+                if (NowObj.IsLocked)
+                {
                     switch (type)
                     {
                         case DistrictType.Poor:
-                            MainData.PoorReputation -= MainData.RepPerLockRoad;
+                            MainData.PoorReputation -= MainData.RepPerLockHouse;
                             break;
                         case DistrictType.Workers:
-                            MainData.WorkersReputation -= MainData.RepPerLockRoad;
+                            MainData.WorkersReputation -= MainData.RepPerLockHouse;
                             break;
                         case DistrictType.Rich:
-                            MainData.RichReputation -= MainData.RepPerLockRoad;
+                            MainData.RichReputation -= MainData.RepPerLockHouse;
                             break;
                     }
+                    NowObj.DefendLockValanters();
                 }
-                continue;
+                //показываем зараженные дома
+                NowObj.UpdateIcons();
             }
-
-            foreach(var h in neighbour.Houses)
-            {
-                var NowHouses = h.GetComponent<StateOBJ>();
-                if (!NowHouses.IsInfected && !NowHouses.AllDead && !NowHouses.IsLocked)
-                    NeighbourHousesToInfect.Add(NowHouses);
-            }
-
-            if (NeighbourHousesToInfect.Count > 0)
-            {
-                //Расчет случайного дома
-                var NowObj = NeighbourHousesToInfect[Random.Range(0, NeighbourHousesToInfect.Count)];
-                //расчет шанса заражения
-                var probabilityV_H = Random.Range(0, 100);
-                if (!NowObj.IsLocked && probabilityV_H <= MainData.AnotherDistrictCoef)
-                {
-                    //заражение нового дома
-                    NowObj.IsInfected = true;
-                    //добавление больных
-                    int freePeople = NowObj.CountPeople - NowObj.CountDeath - NowObj.CountInfected - NowObj.CountHideInfected;
-                    if (freePeople >= 3)
-                        NowObj.CountHideInfected += 3;
-                    else
-                        NowObj.CountHideInfected += freePeople;
-                    //удаление из спика не зараженных домов 
-                    NeighbourHousesToInfect.Remove(NowObj);
-                }
-            }
-            else
-            {
-                break;
-            }
-        }
-        
-        
-        CountInfectedHouses = 0;
-        //очистка списков
-        HousesToInfect.Clear();
-        NeighbourHousesToInfect.Clear();
-        foreach (var r in Roads)
-            r.IsActive = false;
-        //Действия внутри домов
-        for (int i = 0; i < Houses.Length; i++)
-        {
-            var NowObj = Houses[i]?.GetComponent<StateOBJ>();
-            //Если дом вымерший, не надо ничего делать
-            if (NowObj.AllDead)
-                continue;
-
-            //Лечим
-            NowObj.Recovery();
-            //Убиваем
-            NowObj.DeathPeople();
-            //Заражаем
-            NowObj.InfectPeople();
-            //Снимаем блок
-            if (NowObj.IsLocked)
-            {
-                switch(type)
-                {
-                    case DistrictType.Poor:
-                        MainData.PoorReputation -= MainData.RepPerLockHouse;
-                        break;
-                    case DistrictType.Workers:
-                        MainData.WorkersReputation -= MainData.RepPerLockHouse;
-                        break;
-                    case DistrictType.Rich:
-                        MainData.RichReputation -= MainData.RepPerLockHouse;
-                        break;
-                }
-                NowObj.DefendLockValanters();
-            }
-            //показываем зараженные дома
-            NowObj.UpdateIcons();
         }
 
         if(IsGivenBread == true)

@@ -52,5 +52,7 @@ public class ActionButton : MonoBehaviour
 
     public virtual void OnDistrictChange()
     {
+        if (MainScript.Instance.curDemoViol.type != DistrictType.Rich)
+            Deactivate();
     }
 }

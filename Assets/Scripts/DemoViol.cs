@@ -96,7 +96,7 @@ public class DemoViol : MonoBehaviour
 
     public void InfectDistrict()
     {
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < 3; i++)
         {
             int I = Random.Range(0, Houses.Length);
             Houses[I].GetComponent<StateOBJ>().IsInfected = true;
@@ -130,7 +130,7 @@ public class DemoViol : MonoBehaviour
                         //добавление больных
                         int freePeople = NowObj.CountPeople - NowObj.CountDeath - NowObj.CountInfected - NowObj.CountHideInfected;
                         if (freePeople >= 3)
-                            NowObj.CountHideInfected += Random.Range(1, 4);
+                            NowObj.CountHideInfected += Random.Range(2, 4);
                         else
                             NowObj.CountHideInfected += freePeople;
                         //удаление из списка не зараженных домов
@@ -187,7 +187,7 @@ public class DemoViol : MonoBehaviour
                         //добавление больных
                         int freePeople = NowObj.CountPeople - NowObj.CountDeath - NowObj.CountInfected - NowObj.CountHideInfected;
                         if (freePeople >= 3)    
-                            NowObj.CountHideInfected += Random.Range(1,4);
+                            NowObj.CountHideInfected += Random.Range(2,4);
                         else
                             NowObj.CountHideInfected += freePeople;
                         //удаление из спика не зараженных домов 
@@ -282,6 +282,10 @@ public class DemoViol : MonoBehaviour
             else if(!NowHouses.IsInfected && !NowHouses.AllDead && !NowHouses.IsLocked)
             {
                 HousesToInfect.Add(NowHouses);
+            }
+            if(IsRiot == true)
+            {
+                CountInfectedHouses += 2;
             }
         }
         return CountInfectedHouses;

@@ -185,15 +185,16 @@ public class LettersManager : MonoBehaviour
             rect.offsetMin = new Vector2(rect.offsetMin.x, 101f);
         }
 
+        LetterAnswer1Image.GetComponent<Button>().interactable = true;
+        LetterAnswer2Image.GetComponent<Button>().interactable = true;
 
-        if(!curLetter.Answer_1.IsConditionsDone)
+        if (!curLetter.Answer_1.IsConditionsDone)
         {
             LetterAnswer1Image.GetComponent<Button>().interactable = false;
             LetterAnswer1ErrorText.gameObject.SetActive(true);
         }
         else
         {
-            LetterAnswer1Image.GetComponent<Button>().interactable = true;
             LetterAnswer1ErrorText.gameObject.SetActive(false);
         }
 
@@ -204,7 +205,6 @@ public class LettersManager : MonoBehaviour
         }
         else
         {
-            LetterAnswer2Image.GetComponent<Button>().interactable = true;
             LetterAnswer2ErrorText.gameObject.SetActive(false);
         }
 
@@ -214,8 +214,6 @@ public class LettersManager : MonoBehaviour
             LetterMainImage.sprite = curLetter.ActualSprite;
             LetterAnswer1Image.sprite = curLetter.AnswerActualSprite;
             LetterAnswer2Image.sprite = curLetter.AnswerActualSprite;
-            LetterAnswer1Image.GetComponent<Button>().interactable = true;
-            LetterAnswer2Image.GetComponent<Button>().interactable = true;
         }
         else
         {

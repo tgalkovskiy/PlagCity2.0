@@ -84,7 +84,7 @@ public class SoundController : MonoBehaviour
     {
         string json = JsonUtility.ToJson(soundSettings);
 
-        Debug.Log($"Saves settings : {json}");
+        Debug.Log($"Saved settings : {json}");
 
         File.WriteAllText("Settings.json", json);
     }

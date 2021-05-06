@@ -78,6 +78,8 @@ public class SenderManager : MonoBehaviour
             Instance = this;
         else
             Destroy(gameObject);
+
+        Debug.Log("AWAKE");
     }
 
     //Проверка условий на создание письма
@@ -113,6 +115,8 @@ public class SenderManager : MonoBehaviour
         {
             //событие 0
             tempLetter = Workers.AddLetter(LettersActivate[0], LettersDuration[0], LettersNames[0], LettersTexts[0]);
+            //событие 43
+            tempLetter = Workers.AddLetter(LettersActivate[43], LettersDuration[43], LettersNames[43], LettersTexts[43]);
             //событие 1
             tempLetter = Workers.AddLetter(LettersActivate[1], LettersDuration[1], LettersNames[1], LettersTexts[1], Resources.Load<Sprite>("Sprites/Tutorial_Search"));
            
@@ -163,6 +167,9 @@ public class SenderManager : MonoBehaviour
             tempLetter.Answer_2.Reactions = new AnswerReaction[] { new AnswerReaction("RichRep", -5) };
             tempLetter.IgnorReactions = new AnswerReaction[] { new AnswerReaction("RichRep", -7) };
 
+            //событие 44
+            tempLetter = Workers.AddLetter(LettersActivate[44], LettersDuration[44], LettersNames[44], LettersTexts[44]);
+
             OnDay2Done = true;
         }
 
@@ -197,7 +204,8 @@ public class SenderManager : MonoBehaviour
             tempLetter.Answer_2.ReactionText = LettersAnswer2BookTexts[8];
             tempLetter.IgnorText = LettersIgnorTexts[8];
 
-
+            //событие 45
+            tempLetter = Workers.AddLetter(LettersActivate[45], LettersDuration[45], LettersNames[45], LettersTexts[45]);
 
             OnDay3Done = true;
         }
@@ -240,6 +248,8 @@ public class SenderManager : MonoBehaviour
             tempLetter.IgnorText = LettersIgnorTexts[10];
             tempLetter.IgnorReactions = new AnswerReaction[] { new AnswerReaction("RichRep", -5) };
 
+            //событие 46
+            tempLetter = Workers.AddLetter(LettersActivate[46], LettersDuration[46], LettersNames[46], LettersTexts[46]);
 
             OnDay4Done = true;
         }
@@ -352,6 +362,9 @@ public class SenderManager : MonoBehaviour
             tempLetter.IgnorText = LettersIgnorTexts[16];
             tempLetter.IgnorReactions = new AnswerReaction[] { new AnswerReaction("RichRep", 5) };
 
+            //событие 47
+            tempLetter = Workers.AddLetter(LettersActivate[47], LettersDuration[47], LettersNames[47], LettersTexts[47]);
+
             OnDay5Done = true;
         }
 
@@ -409,7 +422,8 @@ public class SenderManager : MonoBehaviour
                                                                    new AnswerReaction("InfectOut", 5) };
             tempLetter.IgnorReactions = new AnswerReaction[] { new AnswerReaction("InfectIn", 7),
                                                                    new AnswerReaction("InfectOut", 5) };
-
+            //событие 48
+            tempLetter = Workers.AddLetter(LettersActivate[48], LettersDuration[48], LettersNames[48], LettersTexts[48]);
 
             OnDay6Done = true;
         }
@@ -448,6 +462,9 @@ public class SenderManager : MonoBehaviour
             tempLetter.Answer_2.Reactions = new AnswerReaction[] { new AnswerReaction("Volunteer", 4) };
             tempLetter.Answer_2.Conditions = new AnswerCondition[] { new AnswerCondition("Money", 400) };
             tempLetter.IgnorText = LettersIgnorTexts[19];
+
+            //событие 49
+            tempLetter = Workers.AddLetter(LettersActivate[49], LettersDuration[49], LettersNames[49], LettersTexts[49]);
 
             OnDay7Done = true;
         }
@@ -488,6 +505,9 @@ public class SenderManager : MonoBehaviour
             visitor.Answer_3.ReactionText = DialogsAnswer3BookTexts[9];
             VisitorsManager.Instance.AddVisitorToShow(visitor);
 
+            //событие 50
+            tempLetter = Workers.AddLetter(LettersActivate[50], LettersDuration[50], LettersNames[50], LettersTexts[50]);
+
             OnDay8Done = true;
         }
 
@@ -510,6 +530,9 @@ public class SenderManager : MonoBehaviour
             visitor.Answer_2.Chosen += InfectRandomHouse;
             visitor.Answer_2.ReactionText = DialogsAnswer2BookTexts[7];
             VisitorsManager.Instance.AddVisitorToShow(visitor);
+
+            //событие 51
+            tempLetter = Workers.AddLetter(LettersActivate[51], LettersDuration[51], LettersNames[51], LettersTexts[51]);
 
             OnDay9Done = true;
         }
@@ -577,6 +600,8 @@ public class SenderManager : MonoBehaviour
             tempLetter.IgnorReactions = new AnswerReaction[] { new AnswerReaction("InfectIn", 5),
                                                                    new AnswerReaction("InfectOut", 3) };
 
+            //событие 52
+            tempLetter = Workers.AddLetter(LettersActivate[52], LettersDuration[52], LettersNames[52], LettersTexts[52]);
 
             OnDay10Done = true;
         }
@@ -642,6 +667,8 @@ public class SenderManager : MonoBehaviour
                 tempLetter.IgnorText = LettersIgnorTexts[25];
             }
 
+            //событие 53
+            tempLetter = Workers.AddLetter(LettersActivate[53], LettersDuration[53], LettersNames[53], LettersTexts[53]);
 
             OnDay11Done = true;
         }
@@ -673,6 +700,8 @@ public class SenderManager : MonoBehaviour
                 tempLetter.Answer_2.ReactionText = LettersAnswer2BookTexts[26];
                 tempLetter.IgnorText = LettersIgnorTexts[26];
             }
+            //событие 54
+            tempLetter = Workers.AddLetter(LettersActivate[54], LettersDuration[54], LettersNames[54], LettersTexts[54]);
 
             OnDay12Done = true;
         }
@@ -760,7 +789,7 @@ public class SenderManager : MonoBehaviour
 
         if (!IsAllRiotDone)
         {
-            if (MainScript.CheckAllRiot())
+            if (MainScript.CheckAllRichRiot())
             {
                 IsAllRiotDone = true;
 
@@ -877,7 +906,7 @@ public class SenderManager : MonoBehaviour
         //событие 42
         if (!Is60PercentDone)
         {
-            if (MainScript.Check60percentInfectedHouses())
+            if (MainScript.Check70percentInfectedHouses())
             {
                 Is60PercentDone = true;
 

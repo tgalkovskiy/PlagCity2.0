@@ -2,9 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
-using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public enum GameState
 {
@@ -58,11 +58,11 @@ public class MainScript : MonoBehaviour
         MainCamera = GetComponent<Camera>();
         //City = GetComponent<StateOBJ>();
         TimeGame = 0;
-        MainData.Money = 250;
+        MainData.Money = 50;
         Vacina.text = "50";
         //AllDeathPeople = 0;
         //AllViolPeople = 0;
-        Infected = 1;
+        Infected = 3;
         Buried = 0;
         //AllPeople = 2100;
         //NumberDistrict = 0;
@@ -732,7 +732,7 @@ public class MainScript : MonoBehaviour
 
         List<StateOBJ> houses = new List<StateOBJ>();
 
-        foreach(var d in AllDistricts)
+        foreach(var d in RichDistricts)
             foreach(var h in d.Houses)
             {
                 var house = h.GetComponent<StateOBJ>();
@@ -748,9 +748,9 @@ public class MainScript : MonoBehaviour
         }
     }
 
-    public bool CheckAllRiot()
+    public bool CheckAllRichRiot()
     {
-        foreach (var d in AllDistricts)
+        foreach (var d in RichDistricts)
             if (!d.IsRiot)
                 return false;
 
@@ -762,7 +762,7 @@ public class MainScript : MonoBehaviour
         int allCount = 0;
         int infectedCount = 0;
 
-        foreach(var d in AllDistricts)
+        foreach(var d in RichDistricts)
             foreach(var h in d.Houses)
             {
                 allCount++;
@@ -775,12 +775,12 @@ public class MainScript : MonoBehaviour
         else
             return false;
     }
-    public bool Check60percentInfectedHouses()
+    public bool Check70percentInfectedHouses()
     {
         int allCount = 0;
         int infectedCount = 0;
 
-        foreach (var d in AllDistricts)
+        foreach (var d in RichDistricts)
             foreach (var h in d.Houses)
             {
                 allCount++;
@@ -788,7 +788,7 @@ public class MainScript : MonoBehaviour
                     infectedCount++;
             }
 
-        if (allCount * 0.6 < infectedCount)
+        if (allCount * 0.7 < infectedCount)
             return true;
         else
             return false;
@@ -813,5 +813,11 @@ public class MainScript : MonoBehaviour
             if (count == 0)
                 return;
         }    
+    }
+
+    public void ReloadScene()
+    {
+        MainData.Reload();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }

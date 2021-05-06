@@ -655,7 +655,7 @@ public class MainScript : MonoBehaviour
 
         foreach (var d in districsToSearch)
         {
-            switch(d.type)
+            switch (d.type)
             {
                 case DistrictType.Poor:
                     MainData.PoorReputation -= MainData.RepPerSearch;
@@ -720,7 +720,7 @@ public class MainScript : MonoBehaviour
 
         int c = 2;
 
-        for(int i = 0; i < AllDistricts[0].Houses.Length; i++)
+        for (int i = 0; i < AllDistricts[0].Houses.Length; i++)
         {
             var house = AllDistricts[0].Houses[i].GetComponent<StateOBJ>();
             if (!house.IsInfected)
@@ -744,15 +744,15 @@ public class MainScript : MonoBehaviour
 
         List<StateOBJ> houses = new List<StateOBJ>();
 
-        foreach(var d in RichDistricts)
-            foreach(var h in d.Houses)
+        foreach (var d in RichDistricts)
+            foreach (var h in d.Houses)
             {
                 var house = h.GetComponent<StateOBJ>();
                 if (!house.IsInfected)
                     houses.Add(house);
             }
 
-        if(houses.Count > 0)
+        if (houses.Count > 0)
         {
             int i = UnityEngine.Random.Range(0, houses.Count);
             houses[i].CountHideInfected += 3;
@@ -774,8 +774,8 @@ public class MainScript : MonoBehaviour
         int allCount = 0;
         int infectedCount = 0;
 
-        foreach(var d in RichDistricts)
-            foreach(var h in d.Houses)
+        foreach (var d in RichDistricts)
+            foreach (var h in d.Houses)
             {
                 allCount++;
                 if (h.GetComponent<StateOBJ>().IsInfected)
@@ -809,10 +809,10 @@ public class MainScript : MonoBehaviour
     private void Recovery5HousesNow()
     {
         int count = 5;
-        foreach(var h in AllDistricts[0].Houses)
+        foreach (var h in AllDistricts[0].Houses)
         {
             var house = h.GetComponent<StateOBJ>();
-            if(house.IsInfected)
+            if (house.IsInfected)
             {
                 house.CountInfected = 0;
                 house.IsInfected = false;
@@ -824,12 +824,18 @@ public class MainScript : MonoBehaviour
 
             if (count == 0)
                 return;
-        }    
+        }
     }
 
     public void ReloadScene()
     {
         MainData.Reload();
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void QuitGame()
+    {
+        MainData.Reload();
+        Application.Quit();
     }
 }

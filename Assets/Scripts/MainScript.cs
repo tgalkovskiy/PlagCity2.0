@@ -36,7 +36,7 @@ public class MainScript : MonoBehaviour
     private Camera MainCamera;
     private Vector3 ClickPosition;
     public StateOBJ City;
-    private float MouseScrollWheel, CameraX, CameraY, TimeGame;
+    private float MouseScrollWheel, CameraX, CameraY, TimeGame, Minutes;
     [HideInInspector] public GameObject NowGameObj;
     [HideInInspector] public StateOBJ NowStateObj;
     private bool FirstClick = false, GUIAKTIV = false, MainMap = true;
@@ -567,9 +567,11 @@ public class MainScript : MonoBehaviour
         UnburiedPeople.text = MainData.UnburiedPeople.ToString();
     }
 
+    public Text MinuteGameText;
     private void TextInfoAll()
     {
-        TimeGameText.text = ((int)TimeGame).ToString();
+        TimeGameText.text = $"{(int)TimeGame:00}";
+        MinuteGameText.text = $"{(int)Minutes:00}";
         DayText.text = "День: " + MainData.Day.ToString();
         MoneyText.text = MainData.Money.ToString();
         NameDistrictText.text = NameDistrict;
@@ -616,6 +618,16 @@ public class MainScript : MonoBehaviour
             return;
 
         TimeGame += Time.deltaTime / MainData.DayTimeScale;
+        Minutes = TimeGame % 1;
+        if (Minutes >= 0 && Minutes < 0.25)
+            Minutes = 0f;
+        else if (Minutes >= 0.25 && Minutes < 0.5)
+            Minutes = 15f;
+        else if (Minutes >= 0.5 && Minutes < 0.75)
+            Minutes = 30f;
+        else if (Minutes >= 0.75 && Minutes < 1)
+            Minutes = 45f;
+
         TextInfoAll();
         if ((Input.GetKeyDown(KeyCode.Space) || TimeGame >= 24 || IsGoNextDay) && !isDayDone)
         {

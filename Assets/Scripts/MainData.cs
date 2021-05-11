@@ -20,8 +20,8 @@ public class MainData : MonoBehaviour
     [HideInInspector] static public int Doctors = 0;
     [HideInInspector] static public int MaxDoctors = 0;
     [HideInInspector] static public int ImperatorReputation = 10;
-    [HideInInspector] static public int WorkersReputation = 60;
-    [HideInInspector] static public int MinWorkersReputation = 10;
+    [HideInInspector] static public int WorkersReputation = 50;
+    [HideInInspector] static public int MinWorkersReputation = 0;
     [HideInInspector] public static int WorkersRepPerDay = 5;
     [HideInInspector] static public int RichReputation = 60;
     [HideInInspector] static public int MinRichReputation = 20;
@@ -36,7 +36,7 @@ public class MainData : MonoBehaviour
     public static int MoneyPerRichDistrict = 60;
     public static int MoneyPerRiotRichDistrict = 20;
 
-    public static int NewHouseCoef = 85;
+    public static int NewHouseCoef = 80;
     public static int InHouseCoef = 95;
     public static int InHouseDefaultCoef = 95;
     public static int InHouseDopCoef = 0;
@@ -46,12 +46,12 @@ public class MainData : MonoBehaviour
     public static int DeathCoef = 45;
     public static int RecoveryCoef = 0;
 
-    public static int BreadPrice = 200;
+    public static int BreadPrice = 50;
     public static int RepPerBread = 20;
 
-    public static int RepPerSearch = 6;
-    public static int RepPerLockHouse = 4;
-    public static int RepPerLockRoad = 6;
+    public static int RepPerSearch = 4;
+    public static int RepPerLockHouse = 2;
+    public static int RepPerLockRoad = 4;
 
     public static bool IsFirstRiot = false;
 

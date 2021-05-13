@@ -48,7 +48,6 @@ public class VisitorsManager : MonoBehaviour
         VisitorsToShow = new List<Visitor>();
         Reactions = new List<AnswerReaction>();
 
-        main.state = GameState.City;
     }
 
     /// <summary>

@@ -9,6 +9,8 @@ public class Letter : MonoBehaviour
     public bool IsActual;
     public int LifeTimeInDays;
 
+    public bool IsPauseGame;
+
     public string SenderName;
 
     public Sprite ActualSprite;

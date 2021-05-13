@@ -34,16 +34,11 @@ public class LettersManager : MonoBehaviour
     [SerializeField] private Image LetterActionPut;
     [SerializeField] private Image LetterActionThrow;
 
+    [SerializeField] private GameObject PauseGO;
+
     public string itogiText;
 
     [SerializeField] private GameObject ItogiView;
-    [SerializeField] private Text ItogiText;
-    [SerializeField] private Text DayText;
-    [SerializeField] private Text NewViolText;
-    [SerializeField] private Text NewDeathsText;
-    [SerializeField] private Text AllViolText;
-    [SerializeField] private Text AllDeathsText;
-    [SerializeField] private Text VacinaText;
 
     //Текущее письмо, которое отображается на экране
     [SerializeField] private Letter curLetter;
@@ -79,8 +74,6 @@ public class LettersManager : MonoBehaviour
 
         ScrollViewRect = ScrollViewOfLetters.GetComponent<ScrollRect>();
         ScrollViewContent = ScrollViewRect.content;
-
-        main.state = GameState.City;
     }
 
     /// <summary>
@@ -171,6 +164,14 @@ public class LettersManager : MonoBehaviour
     public void ShowLetter(Letter letter)
     {
         curLetter = letter;
+
+        if (curLetter.IsPauseGame)
+        {
+            main.PauseGame();
+            PauseGO.SetActive(true);
+        }
+        else
+            PauseGO.SetActive(false);
 
         var rect = LetterMainText.GetComponent<RectTransform>();
         if (curLetter.TutorialSprite != null)
@@ -265,6 +266,10 @@ public class LettersManager : MonoBehaviour
     public void CloseLetterView()
     {
         LetterView.SetActive(false);
+
+        if(main.state == GameState.Pause)
+            main.UnpauseGame();
+
         if (main.state == GameState.Office)
             ShowScrollView();
         else
@@ -342,17 +347,12 @@ public class LettersManager : MonoBehaviour
         Reactions.Clear();
     }
 
+    [SerializeField] private ItogiUI itogiUI;
+
     public void ShowItogi()
     {
         ItogiView.SetActive(true);
-        ItogiText.text = itogiText;
-        DayText.text = MainData.Day.ToString();
-        NewViolText.text = MainData.NewInfectedPeople.ToString();
-        NewDeathsText.text = MainData.NewDeadPeople.ToString();
-        AllViolText.text = MainData.AllInfected.ToString();
-        AllDeathsText.text = MainData.AllDeath.ToString();
-        VacinaText.text = MainData.Vacina.ToString();
-
+        itogiUI.ShowItogi(itogiText);
         itogiText = "";
     }
 
@@ -362,7 +362,9 @@ public class LettersManager : MonoBehaviour
         ItogiView.SetActive(false);
         ScrollViewOfLetters.SetActive(false);
 
-        foreach(var l in Letters)
+        MainData.PreStatistics();
+
+        foreach (var l in Letters)
             if(l.IsActual)
             {
                 l.LifeTimeInDays--;

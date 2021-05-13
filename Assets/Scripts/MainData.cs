@@ -20,6 +20,7 @@ public class MainData : MonoBehaviour
     [HideInInspector] static public int Doctors = 0;
     [HideInInspector] static public int MaxDoctors = 0;
     [HideInInspector] static public int ImperatorReputation = 10;
+    [HideInInspector] static public int MinImperatorReputation = 10;
     [HideInInspector] static public int WorkersReputation = 50;
     [HideInInspector] static public int MinWorkersReputation = 0;
     [HideInInspector] public static int WorkersRepPerDay = 5;
@@ -36,10 +37,10 @@ public class MainData : MonoBehaviour
     public static int MoneyPerRichDistrict = 60;
     public static int MoneyPerRiotRichDistrict = 20;
 
-    public static int NewHouseCoef = 80;
     public static int InHouseCoef = 95;
-    public static int InHouseDefaultCoef = 95;
-    public static int InHouseDopCoef = 0;
+    public static int NewHouseCoef = 85;
+    public static int NewHouseDefaultCoef = 85;
+    public static int NewHouseDopCoef = 0;
     public static int AnotherDistrictCoef = 25;
     public static int AnotherDistrictDefaultCoef = 25;
     public static int AnotherDistrictDopCoef = 0;
@@ -74,8 +75,8 @@ public class MainData : MonoBehaviour
         Doctors = 0;
         MaxDoctors = 0;
         ImperatorReputation = 10;
-        WorkersReputation = 60;
-        MinWorkersReputation = 10;
+        WorkersReputation = 50;
+        MinWorkersReputation = 0;
         WorkersRepPerDay = 5;
         RichReputation = 60;
         MinRichReputation = 20;
@@ -87,21 +88,26 @@ public class MainData : MonoBehaviour
         MoneyPerRiotRichDistrict = 20;
         NewHouseCoef = 85;
         InHouseCoef = 95;
-        InHouseDefaultCoef = 95;
-        InHouseDopCoef = 0;
+        NewHouseDefaultCoef = 85;
+        NewHouseDopCoef = 0;
         AnotherDistrictCoef = 25;
         AnotherDistrictDefaultCoef = 25;
         AnotherDistrictDopCoef = 0;
         DeathCoef = 45;
         RecoveryCoef = 0;
-        BreadPrice = 200;
+        BreadPrice = 50;
         RepPerBread = 20;
-        RepPerSearch = 6;
-        RepPerLockHouse = 4;
-        RepPerLockRoad = 6;
+        RepPerSearch = 4;
+        RepPerLockHouse = 2;
+        RepPerLockRoad = 4;
         IsFirstRiot = false;
         DayTimeScaleDefault = 10;
         DayTimeScale = 10;
+        preAverageCoef = 0;
+        preImperatorRep = 0;
+        preRichRep = 0;
+        preWorkersRep = 0;
+        MinImperatorReputation = 10;
     }
 
 
@@ -123,21 +129,42 @@ public class MainData : MonoBehaviour
 
         DayTimeScale = DayTimeScaleDefault;
 
-        InHouseCoef = InHouseDefaultCoef;
+        preAverageCoef = (NewHouseCoef + AnotherDistrictCoef) / 2;
+
+        NewHouseCoef = NewHouseDefaultCoef;
         AnotherDistrictCoef = AnotherDistrictDefaultCoef;
 
-        InHouseCoef += Mathf.CeilToInt(UnburiedPeople / 10) * 3;
+        NewHouseCoef += Mathf.CeilToInt(UnburiedPeople / 10) * 3;
         AnotherDistrictCoef += Mathf.CeilToInt(UnburiedPeople / 10) * 2;
 
-        InHouseCoef += InHouseDopCoef;
+        ItogiUI.Instance.ShowCoef();
+
+        NewHouseCoef += NewHouseDopCoef;
         AnotherDistrictCoef += AnotherDistrictDopCoef;
 
-        InHouseDopCoef = 0;
-        AnotherDistrictDefaultCoef = 0;
+
+
+        NewHouseDopCoef = 0;
+        AnotherDistrictDopCoef = 0;
 
         NewInfectedPeople = 0;
         NewDeadPeople = 0;
 
-        Debug.Log($"Poor rep:{PoorReputation};Workers rep:{WorkersReputation};Rich rep:{RichReputation}");
+        savedHouses = 0;
+
+    }
+
+    public static int preAverageCoef = 0;
+    public static int preImperatorRep = 0;
+    public static int preRichRep = 0;
+    public static int preWorkersRep = 0;
+
+    public static int savedHouses = 0;
+
+    public static void PreStatistics()
+    {
+        preImperatorRep = ImperatorReputation;
+        preRichRep = RichReputation;
+        preWorkersRep = WorkersReputation;
     }
 }

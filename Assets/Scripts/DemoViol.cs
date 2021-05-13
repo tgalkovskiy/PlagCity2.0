@@ -99,8 +99,14 @@ public class DemoViol : MonoBehaviour
         for (int i = 0; i < 3; i++)
         {
             int I = Random.Range(0, Houses.Length);
+            if (Houses[I].GetComponent<StateOBJ>().IsInfected)
+            {
+                i--;
+                continue;
+            }
             Houses[I].GetComponent<StateOBJ>().IsInfected = true;
             Houses[I].GetComponent<StateOBJ>().CountHideInfected += 3;
+            Debug.Log($"{this.name}, {Houses[I].GetComponent<StateOBJ>().name} infected");
         }
     }
 
@@ -241,6 +247,11 @@ public class DemoViol : MonoBehaviour
                 //показываем зараженные дома
                 NowObj.UpdateIcons();
             }
+        }
+        else
+        {
+            foreach (var h in Houses)
+                h.GetComponent<StateOBJ>().TestDeaths();
         }
 
         if(IsGivenBread == true)

@@ -2,9 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum ReactionType
+{
+    Money,
+    ImperatorRep,
+    WorkersRep,
+    RichRep,
+    PoorRep,
+    Vacina,
+    CoefInfectInDistrict,
+    CoefInfectOutDistrict,
+    Volunteer
+}
+
 public class AnswerReaction
 {
-    private string Type;
+    private ReactionType Type;
     private int Count;
 
     public AnswerReaction() { }
@@ -14,7 +27,7 @@ public class AnswerReaction
     /// </summary>
     /// <param name="type"></param>
     /// <param name="count"></param>
-    public AnswerReaction(string type, int count) 
+    public AnswerReaction(ReactionType type, int count) 
     {
         Type = type;
         Count = count;
@@ -24,31 +37,35 @@ public class AnswerReaction
     {
         switch (Type)
         {
-            case "Money":
+            case ReactionType.Money:
                 MainData.Money += Count;
                 break;
-            case "ImperatorRep":
+            case ReactionType.ImperatorRep:
                 MainData.ImperatorReputation += Count;
+                MainData.ImperatorReputation = CheckMinus(MainData.ImperatorReputation);
                 break;
-            case "WorkersRep":
+            case ReactionType.WorkersRep:
                 MainData.WorkersReputation += Count;
+                MainData.WorkersReputation = CheckMinus(MainData.WorkersReputation);
                 break;
-            case "RichRep":
+            case ReactionType.RichRep:
                 MainData.RichReputation += Count;
+                MainData.RichReputation = CheckMinus(MainData.RichReputation);
                 break;
-            case "PoorRep":
+            case ReactionType.PoorRep:
                 MainData.PoorReputation += Count;
+                MainData.PoorReputation = CheckMinus(MainData.PoorReputation);
                 break;
-            case "Vacina":
+            case ReactionType.Vacina:
                 MainData.Vacina += Count;
                 break;
-            case "InfectIn":
-                MainData.InHouseDopCoef += Count;
+            case ReactionType.CoefInfectInDistrict:
+                MainData.NewHouseDopCoef += Count;
                 break;
-            case "InfectOut":
+            case ReactionType.CoefInfectOutDistrict:
                 MainData.AnotherDistrictDopCoef += Count;
                 break;
-            case "Volunteer":
+            case ReactionType.Volunteer:
                 MainData.MaxVolunteers += Count;
                 MainData.Volunteers += Count;
                 if(MainData.MaxVolunteers < 0)
@@ -60,5 +77,13 @@ public class AnswerReaction
                 MainScript.Instance.UpdateUI();
                 break;
         }
+    }
+    
+    private int CheckMinus(int i)
+    {
+        if (i < 0)
+            return 0;
+
+        return i;
     }
 }

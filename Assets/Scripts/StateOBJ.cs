@@ -58,6 +58,34 @@ public class StateOBJ : MonoBehaviour
         }
     }
 
+    public void TestDeaths()
+    {
+        if(CountInfected > 0)
+        {
+            int c = Random.Range(0, 100);
+            if (c < 50)
+                return;
+            else if (c < 80)
+            {
+                CountInfected -= 1;
+                CountDeath += 1;
+            }
+            else if (c < 10)
+            {
+                if (CountInfected - 2 >= 0)
+                {
+                    CountInfected -= 2;
+                    CountDeath += 2;
+                }
+                else
+                {
+                    CountInfected -= 1;
+                    CountDeath += 1;
+                }
+            }
+        }
+    }
+
     public void DeathPeople()
     {
         if (IsInfected)
@@ -122,13 +150,18 @@ public class StateOBJ : MonoBehaviour
 
     public void SearchHouse()
     {
-        CountInfected = CountHideInfected;
+        if (IsHide == false)
+            return;
+
+        CountInfected += CountHideInfected;
 
         MainData.AllInfected += CountHideInfected;
         MainData.NewInfectedPeople += CountHideInfected;
 
         CountHideInfected = 0;
         IsHide = false;
+
+        UpdateIcons();
     }
 
     public void UpdateIcons()

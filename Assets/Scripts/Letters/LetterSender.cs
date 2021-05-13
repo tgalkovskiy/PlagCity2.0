@@ -15,10 +15,11 @@ public class LetterSender : MonoBehaviour
     /// <param name="isImmediately">Активируется ли сразу как приходит</param>
     /// <param name="text">Текст письма</param>
     /// <returns></returns>
-    public Letter AddLetter(bool isImmediately, int lifeTimeInDays, string senderName, string text, Sprite tutorial = null)
+    public Letter AddLetter(bool isImmediately, bool isPauseGame, int lifeTimeInDays, string senderName, string text, Sprite tutorial = null)
     {
         Letter letter = CreateNewLetter(isImmediately, lifeTimeInDays, senderName, text);
 
+        letter.IsPauseGame = isPauseGame;
         letter.TutorialSprite = tutorial;
         letter.Answer_1 = new Answer();
         letter.Answer_2 = new Answer();
@@ -34,10 +35,11 @@ public class LetterSender : MonoBehaviour
     /// <param name="ans_1">Первый вариант ответа</param>
     /// <param name="ans_2">Второй вариант ответа</param>
     /// <returns></returns>
-    public Letter AddLetter(bool isImmediately, int lifeTimeInDays, string senderName, string text, Answer ans_1, Answer ans_2, Sprite tutorial = null)
+    public Letter AddLetter(bool isImmediately, bool isPauseGame, int lifeTimeInDays, string senderName, string text, Answer ans_1, Answer ans_2, Sprite tutorial = null)
     {
         Letter letter = CreateNewLetter(isImmediately, lifeTimeInDays, senderName, text);
 
+        letter.IsPauseGame = isPauseGame;
         letter.TutorialSprite = tutorial;
         letter.Answer_1 = ans_1;
         letter.Answer_2 = ans_2;

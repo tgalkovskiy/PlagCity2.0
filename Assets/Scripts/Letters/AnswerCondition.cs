@@ -2,15 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum ConditionType
+{
+    Money,
+    Doctor,
+    Policeman,
+    Volunteer
+}
+
 public class AnswerCondition
 {
-    private string Type;
+    private ConditionType Type;
     private int Count;
 
     public bool IsConditionDone { get { return CheckCondition(); } }
 
     public AnswerCondition() { }
-    public AnswerCondition(string type, int count)
+    public AnswerCondition(ConditionType type, int count)
     {
         Type = type;
         Count = count;
@@ -20,19 +28,19 @@ public class AnswerCondition
     {
         switch(Type)
         {
-            case "Money":
+            case ConditionType.Money:
                 if (MainData.Money >= Count)
                     return true;
                 break;
-            case "Doctor":
+            case ConditionType.Doctor:
                 if (MainData.Doctors >= Count)
                     return true;
                 break;
-            case "Policeman":
+            case ConditionType.Policeman:
                 if (MainData.Policemen >= Count)
                     return true;
                 break;
-            case "Volunteer":
+            case ConditionType.Volunteer:
                 if (MainData.Volunteers >= Count)
                     return true;
                 break;
@@ -48,16 +56,16 @@ public class AnswerCondition
     {
         switch (Type)
         {
-            case "Money":
+            case ConditionType.Money:
                 MainData.Money -= Count;
                 break;
-            case "Doctor":
+            case ConditionType.Doctor:
                 MainData.Doctors -= Count;
                 break;
-            case "Policeman":
+            case ConditionType.Policeman:
                 MainData.Policemen -= Count;
                 break;
-            case "Volunteer":
+            case ConditionType.Volunteer:
                 MainData.Volunteers -= Count;
                 break;
         }

@@ -78,8 +78,6 @@ public class MainScript : MonoBehaviour
     private void Start()
     {
 
-        SenderManager.Instance.CheckConditions();
-        VisitorsManager.Instance.CheckVisitorToShow();
 
         RichUnriotDistricts.AddRange(RichDistricts);
 
@@ -263,6 +261,28 @@ public class MainScript : MonoBehaviour
                             NumberPeopleDistrict = NowStateObj.CountPeople.ToString();
                             NumbersOfDeath = NowStateObj.CountDeath.ToString();
                             NumbersOfViolent = NowStateObj.CountInfected.ToString();
+
+                            if(NowStateObj.TypeStateDis == TypeState.City)
+                            {
+                                int allPeople = 0;
+                                int deathPeople = 0;
+                                int infectedPeople = 0;
+
+                                foreach(var d in AllDistricts)
+                                {
+                                    foreach(var z in d.Houses)
+                                    {
+                                        var house = z.GetComponent<StateOBJ>();
+                                        allPeople += house.CountPeople;
+                                        deathPeople += house.CountDeath;
+                                        infectedPeople += house.CountInfected;
+                                    }
+                                }
+
+                                NumberPeopleDistrict = allPeople.ToString();
+                                NumbersOfDeath = deathPeople.ToString();
+                                NumbersOfViolent = infectedPeople.ToString();
+                            }
                         }
                         else
                         {
@@ -279,6 +299,27 @@ public class MainScript : MonoBehaviour
                                 NumberPeopleDistrict = NowStateObj.CountPeople.ToString();
                                 NumbersOfDeath = NowStateObj.CountDeath.ToString();
                                 NumbersOfViolent = NowStateObj.CountInfected.ToString();
+                            }
+                            if (NowStateObj.TypeStateDis == TypeState.City)
+                            {
+                                int allPeople = 0;
+                                int deathPeople = 0;
+                                int infectedPeople = 0;
+
+                                foreach (var d in AllDistricts)
+                                {
+                                    foreach (var z in d.Houses)
+                                    {
+                                        var house = z.GetComponent<StateOBJ>();
+                                        allPeople += house.CountPeople;
+                                        deathPeople += house.CountDeath;
+                                        infectedPeople += house.CountInfected;
+                                    }
+                                }
+
+                                NumberPeopleDistrict = allPeople.ToString();
+                                NumbersOfDeath = deathPeople.ToString();
+                                NumbersOfViolent = infectedPeople.ToString();
                             }
                         }
 
@@ -351,7 +392,7 @@ public class MainScript : MonoBehaviour
                 }
                 else
                 {
-                    NameDistrict = "Portstream";
+                    NameDistrict = "Portsteam";
                 }
             }
 
@@ -522,16 +563,16 @@ public class MainScript : MonoBehaviour
 
     public void UpdateUI()
     {
-        Vacina.text = MainData.Vacina.ToString();
+        Vacina.text = MainData.Vacina.ToString() + "%";
 
         impRepSlider.value = MainData.ImperatorReputation;
         workersRepSlider.value = MainData.WorkersReputation;
         richRepSlider.value = MainData.RichReputation;
         poorRepSlider.value = MainData.PoorReputation;
 
-        if (impRepSlider.value <= 15)
+        if (impRepSlider.value < MainData.MinImperatorReputation)
             impRepFillImage.color = Color.red;
-        else if (impRepSlider.value <= 50 && impRepSlider.value > 15)
+        else if (impRepSlider.value <= 50 && impRepSlider.value > MainData.MinImperatorReputation)
             impRepFillImage.color = Color.yellow;
         else
             impRepFillImage.color = Color.green;
@@ -602,14 +643,17 @@ public class MainScript : MonoBehaviour
         menuPanel.SetActive(false);
     }
 
+    GameState tempstate;
+
     public void PauseGame()
     {
+        tempstate = state;
         state = GameState.Pause;
     }
 
     public void UnpauseGame()
     {
-        state = GameState.City;
+        state = tempstate;
     }
 
     void Update()
@@ -787,7 +831,7 @@ public class MainScript : MonoBehaviour
         else
             return false;
     }
-    public bool Check70percentInfectedHouses()
+    public bool Check85percentInfectedHouses()
     {
         int allCount = 0;
         int infectedCount = 0;
@@ -800,7 +844,7 @@ public class MainScript : MonoBehaviour
                     infectedCount++;
             }
 
-        if (allCount * 0.7 < infectedCount)
+        if (allCount * 0.85 < infectedCount)
             return true;
         else
             return false;
@@ -831,6 +875,17 @@ public class MainScript : MonoBehaviour
     {
         MainData.Reload();
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+
+    [SerializeField] private GameObject DemoPanel;
+    public void StartGame()
+    {
+        state = GameState.City;
+        SoundController.MusicSource.Play();
+        SenderManager.Instance.CheckConditions();
+        VisitorsManager.Instance.CheckVisitorToShow();
+        DemoPanel.SetActive(false);
     }
 
     public void QuitGame()

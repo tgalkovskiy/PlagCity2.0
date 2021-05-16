@@ -37,17 +37,17 @@ public class MainData : MonoBehaviour
     public static int MoneyPerRichDistrict = 60;
     public static int MoneyPerRiotRichDistrict = 20;
 
-    public static int InHouseCoef = 95;
-    public static int NewHouseCoef = 85;
-    public static int NewHouseDefaultCoef = 85;
+    public static int InHouseCoef = 85;
+    public static int NewHouseCoef = 25;
+    public static int NewHouseDefaultCoef = 25;
     public static int NewHouseDopCoef = 0;
-    public static int AnotherDistrictCoef = 25;
-    public static int AnotherDistrictDefaultCoef = 25;
+    public static int AnotherDistrictCoef = 7;
+    public static int AnotherDistrictDefaultCoef = 7;
     public static int AnotherDistrictDopCoef = 0;
     public static int DeathCoef = 45;
     public static int RecoveryCoef = 0;
 
-    public static int BreadPrice = 50;
+    public static int BreadPrice = 30;
     public static int RepPerBread = 20;
 
     public static int RepPerSearch = 4;
@@ -56,8 +56,8 @@ public class MainData : MonoBehaviour
 
     public static bool IsFirstRiot = false;
 
-    public static int DayTimeScaleDefault = 10;
-    public static int DayTimeScale = 10;
+    public static int DayTimeScaleDefault = 7;
+    public static int DayTimeScale = 7;
     
 
     public static void Reload()
@@ -86,16 +86,16 @@ public class MainData : MonoBehaviour
         NewDeadPeople = 0;
         MoneyPerRichDistrict = 60;
         MoneyPerRiotRichDistrict = 20;
-        NewHouseCoef = 85;
-        InHouseCoef = 95;
-        NewHouseDefaultCoef = 85;
+        NewHouseCoef = 25;
+        InHouseCoef = 85;
+        NewHouseDefaultCoef = 25;
         NewHouseDopCoef = 0;
-        AnotherDistrictCoef = 25;
-        AnotherDistrictDefaultCoef = 25;
+        AnotherDistrictCoef = 7;
+        AnotherDistrictDefaultCoef = 7;
         AnotherDistrictDopCoef = 0;
         DeathCoef = 45;
         RecoveryCoef = 0;
-        BreadPrice = 50;
+        BreadPrice = 30;
         RepPerBread = 20;
         RepPerSearch = 4;
         RepPerLockHouse = 2;

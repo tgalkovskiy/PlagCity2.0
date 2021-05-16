@@ -844,7 +844,7 @@ public class MainScript : MonoBehaviour
                     infectedCount++;
             }
 
-        if (allCount * 0.85 < infectedCount)
+        if (allCount * 0.95 < infectedCount)
             return true;
         else
             return false;

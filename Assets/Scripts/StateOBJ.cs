@@ -148,6 +148,12 @@ public class StateOBJ : MonoBehaviour
         IsLocked = false;
     }
 
+    public void DebugLog()
+    {
+        Debug.Log($"{name}. Is infected: {IsInfected}. Is hide: {IsHide}. Is locked: {IsLocked}. Count infected: {CountInfected}." +
+            $"Count hide infected: {CountHideInfected}. Count death: {CountDeath}.");
+    }
+
     public void SearchHouse()
     {
         if (IsHide == false)

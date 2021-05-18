@@ -71,6 +71,8 @@ public class Graveyard : ActionButton
             UnactiveGO.SetActive(true);
             foreach (var v in VolunteersImages)
                 v.gameObject.SetActive(false);
+
+            UpdateInfo();
         }
         else
         {
@@ -83,8 +85,10 @@ public class Graveyard : ActionButton
             Debug.Log($"Volunteers count to graveyard = {count} ({(float)MainData.UnburiedPeople / 10}) ");
 
             UpdateInfo();
+
+
             //Исправить оверкап волонтеров
-            for (int i = 0; i < count; i++)
+            for (int i = 0; i < count && i < 10; i++)
             {
                 if (VolunteersImages.Length == i)
                     break;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum DistrictType 
 {
@@ -46,6 +47,9 @@ public class DemoViol : MonoBehaviour
     public Transform LoupeButtonPointDistrict;
 
     public GameObject RiotGO;
+
+    public Sprite RiotSprite;
+    public Sprite UnRiotSprite;
 
     public bool InfectAll;
 
@@ -348,7 +352,7 @@ public class DemoViol : MonoBehaviour
     public void SuppressRiot()
     {
         IsRiot = false;
-        GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/NormalMap");
+        GetComponent<SpriteRenderer>().sprite = UnRiotSprite;
         RiotGO.SetActive(false);
         IsOnSuppressRiot = false;
         MainScript.RichUnriotDistricts.Add(this);
@@ -357,7 +361,7 @@ public class DemoViol : MonoBehaviour
     public void MakeRiot()
     {
         IsRiot = true;
-        GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/RiotMap");
+        GetComponent<SpriteRenderer>().sprite = RiotSprite;
         RiotGO.SetActive(true);
         IsOnSuppressRiot = false;
     }

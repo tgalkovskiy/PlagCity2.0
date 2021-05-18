@@ -10,7 +10,8 @@ public enum GameState
 {
     City,
     Office,
-    Pause
+    Pause,
+    GameOver
 }
 
 public class MainScript : MonoBehaviour
@@ -252,6 +253,9 @@ public class MainScript : MonoBehaviour
                             NowGameObj = h.collider.gameObject;
                             NowStateObj = NowGameObj.GetComponent<StateOBJ>();
 
+                            if (NowStateObj == null)
+                                continue;
+
                             if (NowStateObj.TypeStateDis != TypeState.City && NowStateObj.TypeStateDis != TypeState.LocalDistrict)
                             {
                                 NowGameObj.GetComponent<SpriteRenderer>().sortingOrder = 1;
@@ -290,6 +294,9 @@ public class MainScript : MonoBehaviour
 
                             NowGameObj = h.collider.gameObject;
                             NowStateObj = NowGameObj.GetComponent<StateOBJ>();
+
+                            if (NowStateObj == null)
+                                continue;
 
                             if (NowStateObj.TypeStateDis != TypeState.City && NowStateObj.TypeStateDis != TypeState.LocalDistrict)
                             {
@@ -410,7 +417,7 @@ public class MainScript : MonoBehaviour
     /// </summary>
     private void ControlCamera()
     {
-        if (Input.GetAxis("Mouse ScrollWheel") != 0)
+        if (Input.GetAxis("Mouse ScrollWheel") != 0 && state == GameState.City)
         {
             //считывание вращения колесика
             MouseScrollWheel = Input.GetAxis("Mouse ScrollWheel");
@@ -422,6 +429,7 @@ public class MainScript : MonoBehaviour
                 transform.position = new Vector3(0, 0, transform.position.z);
             }
         }
+
         //движение камеры
         if ((Input.GetMouseButton(1) || Input.GetMouseButton(2)) && Camera.main.orthographicSize < 14 && MainMap == true)
         {
@@ -485,10 +493,15 @@ public class MainScript : MonoBehaviour
         City.CountDeath = MainData.AllDeath;
         MainData.WorkersReputation -= MainData.WorkersRepPerDay;
 
-        CheckDistrictsToSearch();
 
         foreach (var d in AllDistricts)
             d.NextDayStateObj();
+
+        if (Recovery5Houses)
+            Recovery5HousesNow();
+
+        CheckDistrictsToSearch();
+
 
         if (NowGameObj != null)
         {
@@ -524,8 +537,6 @@ public class MainScript : MonoBehaviour
         if (InfectRandomHouse)
             InfectRandomHouseNow();
 
-        if (Recovery5Houses)
-            Recovery5HousesNow();
 
         LettersManager.Instance.OnNewDay();
         SenderManager.Instance.CheckConditions();
@@ -673,7 +684,7 @@ public class MainScript : MonoBehaviour
             Minutes = 45f;
 
         TextInfoAll();
-        if ((Input.GetKeyDown(KeyCode.Space) || TimeGame >= 24 || IsGoNextDay) && !isDayDone)
+        if ((/*Input.GetKeyDown(KeyCode.Space) || */TimeGame >= 24 || IsGoNextDay) && !isDayDone)
         {
             isDayDone = true;
             IsGoNextDay = false;
@@ -826,12 +837,12 @@ public class MainScript : MonoBehaviour
                     infectedCount++;
             }
 
-        if (allCount * 0.5 < infectedCount)
+        if ((float)(allCount * 0.5) < infectedCount)
             return true;
         else
             return false;
     }
-    public bool Check85percentInfectedHouses()
+    public bool Check95percentInfectedHouses()
     {
         int allCount = 0;
         int infectedCount = 0;
@@ -844,7 +855,7 @@ public class MainScript : MonoBehaviour
                     infectedCount++;
             }
 
-        if (allCount * 0.95 < infectedCount)
+        if ((float)(allCount * 0.95) < infectedCount)
             return true;
         else
             return false;
@@ -852,6 +863,7 @@ public class MainScript : MonoBehaviour
 
     private void Recovery5HousesNow()
     {
+        Recovery5Houses = false;
         int count = 5;
         foreach (var h in AllDistricts[0].Houses)
         {
@@ -859,16 +871,20 @@ public class MainScript : MonoBehaviour
             if (house.IsInfected)
             {
                 house.CountInfected = 0;
+                house.CountHideInfected = 0;
                 house.IsInfected = false;
-                house.IsHide = false;
+                house.IsHide = true;
                 house.UpdateIcons();
 
                 count--;
             }
 
             if (count == 0)
-                return;
+            {
+                break;
+            }
         }
+
     }
 
     public void ReloadScene()

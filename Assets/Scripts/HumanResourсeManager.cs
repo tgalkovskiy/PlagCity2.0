@@ -45,4 +45,10 @@ public class HumanResourсeManager : MonoBehaviour
         }
     }
 
+
+    public void DebugHouse()
+    {
+        GameObject NowGameObj = MainScript.NowGameObj;
+        NowGameObj.GetComponent<StateOBJ>().DebugLog();
+    }
 }

@@ -48,7 +48,7 @@ public class SenderManager : MonoBehaviour
     private bool Event33Done = false;
     private bool IsAllRiotDone = false;
     private bool Is50PercentDone = false;
-    private bool Is60PercentDone = false;
+    private bool Is95PercentDone = false;
     private bool Dialog7Answer1Done = false;
     private bool Dialog15Done = false;
     private bool Dialog2answer1done = false;
@@ -926,11 +926,11 @@ public class SenderManager : MonoBehaviour
         }
 
         //событие 42
-        if (!Is60PercentDone)
+        if (!Is95PercentDone)
         {
-            if (MainScript.Check85percentInfectedHouses())
+            if (MainScript.Check95percentInfectedHouses())
             {
-                Is60PercentDone = true;
+                Is95PercentDone = true;
 
                 EndGamePanel.SetActive(true);
                 EndGameText.text = LettersTexts[42];

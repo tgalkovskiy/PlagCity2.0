@@ -44,6 +44,9 @@ public class Tooltip : MonoBehaviour
 
 	void LateUpdate()
 	{
+		if (MainScript.Instance.state != GameState.City)
+			return;
+
 		bool show = false;
 		boxText.fontSize = fontSize;
 

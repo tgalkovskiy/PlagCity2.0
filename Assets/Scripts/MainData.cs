@@ -101,8 +101,8 @@ public class MainData : MonoBehaviour
         RepPerLockHouse = 2;
         RepPerLockRoad = 4;
         IsFirstRiot = false;
-        DayTimeScaleDefault = 10;
-        DayTimeScale = 10;
+        DayTimeScaleDefault = 7;
+        DayTimeScale = 7;
         preAverageCoef = 0;
         preImperatorRep = 0;
         preRichRep = 0;

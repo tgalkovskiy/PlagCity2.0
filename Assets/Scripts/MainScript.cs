@@ -57,21 +57,17 @@ public class MainScript : MonoBehaviour
 
         //комопонент камеры
         MainCamera = GetComponent<Camera>();
-        //City = GetComponent<StateOBJ>();
         TimeGame = 0;
         MainData.Money = 50;
         Vacina.text = "50";
-        //AllDeathPeople = 0;
-        //AllViolPeople = 0;
         Infected = 3;
         Buried = 0;
-        //AllPeople = 2100;
-        //NumberDistrict = 0;
         //отключение всех зараженых маркеров сразу
         for (int i = 0; i < DistrictRed.Length; i++)
         {
             Districts.Add(District[i]);
         }
+
         GuiPanel.SetActive(false);
 
     }
@@ -191,6 +187,7 @@ public class MainScript : MonoBehaviour
     {
         GUIAKTIV = false;
     }
+
     public void Ray()
     {
         if (Input.GetMouseButtonDown(0))
@@ -210,9 +207,9 @@ public class MainScript : MonoBehaviour
                     Debug.Log($"Hits count = {hit2D.Length}");
 
 
-                    foreach (var h in hit2D)
-                        Debug.Log($"{h.collider.gameObject}");
-
+                    for(int i = 0; i < hit2D.Length; i++)
+                        Debug.Log($"Hit №{i+1} - {hit2D[i].collider.gameObject}");
+                     
                     foreach (var h in hit2D)
                         if (h.collider.GetComponent<ActionButton>())
                         {
@@ -296,8 +293,11 @@ public class MainScript : MonoBehaviour
                             NowStateObj = NowGameObj.GetComponent<StateOBJ>();
 
                             if (NowStateObj == null)
+                            {
+                                NowGameObj = temp;
+                                NowStateObj = NowGameObj.GetComponent<StateOBJ>();
                                 continue;
-
+                            }
                             if (NowStateObj.TypeStateDis != TypeState.City && NowStateObj.TypeStateDis != TypeState.LocalDistrict)
                             {
                                 NowGameObj.GetComponent<SpriteRenderer>().sortingOrder = 1;
@@ -344,58 +344,6 @@ public class MainScript : MonoBehaviour
                             NowStateObj = NowGameObj.GetComponent<StateOBJ>();
                         }
                     }
-
-                    //if (hit2D.Length > 1)
-                    //{
-                    //    hit2D[1].collider.GetComponent<SpriteRenderer>().sortingOrder = 1;
-                    //    NameDistrict = hit2D[1].collider.name;
-                    //    if (FirstClick == false)
-                    //    {
-                    //        NowGameObj = hit2D[1].collider.gameObject;
-                    //        FirstClick = true;
-                    //    }
-                    //    if (FirstClick == true && NowGameObj != hit2D[1].collider.gameObject)
-                    //    {
-                    //        NowGameObj.GetComponent<SpriteRenderer>().sortingOrder = -1;
-                    //        NowGameObj = hit2D[1].collider.gameObject;
-                    //    }
-                    //    if (hit2D[1].collider.gameObject?.GetComponent<StateOBJ>())
-                    //    {
-                    //        NowGameObj = hit2D[1].collider.gameObject;
-                    //        NumberPeopleDistrict = NowGameObj?.GetComponent<StateOBJ>().CountPeople.ToString();
-                    //        NumbersOfDeath = NowGameObj?.GetComponent<StateOBJ>().CountDeath.ToString();
-                    //        NumbersOfViolent = NowGameObj?.GetComponent<StateOBJ>().CountInfected.ToString();
-                    //    }
-                    //    curDemoViol = NowGameObj.GetComponentInChildren<DemoViol>();
-                    //    if (curDemoViol != null)
-                    //        foreach (var a in ActionButtons)
-                    //            a.OnDistrictChange();
-                    //    NowGameObj.GetComponent<SpriteRenderer>().sortingOrder = 1;
-                    //}
-                    //else
-                    //{
-                    //    if (hit2D[0].collider.gameObject?.GetComponent<StateOBJ>())
-                    //    {
-                    //        if (NowGameObj != null)
-                    //            if (NowGameObj != hit2D[0].collider.gameObject)
-                    //                if (NowGameObj.GetComponent<StateOBJ>().TypeStateDis != TypeState.City)
-                    //                    NowGameObj.GetComponent<SpriteRenderer>().sortingOrder = -1;
-
-                    //        NowGameObj = hit2D[0].collider.gameObject;
-                    //        curDemoViol = NowGameObj.GetComponentInChildren<DemoViol>();
-                    //        if (curDemoViol != null)
-                    //        {
-                    //            if (!curDemoViol.ActiveDistrict)
-                    //                NowGameObj.GetComponent<SpriteRenderer>().sortingOrder = 1;
-                    //            foreach (var a in ActionButtons)
-                    //                a.OnDistrictChange();
-                    //        }
-                    //        NameDistrict = NowGameObj.name;
-                    //        NumbersOfDeath = NowGameObj?.GetComponent<StateOBJ>().CountDeath.ToString();
-                    //        NumbersOfViolent = NowGameObj?.GetComponent<StateOBJ>().CountInfected.ToString();
-                    //        NumberPeopleDistrict = NowGameObj?.GetComponent<StateOBJ>().CountPeople.ToString();
-                    //    }
-                    //}
                 }
                 else
                 {
@@ -476,15 +424,10 @@ public class MainScript : MonoBehaviour
     public Text volontCur;
 
     public Text UnburiedPeople;
-    /// <summary>
-    /// Кнопка нового дня
-    /// </summary>
-
     [SerializeField] private ActionButton[] ActionButtons;
 
     public void NextDay()
     {
-        SoundController.PlayNewDay();
 
         MainMap = true;
         MainData.Day += 1;
@@ -568,7 +511,13 @@ public class MainScript : MonoBehaviour
 
         isDayDone = false;
 
-        state = GameState.Pause;
+
+        if (state != GameState.GameOver)
+        {
+            SoundController.PlayNewDay();
+            state = GameState.Pause;
+        }
+
         Debug.Log($"Day: {MainData.Day}");
     }
 
@@ -669,7 +618,8 @@ public class MainScript : MonoBehaviour
 
     void Update()
     {
-        if (state == GameState.Pause)
+
+        if (state == GameState.Pause || state == GameState.GameOver)
             return;
 
         TimeGame += Time.deltaTime / MainData.DayTimeScale;

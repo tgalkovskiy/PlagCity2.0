@@ -886,8 +886,7 @@ public class SenderManager : MonoBehaviour
         //событие 40
         if (goAwayWithWife)
         {
-            EndGamePanel.SetActive(true);
-            EndGameText.text = LettersTexts[40];
+            ShowEndGame(40, "Sprites/EndGame/GoAway");
 
             EndGame = true;
         }
@@ -895,16 +894,14 @@ public class SenderManager : MonoBehaviour
         //событие 34
         if (MainData.WorkersReputation < MainData.MinWorkersReputation && Dialog15Done)
         {
-            EndGamePanel.SetActive(true);
-            EndGameText.text = LettersTexts[34];
+            ShowEndGame(34, "Sprites/EndGame/Riot");
             EndGame = true;
         }
 
         //событие 31
         if (MainData.Vacina > 95)
         {
-            EndGamePanel.SetActive(true);
-            EndGameText.text = LettersTexts[31];
+            ShowEndGame(31, "Sprites/EndGame/Riot");
             EndGame = true;
         }
 
@@ -919,8 +916,7 @@ public class SenderManager : MonoBehaviour
         //событие 35
         if (MainData.ImperatorReputation < MainData.MinImperatorReputation && Event33Done)
         {
-            EndGamePanel.SetActive(true);
-            EndGameText.text = LettersTexts[35];
+            ShowEndGame(35, "Sprites/EndGame/Arest");
 
             EndGame = true;
         }
@@ -932,15 +928,34 @@ public class SenderManager : MonoBehaviour
             {
                 Is95PercentDone = true;
 
-                EndGamePanel.SetActive(true);
-                EndGameText.text = LettersTexts[42];
+                ShowEndGame(42, "Sprites/EndGame/Dead");
 
                 EndGame = true;
             }
         }
 
         if (!EndGame)
-            VisitorsManager.Instance.CheckVisitorToShow();
+        {
+            LettersManager.Instance.ShowItogi();
+            //VisitorsManager.Instance.CheckVisitorToShow();
+        }
+        else
+        {
+            MainScript.state = GameState.GameOver;
+            SoundController.Instance.PlayEndGame();
+        }
+    }
+
+    [SerializeField] private Image endGameImage;
+
+    private void ShowEndGame(int i, string imagePath)
+    {
+        EndGamePanel.SetActive(true);
+
+        endGameImage.sprite = Resources.Load<Sprite>(imagePath);
+
+        EndGamePanel.GetComponent<Animator>().SetTrigger("End");
+        EndGameText.text = LettersTexts[i];
     }
 
     private void ViolWestRiver()

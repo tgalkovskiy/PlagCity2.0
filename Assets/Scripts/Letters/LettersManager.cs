@@ -374,6 +374,6 @@ public class LettersManager : MonoBehaviour
 
         CheckReactions();
 
-        ShowItogi();
+        SenderManager.Instance.CheckEndsOfTheGame();
     }
 }

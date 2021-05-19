@@ -28,6 +28,8 @@ public class SoundController : MonoBehaviour
     public AudioClip Search;
     public AudioClip Bread;
 
+    public AudioClip EndGame;
+
     public AudioSource SoundSource;
     public AudioSource MusicSource;
     public AudioSource LowerSoundSource;
@@ -207,5 +209,11 @@ public class SoundController : MonoBehaviour
     public void StopPlayingLowerSounds()
     {
         LowerSoundSource.Stop();
+    }
+
+    public void PlayEndGame()
+    {
+        MusicSource.clip = EndGame;
+        MusicSource.Play();
     }
 }

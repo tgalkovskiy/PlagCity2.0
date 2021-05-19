@@ -42,19 +42,19 @@ public class AnswerReaction
                 break;
             case ReactionType.ImperatorRep:
                 MainData.ImperatorReputation += Count;
-                MainData.ImperatorReputation = CheckMinus(MainData.ImperatorReputation);
+                MainData.ImperatorReputation = CheckClamp(MainData.ImperatorReputation);
                 break;
             case ReactionType.WorkersRep:
                 MainData.WorkersReputation += Count;
-                MainData.WorkersReputation = CheckMinus(MainData.WorkersReputation);
+                MainData.WorkersReputation = CheckClamp(MainData.WorkersReputation);
                 break;
             case ReactionType.RichRep:
                 MainData.RichReputation += Count;
-                MainData.RichReputation = CheckMinus(MainData.RichReputation);
+                MainData.RichReputation = CheckClamp(MainData.RichReputation);
                 break;
             case ReactionType.PoorRep:
                 MainData.PoorReputation += Count;
-                MainData.PoorReputation = CheckMinus(MainData.PoorReputation);
+                MainData.PoorReputation = CheckClamp(MainData.PoorReputation);
                 break;
             case ReactionType.Vacina:
                 MainData.Vacina += Count;
@@ -79,10 +79,13 @@ public class AnswerReaction
         }
     }
     
-    private int CheckMinus(int i)
+    private int CheckClamp(int i)
     {
         if (i < 0)
             return 0;
+
+        if (i > 100)
+            return 100;
 
         return i;
     }

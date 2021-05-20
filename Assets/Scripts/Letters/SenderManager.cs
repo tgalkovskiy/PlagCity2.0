@@ -899,7 +899,7 @@ public class SenderManager : MonoBehaviour
         }
 
         //событие 31
-        if (MainData.Vacina > 95)
+        if (MainData.Vacina >= 95)
         {
             ShowEndGame(31, "Sprites/EndGame/Riot");
             EndGame = true;
@@ -947,6 +947,10 @@ public class SenderManager : MonoBehaviour
     }
 
     [SerializeField] private Image endGameImage;
+    [SerializeField] private Text endGameDays;
+    [SerializeField] private Text endGameVacina;
+    [SerializeField] private Text endGameInfected;
+    [SerializeField] private Text endGameDeaths;
 
     private void ShowEndGame(int i, string imagePath)
     {
@@ -956,6 +960,11 @@ public class SenderManager : MonoBehaviour
 
         EndGamePanel.GetComponent<Animator>().SetTrigger("End");
         EndGameText.text = LettersTexts[i];
+
+        endGameDays.text = (MainData.Day - 1).ToString();
+        endGameVacina.text = MainData.Vacina.ToString();
+        endGameInfected.text = MainData.AllInfected.ToString();
+        endGameDeaths.text = MainData.AllDeath.ToString();
     }
 
     private void ViolWestRiver()

@@ -428,8 +428,9 @@ public class MainScript : MonoBehaviour
 
     public void NextDay()
     {
-
+        
         MainMap = true;
+        MainData.PreStatistics();
         MainData.Day += 1;
         TimeGame = 0;
         MainData.Vacina += 3;
@@ -530,7 +531,7 @@ public class MainScript : MonoBehaviour
         richRepSlider.value = MainData.RichReputation;
         poorRepSlider.value = MainData.PoorReputation;
 
-        if (impRepSlider.value < MainData.MinImperatorReputation)
+        if (impRepSlider.value <= MainData.MinImperatorReputation)
             impRepFillImage.color = Color.red;
         else if (impRepSlider.value <= 50 && impRepSlider.value > MainData.MinImperatorReputation)
             impRepFillImage.color = Color.yellow;

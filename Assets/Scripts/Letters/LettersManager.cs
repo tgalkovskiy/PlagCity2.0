@@ -362,8 +362,6 @@ public class LettersManager : MonoBehaviour
         ItogiView.SetActive(false);
         ScrollViewOfLetters.SetActive(false);
 
-        MainData.PreStatistics();
-
         foreach (var l in Letters)
             if(l.IsActual)
             {

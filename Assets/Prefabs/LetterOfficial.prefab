@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6423736272259072805}
   - component: {fileID: 3745596262270505089}
   m_Layer: 5
-  m_Name: LetterImperator
+  m_Name: LetterOfficial
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -36,8 +36,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 743.636, y: 515.27026}
+  m_AnchoredPosition: {x: 1716.2, y: 0}
+  m_SizeDelta: {x: 760.6162, y: 486.15552}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2431545352856560568
 CanvasRenderer:
@@ -66,7 +66,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 41aaad933a11ef74db8c0a69fba03c86, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b3df4c2ebf0672c458477b71005bfc8d, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

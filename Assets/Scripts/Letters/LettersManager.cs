@@ -271,7 +271,12 @@ public class LettersManager : MonoBehaviour
             main.UnpauseGame();
 
         if (main.state == GameState.Office)
-            ShowScrollView();
+        {
+            if (Letters.Count > 0)
+                ShowScrollView();
+            else
+                main.state = GameState.City;
+        }
         else
             CheckLettersToShow();
     }
@@ -361,6 +366,9 @@ public class LettersManager : MonoBehaviour
         LetterView.SetActive(false);
         ItogiView.SetActive(false);
         ScrollViewOfLetters.SetActive(false);
+
+        curLetter = null;
+        LettersToShow.Clear();
 
         foreach (var l in Letters)
             if(l.IsActual)

@@ -40,8 +40,7 @@ public class MainScript : MonoBehaviour
     private float MouseScrollWheel, CameraX, CameraY, TimeGame, Minutes;
     [HideInInspector] public GameObject NowGameObj;
     [HideInInspector] public StateOBJ NowStateObj;
-    private bool FirstClick = false, GUIAKTIV = false, MainMap = true;
-    private int Money, AllDeathPeople, AllViolPeople, Infected, Buried, AllPeople;
+    private bool GUIAKTIV = false, MainMap = true;
     [HideInInspector] public string NameDistrict, NumberPeopleDistrict, NumbersOfViolent, NumbersOfDeath;
 
 
@@ -58,10 +57,7 @@ public class MainScript : MonoBehaviour
         //комопонент камеры
         MainCamera = GetComponent<Camera>();
         TimeGame = 0;
-        MainData.Money = 50;
-        Vacina.text = "50";
-        Infected = 3;
-        Buried = 0;
+        Vacina.text = "50%";
         //отключение всех зараженых маркеров сразу
         for (int i = 0; i < DistrictRed.Length; i++)
         {
@@ -404,16 +400,12 @@ public class MainScript : MonoBehaviour
 
     public GameObject menuPanel;
 
-    public Slider impRepSlider;
     public Image impRepFillImage;
 
-    public Slider workersRepSlider;
     public Image workersRepFillImage;
 
-    public Slider richRepSlider;
     public Image richRepFillImage;
 
-    public Slider poorRepSlider;
     public Image poorRepFillImage;
 
     public Text policeMax;
@@ -437,6 +429,7 @@ public class MainScript : MonoBehaviour
         City.CountDeath = MainData.AllDeath;
         MainData.WorkersReputation -= MainData.WorkersRepPerDay;
 
+        tempstate = GameState.City;
 
         foreach (var d in AllDistricts)
             d.NextDayStateObj();
@@ -449,7 +442,6 @@ public class MainScript : MonoBehaviour
 
         if (NowGameObj != null)
         {
-            FirstClick = false;
             if (NowGameObj != null && NowStateObj != null)
             {
                 if (NowStateObj.TypeStateDis != TypeState.City && NowStateObj.TypeStateDis != TypeState.LocalDistrict)
@@ -526,35 +518,35 @@ public class MainScript : MonoBehaviour
     {
         Vacina.text = MainData.Vacina.ToString() + "%";
 
-        impRepSlider.value = MainData.ImperatorReputation;
-        workersRepSlider.value = MainData.WorkersReputation;
-        richRepSlider.value = MainData.RichReputation;
-        poorRepSlider.value = MainData.PoorReputation;
+        impRepFillImage.fillAmount = (float) MainData.ImperatorReputation / 100;
+        workersRepFillImage.fillAmount = (float) MainData.WorkersReputation / 100;
+        richRepFillImage.fillAmount = (float) MainData.RichReputation / 100;
+        poorRepFillImage.fillAmount = (float) MainData.PoorReputation / 100;
 
-        if (impRepSlider.value <= MainData.MinImperatorReputation)
+        if (impRepFillImage.fillAmount <= (float)MainData.MinImperatorReputation / 100)
             impRepFillImage.color = Color.red;
-        else if (impRepSlider.value <= 50 && impRepSlider.value > MainData.MinImperatorReputation)
+        else if (impRepFillImage.fillAmount <= 0.5f && impRepFillImage.fillAmount > (float)MainData.MinImperatorReputation / 100)
             impRepFillImage.color = Color.yellow;
         else
             impRepFillImage.color = Color.green;
 
-        if (workersRepSlider.value <= MainData.MinWorkersReputation)
+        if (workersRepFillImage.fillAmount <= (float)MainData.MinWorkersReputation / 100)
             workersRepFillImage.color = Color.red;
-        else if (workersRepSlider.value <= 50 && workersRepSlider.value > MainData.MinWorkersReputation)
+        else if (workersRepFillImage.fillAmount <= 0.5f && workersRepFillImage.fillAmount > (float)MainData.MinWorkersReputation / 100)
             workersRepFillImage.color = Color.yellow;
         else
             workersRepFillImage.color = Color.green;
 
-        if (richRepSlider.value <= MainData.MinRichReputation)
+        if (richRepFillImage.fillAmount <= (float)MainData.MinRichReputation / 100)
             richRepFillImage.color = Color.red;
-        else if (richRepSlider.value <= 50 && richRepSlider.value > MainData.MinRichReputation)
+        else if (richRepFillImage.fillAmount <= 0.5f && richRepFillImage.fillAmount > (float)MainData.MinRichReputation / 100)
             richRepFillImage.color = Color.yellow;
         else
             richRepFillImage.color = Color.green;
 
-        if (poorRepSlider.value <= MainData.MinPoorReputation)
+        if (poorRepFillImage.fillAmount <= (float)MainData.MinPoorReputation / 100)
             poorRepFillImage.color = Color.red;
-        else if (poorRepSlider.value <= 50 && poorRepSlider.value > MainData.MinPoorReputation)
+        else if (poorRepFillImage.fillAmount <= 0.5f && poorRepFillImage.fillAmount > (float)MainData.MinPoorReputation / 100)
             poorRepFillImage.color = Color.yellow;
         else
             poorRepFillImage.color = Color.green;

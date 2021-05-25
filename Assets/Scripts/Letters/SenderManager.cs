@@ -13,6 +13,11 @@ public class SenderManager : MonoBehaviour
 
     [SerializeField] private LetterSender Workers;
     [SerializeField] private LetterSender Imerator;
+    [SerializeField] private LetterSender Tutorial;
+    [SerializeField] private LetterSender Rich;
+    [SerializeField] private LetterSender Poor;
+    [SerializeField] private LetterSender Official;
+    [SerializeField] private LetterSender Gazeta;
 
     [SerializeField] private GameObject VisitorPref;
 
@@ -117,11 +122,11 @@ public class SenderManager : MonoBehaviour
         if (MainData.Day == 1 && !OnDay1Done)
         {
             //событие 0
-            tempLetter = Workers.AddLetter(LettersActivate[0], LettersIsPauseGame[0], LettersDuration[0], LettersNames[0], LettersTexts[0]);
+            tempLetter = Tutorial.AddLetter(LettersActivate[0], LettersIsPauseGame[0], LettersDuration[0], LettersNames[0], LettersTexts[0]);
             //событие 43
-            tempLetter = Workers.AddLetter(LettersActivate[43], LettersIsPauseGame[43], LettersDuration[43], LettersNames[43], LettersTexts[43]);
+            tempLetter = Gazeta.AddLetter(LettersActivate[43], LettersIsPauseGame[43], LettersDuration[43], LettersNames[43], LettersTexts[43]);
             //событие 1
-            tempLetter = Workers.AddLetter(LettersActivate[1], LettersIsPauseGame[1], LettersDuration[1], LettersNames[1], LettersTexts[1], Resources.Load<Sprite>("Sprites/Tutorial_Search"));
+            tempLetter = Tutorial.AddLetter(LettersActivate[1], LettersIsPauseGame[1], LettersDuration[1], LettersNames[1], LettersTexts[1], Resources.Load<Sprite>("Sprites/Tutorial_Search"));
 
             //событие 55
             tempLetter = Workers.AddLetter(LettersActivate[55], LettersIsPauseGame[55], LettersDuration[55], LettersNames[55], LettersTexts[55],
@@ -157,7 +162,7 @@ public class SenderManager : MonoBehaviour
             VisitorsManager.Instance.AddVisitorToShow(visitor);
 
             //событие 2
-            tempLetter = Workers.AddLetter(LettersActivate[2], LettersIsPauseGame[2], LettersDuration[2], LettersNames[2], LettersTexts[2],
+            tempLetter = Official.AddLetter(LettersActivate[2], LettersIsPauseGame[2], LettersDuration[2], LettersNames[2], LettersTexts[2],
                 new Answer(LettersAnswer1Texts[2]),
                 new Answer(LettersAnswer2Texts[2]), Resources.Load<Sprite>("Sprites/Tutorial_Letters"));
             tempLetter.Answer_1.ReactionText = LettersAnswer1BookTexts[2];
@@ -166,9 +171,9 @@ public class SenderManager : MonoBehaviour
             tempLetter.Answer_2.ReactionText = LettersAnswer2BookTexts[2];
             tempLetter.IgnorText = LettersIgnorTexts[2];
             //событие 3
-            tempLetter = Workers.AddLetter(LettersActivate[3], LettersIsPauseGame[3], LettersDuration[3], LettersNames[3], LettersTexts[3], Resources.Load<Sprite>("Sprites/Tutorial_LockHouse"));
+            tempLetter = Tutorial.AddLetter(LettersActivate[3], LettersIsPauseGame[3], LettersDuration[3], LettersNames[3], LettersTexts[3], Resources.Load<Sprite>("Sprites/Tutorial_LockHouse"));
             //событие 4
-            tempLetter = Workers.AddLetter(LettersActivate[4], LettersIsPauseGame[4], LettersDuration[4], LettersNames[4], LettersTexts[4],
+            tempLetter = Rich.AddLetter(LettersActivate[4], LettersIsPauseGame[4], LettersDuration[4], LettersNames[4], LettersTexts[4],
                 new Answer(LettersAnswer1Texts[4]),
                 new Answer(LettersAnswer2Texts[4]));
             tempLetter.Answer_1.Chosen += InfectTwoHousesInSunland;
@@ -181,7 +186,7 @@ public class SenderManager : MonoBehaviour
             tempLetter.IgnorReactions = new AnswerReaction[] { new AnswerReaction(ReactionType.RichRep, -17) };
 
             //событие 44
-            tempLetter = Workers.AddLetter(LettersActivate[44], LettersIsPauseGame[44], LettersDuration[44], LettersNames[44], LettersTexts[44]);
+            tempLetter = Gazeta.AddLetter(LettersActivate[44], LettersIsPauseGame[44], LettersDuration[44], LettersNames[44], LettersTexts[44]);
 
             OnDay2Done = true;
         }
@@ -203,13 +208,13 @@ public class SenderManager : MonoBehaviour
             VisitorsManager.Instance.AddVisitorToShow(visitor);
 
             //событие 5
-            tempLetter = Workers.AddLetter(LettersActivate[5], LettersIsPauseGame[5], LettersDuration[5], LettersNames[5], LettersTexts[5]);
+            tempLetter = Tutorial.AddLetter(LettersActivate[5], LettersIsPauseGame[5], LettersDuration[5], LettersNames[5], LettersTexts[5]);
             //событие 6
-            tempLetter = Workers.AddLetter(LettersActivate[6], LettersIsPauseGame[6], LettersDuration[6], LettersNames[6], LettersTexts[6], Resources.Load<Sprite>("Sprites/Tutorial_LockRoad"));
+            tempLetter = Tutorial.AddLetter(LettersActivate[6], LettersIsPauseGame[6], LettersDuration[6], LettersNames[6], LettersTexts[6], Resources.Load<Sprite>("Sprites/Tutorial_LockRoad"));
             //событие 7
-            tempLetter = Workers.AddLetter(LettersActivate[7], LettersIsPauseGame[7], LettersDuration[7], LettersNames[7], LettersTexts[7], Resources.Load<Sprite>("Sprites/Tutorial_Bread"));
+            tempLetter = Tutorial.AddLetter(LettersActivate[7], LettersIsPauseGame[7], LettersDuration[7], LettersNames[7], LettersTexts[7], Resources.Load<Sprite>("Sprites/Tutorial_Bread"));
             //событие 8
-            tempLetter = Workers.AddLetter(LettersActivate[8], LettersIsPauseGame[8], LettersDuration[8], LettersNames[8], LettersTexts[8],
+            tempLetter = Rich.AddLetter(LettersActivate[8], LettersIsPauseGame[8], LettersDuration[8], LettersNames[8], LettersTexts[8],
                 new Answer(LettersAnswer1Texts[8]),
                 new Answer(LettersAnswer2Texts[8]));
             tempLetter.Answer_1.Chosen += GoToPir4Hours;
@@ -219,7 +224,7 @@ public class SenderManager : MonoBehaviour
             tempLetter.IgnorReactions = new AnswerReaction[] { new AnswerReaction(ReactionType.RichRep, -2) };
 
             //событие 45
-            tempLetter = Workers.AddLetter(LettersActivate[45], LettersIsPauseGame[45], LettersDuration[45], LettersNames[45], LettersTexts[45]);
+            tempLetter = Gazeta.AddLetter(LettersActivate[45], LettersIsPauseGame[45], LettersDuration[45], LettersNames[45], LettersTexts[45]);
 
             OnDay3Done = true;
         }
@@ -241,7 +246,7 @@ public class SenderManager : MonoBehaviour
             VisitorsManager.Instance.AddVisitorToShow(visitor);
 
             //событие 9
-            tempLetter = Workers.AddLetter(LettersActivate[9], LettersIsPauseGame[9], LettersDuration[9], LettersNames[9], LettersTexts[9],
+            tempLetter = Official.AddLetter(LettersActivate[9], LettersIsPauseGame[9], LettersDuration[9], LettersNames[9], LettersTexts[9],
                 new Answer(LettersAnswer1Texts[9]),
                 new Answer(LettersAnswer2Texts[9]));
             tempLetter.Answer_1.ReactionText = LettersAnswer1BookTexts[9];
@@ -252,7 +257,7 @@ public class SenderManager : MonoBehaviour
             tempLetter.Answer_2.Conditions = new AnswerCondition[] { new AnswerCondition(ConditionType.Money, 350) };
             tempLetter.IgnorText = LettersIgnorTexts[9];
             //событие 10
-            tempLetter = Workers.AddLetter(LettersActivate[10], LettersIsPauseGame[10], LettersDuration[10], LettersNames[10], LettersTexts[10],
+            tempLetter = Rich.AddLetter(LettersActivate[10], LettersIsPauseGame[10], LettersDuration[10], LettersNames[10], LettersTexts[10],
                 new Answer(LettersAnswer1Texts[10]),
                 new Answer(LettersAnswer2Texts[10]));
             tempLetter.Answer_1.ReactionText = LettersAnswer1BookTexts[10];
@@ -263,7 +268,7 @@ public class SenderManager : MonoBehaviour
             tempLetter.IgnorReactions = new AnswerReaction[] { new AnswerReaction(ReactionType.RichRep, -2) };
 
             //событие 46
-            tempLetter = Workers.AddLetter(LettersActivate[46], LettersIsPauseGame[46], LettersDuration[46], LettersNames[46], LettersTexts[46]);
+            tempLetter = Gazeta.AddLetter(LettersActivate[46], LettersIsPauseGame[46], LettersDuration[46], LettersNames[46], LettersTexts[46]);
 
             OnDay4Done = true;
         }
@@ -310,7 +315,7 @@ public class SenderManager : MonoBehaviour
             if (Event10Done)
             {
                 //событие 11
-                tempLetter = Workers.AddLetter(LettersActivate[11], LettersIsPauseGame[11], LettersDuration[11], LettersNames[11], LettersTexts[11],
+                tempLetter = Rich.AddLetter(LettersActivate[11], LettersIsPauseGame[11], LettersDuration[11], LettersNames[11], LettersTexts[11],
                     new Answer(LettersAnswer1Texts[11]),
                     new Answer(LettersAnswer2Texts[11]));
                 tempLetter.Answer_1.ReactionText = LettersAnswer1BookTexts[11];
@@ -321,7 +326,7 @@ public class SenderManager : MonoBehaviour
                 tempLetter.IgnorReactions = new AnswerReaction[] { new AnswerReaction(ReactionType.RichRep, -2) };
 
                 //событие 12
-                tempLetter = Workers.AddLetter(LettersActivate[12], LettersIsPauseGame[12], LettersDuration[12], LettersNames[12], LettersTexts[12],
+                tempLetter = Rich.AddLetter(LettersActivate[12], LettersIsPauseGame[12], LettersDuration[12], LettersNames[12], LettersTexts[12],
                     new Answer(LettersAnswer1Texts[12]),
                     new Answer(LettersAnswer2Texts[12]));
                 tempLetter.Answer_1.ReactionText = LettersAnswer1BookTexts[12];
@@ -332,7 +337,7 @@ public class SenderManager : MonoBehaviour
                 tempLetter.IgnorReactions = new AnswerReaction[] { new AnswerReaction(ReactionType.RichRep, -2) };
 
                 //событие 13
-                tempLetter = Workers.AddLetter(LettersActivate[13], LettersIsPauseGame[13], LettersDuration[13], LettersNames[13], LettersTexts[13],
+                tempLetter = Rich.AddLetter(LettersActivate[13], LettersIsPauseGame[13], LettersDuration[13], LettersNames[13], LettersTexts[13],
                     new Answer(LettersAnswer1Texts[13]),
                     new Answer(LettersAnswer2Texts[13]));
                 tempLetter.Answer_1.ReactionText = LettersAnswer1BookTexts[13];
@@ -342,7 +347,7 @@ public class SenderManager : MonoBehaviour
                 tempLetter.IgnorText = LettersIgnorTexts[13];
                 tempLetter.IgnorReactions = new AnswerReaction[] { new AnswerReaction(ReactionType.RichRep, -2) };
                 //событие 14
-                tempLetter = Workers.AddLetter(LettersActivate[14], LettersIsPauseGame[14], LettersDuration[14], LettersNames[14], LettersTexts[14],
+                tempLetter = Rich.AddLetter(LettersActivate[14], LettersIsPauseGame[14], LettersDuration[14], LettersNames[14], LettersTexts[14],
                     new Answer(LettersAnswer1Texts[14]),
                     new Answer(LettersAnswer2Texts[14]));
                 tempLetter.Answer_1.ReactionText = LettersAnswer1BookTexts[14];
@@ -363,7 +368,7 @@ public class SenderManager : MonoBehaviour
             }
 
             //событие 16
-            tempLetter = Workers.AddLetter(LettersActivate[16], LettersIsPauseGame[16], LettersDuration[16], LettersNames[16], LettersTexts[16],
+            tempLetter = Official.AddLetter(LettersActivate[16], LettersIsPauseGame[16], LettersDuration[16], LettersNames[16], LettersTexts[16],
                 new Answer(LettersAnswer1Texts[16]),
                 new Answer(LettersAnswer2Texts[16]));
             tempLetter.Answer_1.ReactionText = LettersAnswer1BookTexts[16];
@@ -375,7 +380,7 @@ public class SenderManager : MonoBehaviour
             tempLetter.IgnorReactions = new AnswerReaction[] { new AnswerReaction(ReactionType.RichRep, 5) };
 
             //событие 47
-            tempLetter = Workers.AddLetter(LettersActivate[47], LettersIsPauseGame[47], LettersDuration[47], LettersNames[47], LettersTexts[47]);
+            tempLetter = Gazeta.AddLetter(LettersActivate[47], LettersIsPauseGame[47], LettersDuration[47], LettersNames[47], LettersTexts[47]);
 
             OnDay5Done = true;
         }
@@ -401,7 +406,7 @@ public class SenderManager : MonoBehaviour
 
 
             //событие 18
-            tempLetter = Workers.AddLetter(LettersActivate[18], LettersIsPauseGame[18], LettersDuration[18], LettersNames[18], LettersTexts[18],
+            tempLetter = Rich.AddLetter(LettersActivate[18], LettersIsPauseGame[18], LettersDuration[18], LettersNames[18], LettersTexts[18],
                 new Answer(LettersAnswer1Texts[18]),
                 new Answer(LettersAnswer2Texts[18]));
             tempLetter.Answer_1.ReactionText = LettersAnswer1BookTexts[18];
@@ -424,7 +429,7 @@ public class SenderManager : MonoBehaviour
             tempLetter.IgnorReactions = new AnswerReaction[] { new AnswerReaction(ReactionType.CoefInfectInDistrict, 7),
                                                                    new AnswerReaction(ReactionType.CoefInfectOutDistrict, 5) };
             //событие 48
-            tempLetter = Workers.AddLetter(LettersActivate[48], LettersIsPauseGame[48], LettersDuration[48], LettersNames[48], LettersTexts[48]);
+            tempLetter = Gazeta.AddLetter(LettersActivate[48], LettersIsPauseGame[48], LettersDuration[48], LettersNames[48], LettersTexts[48]);
 
             OnDay6Done = true;
         }
@@ -453,7 +458,7 @@ public class SenderManager : MonoBehaviour
 
 
             //событие 19
-            tempLetter = Workers.AddLetter(LettersActivate[19], LettersIsPauseGame[19], LettersDuration[19], LettersNames[19], LettersTexts[19],
+            tempLetter = Official.AddLetter(LettersActivate[19], LettersIsPauseGame[19], LettersDuration[19], LettersNames[19], LettersTexts[19],
                 new Answer(LettersAnswer1Texts[19]),
                 new Answer(LettersAnswer2Texts[19]));
             tempLetter.Answer_1.ReactionText = LettersAnswer1BookTexts[19];
@@ -465,11 +470,11 @@ public class SenderManager : MonoBehaviour
             tempLetter.IgnorText = LettersIgnorTexts[19];
 
             //событие 27
-            tempLetter = Workers.AddLetter(LettersActivate[27], LettersIsPauseGame[27], LettersDuration[27], LettersNames[27], LettersTexts[27]);
+            tempLetter = Rich.AddLetter(LettersActivate[27], LettersIsPauseGame[27], LettersDuration[27], LettersNames[27], LettersTexts[27]);
             tempLetter.IgnorText = LettersIgnorTexts[27];
 
             //событие 49
-            tempLetter = Workers.AddLetter(LettersActivate[49], LettersIsPauseGame[49], LettersDuration[49], LettersNames[49], LettersTexts[49]);
+            tempLetter = Gazeta.AddLetter(LettersActivate[49], LettersIsPauseGame[49], LettersDuration[49], LettersNames[49], LettersTexts[49]);
 
             OnDay7Done = true;
         }
@@ -511,7 +516,7 @@ public class SenderManager : MonoBehaviour
             VisitorsManager.Instance.AddVisitorToShow(visitor);
 
             //событие 50
-            tempLetter = Workers.AddLetter(LettersActivate[50], LettersIsPauseGame[50], LettersDuration[50], LettersNames[50], LettersTexts[50]);
+            tempLetter = Gazeta.AddLetter(LettersActivate[50], LettersIsPauseGame[50], LettersDuration[50], LettersNames[50], LettersTexts[50]);
 
             OnDay8Done = true;
         }
@@ -537,7 +542,7 @@ public class SenderManager : MonoBehaviour
             VisitorsManager.Instance.AddVisitorToShow(visitor);
 
             //событие 51
-            tempLetter = Workers.AddLetter(LettersActivate[51], LettersIsPauseGame[51], LettersDuration[51], LettersNames[51], LettersTexts[51]);
+            tempLetter = Gazeta.AddLetter(LettersActivate[51], LettersIsPauseGame[51], LettersDuration[51], LettersNames[51], LettersTexts[51]);
 
             OnDay9Done = true;
         }
@@ -606,7 +611,7 @@ public class SenderManager : MonoBehaviour
                                                                    new AnswerReaction(ReactionType.CoefInfectOutDistrict, 3) };
 
             //событие 52
-            tempLetter = Workers.AddLetter(LettersActivate[52], LettersIsPauseGame[52], LettersDuration[52], LettersNames[52], LettersTexts[52]);
+            tempLetter = Gazeta.AddLetter(LettersActivate[52], LettersIsPauseGame[52], LettersDuration[52], LettersNames[52], LettersTexts[52]);
 
             OnDay10Done = true;
         }
@@ -649,7 +654,7 @@ public class SenderManager : MonoBehaviour
 
 
             //событие 24
-            tempLetter = Workers.AddLetter(LettersActivate[24], LettersIsPauseGame[24], LettersDuration[24], LettersNames[24], LettersTexts[24],
+            tempLetter = Official.AddLetter(LettersActivate[24], LettersIsPauseGame[24], LettersDuration[24], LettersNames[24], LettersTexts[24],
                 new Answer(LettersAnswer1Texts[24]),
                 new Answer(LettersAnswer2Texts[24]));
             tempLetter.Answer_1.ReactionText = LettersAnswer1BookTexts[24];
@@ -663,7 +668,7 @@ public class SenderManager : MonoBehaviour
             if (Dialog10answer2Done == true)
             {
                 //событие 25
-                tempLetter = Workers.AddLetter(LettersActivate[25], LettersIsPauseGame[25], LettersDuration[25], LettersNames[25], LettersTexts[25],
+                tempLetter = Rich.AddLetter(LettersActivate[25], LettersIsPauseGame[25], LettersDuration[25], LettersNames[25], LettersTexts[25],
                     new Answer(LettersAnswer1Texts[25]),
                     new Answer(LettersAnswer2Texts[25]));
                 tempLetter.Answer_1.ReactionText = LettersAnswer1BookTexts[25];
@@ -675,7 +680,7 @@ public class SenderManager : MonoBehaviour
             }
 
             //событие 53
-            tempLetter = Workers.AddLetter(LettersActivate[53], LettersIsPauseGame[53], LettersDuration[53], LettersNames[53], LettersTexts[53]);
+            tempLetter = Gazeta.AddLetter(LettersActivate[53], LettersIsPauseGame[53], LettersDuration[53], LettersNames[53], LettersTexts[53]);
 
             OnDay11Done = true;
         }
@@ -700,7 +705,7 @@ public class SenderManager : MonoBehaviour
             if (Dialog10answer1Done == true)
             {
                 //событие 26
-                tempLetter = Workers.AddLetter(LettersActivate[26], LettersIsPauseGame[26], LettersDuration[26], LettersNames[26], LettersTexts[26],
+                tempLetter = Poor.AddLetter(LettersActivate[26], LettersIsPauseGame[26], LettersDuration[26], LettersNames[26], LettersTexts[26],
                     new Answer(LettersAnswer1Texts[26]),
                     new Answer(LettersAnswer2Texts[26]));
                 tempLetter.Answer_1.ReactionText = LettersAnswer1BookTexts[26];
@@ -708,7 +713,7 @@ public class SenderManager : MonoBehaviour
                 tempLetter.IgnorText = LettersIgnorTexts[26];
             }
             //событие 54
-            tempLetter = Workers.AddLetter(LettersActivate[54], LettersIsPauseGame[54], LettersDuration[54], LettersNames[54], LettersTexts[54]);
+            tempLetter = Gazeta.AddLetter(LettersActivate[54], LettersIsPauseGame[54], LettersDuration[54], LettersNames[54], LettersTexts[54]);
 
             OnDay12Done = true;
         }
@@ -729,7 +734,7 @@ public class SenderManager : MonoBehaviour
         {
 
             //событие 17
-            tempLetter = Workers.AddLetter(LettersActivate[17], LettersIsPauseGame[17], LettersDuration[17], LettersNames[17], LettersTexts[17],
+            tempLetter = Rich.AddLetter(LettersActivate[17], LettersIsPauseGame[17], LettersDuration[17], LettersNames[17], LettersTexts[17],
                 new Answer(LettersAnswer1Texts[17]),
                 new Answer(LettersAnswer2Texts[17]));
             tempLetter.Answer_1.ReactionText = LettersAnswer1BookTexts[17];
@@ -767,7 +772,7 @@ public class SenderManager : MonoBehaviour
         {
             IsFirstRiotDone = true;
             //Событие 28
-            tempLetter = Workers.AddLetter(LettersActivate[28], LettersIsPauseGame[28], LettersDuration[28], LettersNames[28], LettersTexts[28], Resources.Load<Sprite>("Sprites/Tutorial_Riot"));
+            tempLetter = Tutorial.AddLetter(LettersActivate[28], LettersIsPauseGame[28], LettersDuration[28], LettersNames[28], LettersTexts[28], Resources.Load<Sprite>("Sprites/Tutorial_Riot"));
             tempLetter.IgnorText = LettersIgnorTexts[28];
         }
 
@@ -776,7 +781,7 @@ public class SenderManager : MonoBehaviour
             IsUnburied5PeopleDone = true;
 
             //Событие 29
-            tempLetter = Workers.AddLetter(LettersActivate[29], LettersIsPauseGame[29], LettersDuration[29], LettersNames[29], LettersTexts[29], Resources.Load<Sprite>("Sprites/Tutorial_Graveyard"));
+            tempLetter = Tutorial.AddLetter(LettersActivate[29], LettersIsPauseGame[29], LettersDuration[29], LettersNames[29], LettersTexts[29], Resources.Load<Sprite>("Sprites/Tutorial_Graveyard"));
             tempLetter.IgnorText = LettersIgnorTexts[29];
         }
         
@@ -786,7 +791,7 @@ public class SenderManager : MonoBehaviour
 
 
             //событие 30
-            tempLetter = Workers.AddLetter(LettersActivate[30], LettersIsPauseGame[30], LettersDuration[30], LettersNames[30], LettersTexts[30],
+            tempLetter = Rich.AddLetter(LettersActivate[30], LettersIsPauseGame[30], LettersDuration[30], LettersNames[30], LettersTexts[30],
                 new Answer(LettersAnswer1Texts[30]),
                 new Answer(LettersAnswer2Texts[30]));
             tempLetter.Answer_1.ReactionText = LettersAnswer1BookTexts[30];
@@ -804,7 +809,7 @@ public class SenderManager : MonoBehaviour
             MainData.ImperatorReputation = MainData.MinImperatorReputation;
 
             //Событие 33
-            tempLetter = Workers.AddLetter(LettersActivate[33], LettersIsPauseGame[33], LettersDuration[33], LettersNames[33], LettersTexts[33]);
+            tempLetter = Official.AddLetter(LettersActivate[33], LettersIsPauseGame[33], LettersDuration[33], LettersNames[33], LettersTexts[33]);
             tempLetter.IgnorText = LettersIgnorTexts[33];
         }
 
@@ -828,7 +833,7 @@ public class SenderManager : MonoBehaviour
                 Is50PercentDone = true;
 
                 //событие 39
-                tempLetter = Workers.AddLetter(LettersActivate[39], LettersIsPauseGame[39], LettersDuration[39], LettersNames[39], LettersTexts[39],
+                tempLetter = Rich.AddLetter(LettersActivate[39], LettersIsPauseGame[39], LettersDuration[39], LettersNames[39], LettersTexts[39],
                     new Answer(LettersAnswer1Texts[39]),
                     new Answer(LettersAnswer2Texts[39]));
                 tempLetter.Answer_1.ReactionText = LettersAnswer1BookTexts[39];
@@ -842,7 +847,7 @@ public class SenderManager : MonoBehaviour
         if (MainData.MaxVolunteers < 3 && MainData.Day > 5)
         {
             //событие 41
-            tempLetter = Workers.AddLetter(LettersActivate[41], LettersIsPauseGame[41], LettersDuration[41], LettersNames[41], LettersTexts[41],
+            tempLetter = Official.AddLetter(LettersActivate[41], LettersIsPauseGame[41], LettersDuration[41], LettersNames[41], LettersTexts[41],
                 new Answer(LettersAnswer1Texts[41]),
                 new Answer(LettersAnswer2Texts[41]));
             tempLetter.Answer_1.ReactionText = LettersAnswer1BookTexts[41];

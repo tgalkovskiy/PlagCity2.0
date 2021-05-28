@@ -847,6 +847,25 @@ public class MainScript : MonoBehaviour
         DemoPanel.SetActive(false);
     }
 
+    public bool CheckRichDistrictsInfected()
+    {
+        bool IsInfected = false;
+        foreach(var d in RichDistricts)
+        {
+            foreach(var h in d.Houses)
+            {
+                if (h.GetComponent<StateOBJ>().IsInfected)
+                {
+                    IsInfected = true;
+                    break;
+                }
+            }
+            if (!IsInfected)
+                return false;
+        }
+        return true;
+    }
+
     public void QuitGame()
     {
         MainData.Reload();

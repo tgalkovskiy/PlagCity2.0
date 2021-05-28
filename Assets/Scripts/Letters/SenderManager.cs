@@ -57,6 +57,7 @@ public class SenderManager : MonoBehaviour
     private bool Dialog7Answer1Done = false;
     private bool Dialog15Done = false;
     private bool Dialog2answer1done = false;
+    private bool Event37Done = false;
 
     [SerializeField] private bool[] LettersActivate;
     [SerializeField] private bool[] LettersIsPauseGame;
@@ -820,9 +821,10 @@ public class SenderManager : MonoBehaviour
                 IsAllRiotDone = true;
 
 
-                //Событие 34
-                tempLetter = Workers.AddLetter(LettersActivate[34], LettersIsPauseGame[34], LettersDuration[34], LettersNames[34], LettersTexts[34]);
-                tempLetter.IgnorText = LettersIgnorTexts[34];
+                //Событие 38
+                tempLetter = Workers.AddLetter(LettersActivate[38], LettersIsPauseGame[38], LettersDuration[38], LettersNames[38], LettersTexts[38]);
+                tempLetter.IgnorReactions = new AnswerReaction[] { new AnswerReaction(ReactionType.Volunteer, -1) };
+                tempLetter.IgnorText = LettersIgnorTexts[38];
             }
         }
 
@@ -874,6 +876,17 @@ public class SenderManager : MonoBehaviour
             VisitorsManager.Instance.AddVisitorToShow(visitor);
 
             Dialog15Done = true;
+        }
+
+        if(MainScript.CheckRichDistrictsInfected() && !Event37Done)
+        {
+            Event37Done = true;
+
+            //Событие 37
+            tempLetter = Official.AddLetter(LettersActivate[37], LettersIsPauseGame[37], LettersDuration[37], LettersNames[37], LettersTexts[37]);
+            tempLetter.IgnorReactions = new AnswerReaction[] { new AnswerReaction(ReactionType.RichRep, -10),
+                                                               new AnswerReaction(ReactionType.ImperatorRep, -10)};
+            tempLetter.IgnorText = LettersIgnorTexts[37];
         }
     }
 

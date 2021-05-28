@@ -289,10 +289,9 @@ public class DemoViol : MonoBehaviour
         for (int i = 0; i < Houses.Length; i++)
         {
             var NowHouses = Houses[i].GetComponent<StateOBJ>();
-            if (NowHouses.IsInfected && !NowHouses.IsLocked ) //И ДОМ НЕ В КАРАНТИНЕ!!!
+            if (NowHouses.IsInfected && !NowHouses.IsLocked && NowHouses.CountDeath > 0) 
             {
                 CountInfectedHouses += 1;
-                //КОРОЧЕ ВОТ ТУТ ВОТ ОН СЧИТАЕТ, ЧТО ДОМ НЕ В КАРАНТИНЕ, ХОТЯ ДОЛЖЕН БЫТЬ
             }
             else if(!NowHouses.IsInfected && !NowHouses.AllDead && !NowHouses.IsLocked)
             {

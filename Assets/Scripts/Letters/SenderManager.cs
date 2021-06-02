@@ -880,6 +880,7 @@ public class SenderManager : MonoBehaviour
 
         if(MainScript.CheckRichDistrictsInfected() && !Event37Done)
         {
+
             Event37Done = true;
 
             //Событие 37

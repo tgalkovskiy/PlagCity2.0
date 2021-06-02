@@ -849,10 +849,11 @@ public class MainScript : MonoBehaviour
 
     public bool CheckRichDistrictsInfected()
     {
-        bool IsInfected = false;
         foreach(var d in RichDistricts)
         {
-            foreach(var h in d.Houses)
+            bool IsInfected = false;
+
+            foreach (var h in d.Houses)
             {
                 if (h.GetComponent<StateOBJ>().IsInfected)
                 {
@@ -860,6 +861,7 @@ public class MainScript : MonoBehaviour
                     break;
                 }
             }
+
             if (!IsInfected)
                 return false;
         }

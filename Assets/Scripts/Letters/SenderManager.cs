@@ -89,6 +89,7 @@ public class SenderManager : MonoBehaviour
             Destroy(gameObject);
 
         Debug.Log("AWAKE");
+        int R = Random.Range(56, 57);
     }
 
     //Проверка условий на создание письма
@@ -268,6 +269,39 @@ public class SenderManager : MonoBehaviour
             tempLetter.IgnorText = LettersIgnorTexts[10];
             tempLetter.IgnorReactions = new AnswerReaction[] { new AnswerReaction(ReactionType.RichRep, -2) };
 
+            //событие 56
+            int R = Random.Range(0, 100);
+            if (R > 50)
+            {
+                tempLetter = Gazeta.AddLetter(LettersActivate[56], LettersIsPauseGame[56], LettersDuration[56], LettersNames[56], LettersTexts[56],
+                new Answer(LettersAnswer1Texts[56]),
+                new Answer(LettersAnswer2Texts[56]));
+                tempLetter.Answer_1.ReactionText = LettersAnswer1BookTexts[56];
+                //tempLetter.Answer_1.Reactions = new AnswerReaction[] { new AnswerReaction(ReactionType.Vacina, 3), new AnswerReaction(ReactionType.RichRep, -5) };
+                tempLetter.Answer_1.Conditions = new AnswerCondition[] { new AnswerCondition(ConditionType.Money, 200) };
+                tempLetter.Answer_2.ReactionText = LettersAnswer2BookTexts[56];
+                tempLetter.Answer_2.Reactions = new AnswerReaction[] { new AnswerReaction(ReactionType.Money, 400) };
+                tempLetter.Answer_2.Conditions = new AnswerCondition[] { new AnswerCondition(ConditionType.Money, 200) };
+                tempLetter.IgnorText = LettersIgnorTexts[56];
+                //tempLetter.IgnorReactions = new AnswerReaction[] { new AnswerReaction(ReactionType.RichRep, 5) };
+            }
+            else
+            {
+                tempLetter = Gazeta.AddLetter(LettersActivate[56], LettersIsPauseGame[56], LettersDuration[56], LettersNames[56], LettersTexts[56],
+                new Answer(LettersAnswer1Texts[57]),
+                new Answer(LettersAnswer2Texts[57]));
+                tempLetter.Answer_1.ReactionText = LettersAnswer1BookTexts[57];
+                //tempLetter.Answer_1.Reactions = new AnswerReaction[] { new AnswerReaction(ReactionType.Vacina, 3), new AnswerReaction(ReactionType.RichRep, -5) };
+                tempLetter.Answer_1.Reactions = new AnswerReaction[] { new AnswerReaction(ReactionType.Money, 400) };
+                tempLetter.Answer_1.Conditions = new AnswerCondition[] { new AnswerCondition(ConditionType.Money, 200) };
+                tempLetter.Answer_2.ReactionText = LettersAnswer2BookTexts[57];
+                tempLetter.Answer_2.Conditions = new AnswerCondition[] { new AnswerCondition(ConditionType.Money, 200) };
+                tempLetter.IgnorText = LettersIgnorTexts[56];
+                //tempLetter.IgnorReactions = new AnswerReaction[] { new AnswerReaction(ReactionType.RichRep, 5) };
+            }
+
+
+
             //событие 46
             tempLetter = Gazeta.AddLetter(LettersActivate[46], LettersIsPauseGame[46], LettersDuration[46], LettersNames[46], LettersTexts[46]);
 
@@ -358,7 +392,7 @@ public class SenderManager : MonoBehaviour
                 tempLetter.IgnorText = LettersIgnorTexts[14];
                 tempLetter.IgnorReactions = new AnswerReaction[] { new AnswerReaction(ReactionType.RichRep, -2) };
                 //событие 15
-                tempLetter = Workers.AddLetter(LettersActivate[15], LettersIsPauseGame[15], LettersDuration[15], LettersNames[15], LettersTexts[15],
+                tempLetter = Gazeta.AddLetter(LettersActivate[15], LettersIsPauseGame[15], LettersDuration[15], LettersNames[15], LettersTexts[15],
                     new Answer(LettersAnswer1Texts[15]),
                     new Answer(LettersAnswer2Texts[15]));
                 tempLetter.Answer_1.ReactionText = LettersAnswer1BookTexts[15];
@@ -379,6 +413,16 @@ public class SenderManager : MonoBehaviour
             tempLetter.Answer_2.Reactions = new AnswerReaction[] { new AnswerReaction(ReactionType.RichRep, 5) };
             tempLetter.IgnorText = LettersIgnorTexts[16];
             tempLetter.IgnorReactions = new AnswerReaction[] { new AnswerReaction(ReactionType.RichRep, 5) };
+
+            //событие 18
+            tempLetter = Rich.AddLetter(LettersActivate[18], LettersIsPauseGame[18], LettersDuration[18], LettersNames[18], LettersTexts[18],
+                new Answer(LettersAnswer1Texts[18]),
+                new Answer(LettersAnswer2Texts[18]));
+            tempLetter.Answer_1.ReactionText = LettersAnswer1BookTexts[18];
+            tempLetter.Answer_2.ReactionText = LettersAnswer2BookTexts[18];
+            tempLetter.Answer_1.Reactions = new AnswerReaction[] { new AnswerReaction(ReactionType.Money, 300) };
+            tempLetter.Answer_1.Conditions = new AnswerCondition[] { new AnswerCondition(ConditionType.Volunteer, 1) };
+            tempLetter.IgnorText = LettersIgnorTexts[18];
 
             //событие 47
             tempLetter = Gazeta.AddLetter(LettersActivate[47], LettersIsPauseGame[47], LettersDuration[47], LettersNames[47], LettersTexts[47]);
@@ -406,16 +450,6 @@ public class SenderManager : MonoBehaviour
             VisitorsManager.Instance.AddVisitorToShow(visitor);
 
 
-            //событие 18
-            tempLetter = Rich.AddLetter(LettersActivate[18], LettersIsPauseGame[18], LettersDuration[18], LettersNames[18], LettersTexts[18],
-                new Answer(LettersAnswer1Texts[18]),
-                new Answer(LettersAnswer2Texts[18]));
-            tempLetter.Answer_1.ReactionText = LettersAnswer1BookTexts[18];
-            tempLetter.Answer_2.ReactionText = LettersAnswer2BookTexts[18];
-            tempLetter.Answer_1.Reactions = new AnswerReaction[] { new AnswerReaction(ReactionType.Money, 700) };
-            tempLetter.Answer_1.Conditions = new AnswerCondition[] { new AnswerCondition(ConditionType.Volunteer, 1) };
-            tempLetter.IgnorText = LettersIgnorTexts[18];
-
             //событие 21
             tempLetter = Workers.AddLetter(LettersActivate[21], LettersIsPauseGame[21], LettersDuration[21], LettersNames[21], LettersTexts[21],
                 new Answer(LettersAnswer1Texts[21]),
@@ -429,6 +463,20 @@ public class SenderManager : MonoBehaviour
                                                                    new AnswerReaction(ReactionType.CoefInfectOutDistrict, 5) };
             tempLetter.IgnorReactions = new AnswerReaction[] { new AnswerReaction(ReactionType.CoefInfectInDistrict, 7),
                                                                    new AnswerReaction(ReactionType.CoefInfectOutDistrict, 5) };
+
+            //событие 57
+            tempLetter = Official.AddLetter(LettersActivate[58], LettersIsPauseGame[58], LettersDuration[58], LettersNames[58], LettersTexts[58],
+                new Answer(LettersAnswer1Texts[58]),
+                new Answer(LettersAnswer2Texts[58]));
+            tempLetter.Answer_1.ReactionText = LettersAnswer1BookTexts[58];
+            tempLetter.Answer_1.Reactions = new AnswerReaction[] { new AnswerReaction(ReactionType.Money, 500), new AnswerReaction(ReactionType.RichRep, -30) };
+            //tempLetter.Answer_1.Conditions = new AnswerCondition[] { new AnswerCondition(ConditionType.Money, 200) };
+            tempLetter.Answer_2.ReactionText = LettersAnswer2BookTexts[58];
+            //tempLetter.Answer_2.Reactions = new AnswerReaction[] { new AnswerReaction(ReactionType.Money, 200) };
+            //tempLetter.Answer_2.Conditions = new AnswerCondition[] { new AnswerCondition(ConditionType.Money, 200) };
+            tempLetter.IgnorText = LettersIgnorTexts[58];
+            //tempLetter.IgnorReactions = new AnswerReaction[] { new AnswerReaction(ReactionType.RichRep, 5) };
+
             //событие 48
             tempLetter = Gazeta.AddLetter(LettersActivate[48], LettersIsPauseGame[48], LettersDuration[48], LettersNames[48], LettersTexts[48]);
 

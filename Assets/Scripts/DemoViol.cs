@@ -297,10 +297,10 @@ public class DemoViol : MonoBehaviour
             {
                 HousesToInfect.Add(NowHouses);
             }
-            if(IsRiot == true)
-            {
-                CountInfectedHouses += 2;
-            }
+        }
+        if (IsRiot == true)
+        {
+            CountInfectedHouses += 2;
         }
         return CountInfectedHouses;
     }

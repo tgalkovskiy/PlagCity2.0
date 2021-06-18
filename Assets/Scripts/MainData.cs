@@ -38,11 +38,11 @@ public class MainData : MonoBehaviour
     public static int MoneyPerRiotRichDistrict = 20;
 
     public static int InHouseCoef = 85;
-    public static int NewHouseCoef = 25;
-    public static int NewHouseDefaultCoef = 25;
+    public static int NewHouseCoef = 70;
+    public static int NewHouseDefaultCoef = 70;
     public static int NewHouseDopCoef = 0;
-    public static int AnotherDistrictCoef = 7;
-    public static int AnotherDistrictDefaultCoef = 7;
+    public static int AnotherDistrictCoef = 15;
+    public static int AnotherDistrictDefaultCoef = 15;
     public static int AnotherDistrictDopCoef = 0;
     public static int DeathCoef = 45;
     public static int RecoveryCoef = 0;
@@ -50,9 +50,9 @@ public class MainData : MonoBehaviour
     public static int BreadPrice = 30;
     public static int RepPerBread = 20;
 
-    public static int RepPerSearch = 4;
-    public static int RepPerLockHouse = 2;
-    public static int RepPerLockRoad = 4;
+    public static int RepPerSearch = 5;
+    public static int RepPerLockHouse = 3;
+    public static int RepPerLockRoad = 5;
 
     public static bool IsFirstRiot = false;
 
@@ -86,20 +86,20 @@ public class MainData : MonoBehaviour
         NewDeadPeople = 0;
         MoneyPerRichDistrict = 60;
         MoneyPerRiotRichDistrict = 20;
-        NewHouseCoef = 25;
+        NewHouseCoef = 70;
         InHouseCoef = 85;
-        NewHouseDefaultCoef = 25;
+        NewHouseDefaultCoef = 70;
         NewHouseDopCoef = 0;
-        AnotherDistrictCoef = 7;
-        AnotherDistrictDefaultCoef = 7;
+        AnotherDistrictCoef = 15;
+        AnotherDistrictDefaultCoef = 15;
         AnotherDistrictDopCoef = 0;
         DeathCoef = 45;
         RecoveryCoef = 0;
         BreadPrice = 30;
         RepPerBread = 20;
-        RepPerSearch = 4;
-        RepPerLockHouse = 2;
-        RepPerLockRoad = 4;
+        RepPerSearch = 5;
+        RepPerLockHouse = 3;
+        RepPerLockRoad = 5;
         IsFirstRiot = false;
         DayTimeScaleDefault = 7;
         DayTimeScale = 7;

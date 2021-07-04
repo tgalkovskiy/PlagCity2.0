@@ -165,12 +165,15 @@ public class DemoViol : MonoBehaviour
                         {
                             case DistrictType.Poor:
                                 MainData.PoorReputation -= MainData.RepPerLockRoad;
+                                MainData.PoorReputation = MainData.CheckClamp(MainData.PoorReputation);
                                 break;
                             case DistrictType.Workers:
                                 MainData.WorkersReputation -= MainData.RepPerLockRoad;
+                                MainData.WorkersReputation = MainData.CheckClamp(MainData.WorkersReputation);
                                 break;
                             case DistrictType.Rich:
                                 MainData.RichReputation -= MainData.RepPerLockRoad;
+                                MainData.RichReputation = MainData.CheckClamp(MainData.RichReputation);
                                 break;
                         }
                     }
@@ -238,12 +241,15 @@ public class DemoViol : MonoBehaviour
                     {
                         case DistrictType.Poor:
                             MainData.PoorReputation -= MainData.RepPerLockHouse;
+                            MainData.PoorReputation = MainData.CheckClamp(MainData.PoorReputation);
                             break;
                         case DistrictType.Workers:
                             MainData.WorkersReputation -= MainData.RepPerLockHouse;
+                            MainData.WorkersReputation = MainData.CheckClamp(MainData.WorkersReputation);
                             break;
                         case DistrictType.Rich:
                             MainData.RichReputation -= MainData.RepPerLockHouse;
+                            MainData.RichReputation = MainData.CheckClamp(MainData.RichReputation);
                             break;
                     }
                     NowObj.DefendLockValanters();
@@ -265,12 +271,15 @@ public class DemoViol : MonoBehaviour
             {
                 case DistrictType.Poor:
                     MainData.PoorReputation += MainData.RepPerBread;
+                    MainData.PoorReputation = MainData.CheckClamp(MainData.PoorReputation);
                     break;
                 case DistrictType.Workers:
                     MainData.WorkersReputation += MainData.RepPerBread;
+                    MainData.WorkersReputation = MainData.CheckClamp(MainData.WorkersReputation);
                     break;
                 case DistrictType.Rich:
                     MainData.RichReputation += MainData.RepPerBread;
+                    MainData.RichReputation = MainData.CheckClamp(MainData.RichReputation);
                     break;
 
             }
@@ -298,10 +307,12 @@ public class DemoViol : MonoBehaviour
                 HousesToInfect.Add(NowHouses);
             }
         }
+
         if (IsRiot == true)
         {
             CountInfectedHouses += 2;
         }
+
         return CountInfectedHouses;
     }
 

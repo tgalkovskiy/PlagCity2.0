@@ -34,13 +34,6 @@ public class SoundController : MonoBehaviour
     public AudioSource MusicSource;
     public AudioSource LowerSoundSource;
 
-    public Slider soundSlider;
-    public Slider musicSlider;
-
-    private SoundSettings soundSettings;
-
-
-
 
     private void Awake()
     {
@@ -53,62 +46,30 @@ public class SoundController : MonoBehaviour
 
     private void Start()
     {
-        soundSettings = LoadSettings();
         UpdateValues();
     }
 
 
     public void OnSoundValueChanged()
     {
-        soundSettings.soundValue = soundSlider.value;
-        SoundSource.volume = soundSettings.soundValue;
+        SoundSource.volume = Settings.parametrs.soundValue;
     }
     public void OnMusicValueChanged()
     {
-        soundSettings.musicValue = musicSlider.value;
-        MusicSource.volume = soundSettings.musicValue;
-        LowerSoundSource.volume = soundSettings.musicValue / 4;
+        MusicSource.volume = Settings.parametrs.musicValue;
+        LowerSoundSource.volume = Settings.parametrs.musicValue / 4;
     }
 
     public void UpdateValues()
     {
-        SoundSource.volume = soundSettings.soundValue;
-        MusicSource.volume = soundSettings.musicValue;
-        LowerSoundSource.volume = soundSettings.musicValue / 4;
+        SoundSource.volume = Settings.parametrs.soundValue;
+        MusicSource.volume = Settings.parametrs.musicValue;
+        LowerSoundSource.volume = Settings.parametrs.musicValue / 4;
 
-        soundSlider.value = soundSettings.soundValue;
-        musicSlider.value = soundSettings.musicValue;
-
-        Debug.Log($"Values updated. Sound: {soundSettings.soundValue} Music: {soundSettings.musicValue}");
+        Debug.Log($"Values updated. Sound: {Settings.parametrs.soundValue} Music: {Settings.parametrs.musicValue}");
     }
 
-    public void SaveSettings()
-    {
-        string json = JsonUtility.ToJson(soundSettings);
-
-        Debug.Log($"Saved settings : {json}");
-
-        File.WriteAllText("Settings.json", json);
-    }
-
-    public SoundSettings LoadSettings() 
-    {
-        if(!File.Exists("Settings.json") || File.ReadAllText("Settings.json") == "")
-        {
-            Debug.Log("new settings def");
-            SoundSettings set = new SoundSettings();
-            set.soundValue = 0.5f;
-            set.musicValue = 0.5f;
-
-            SaveSettings();
-            return set;
-        }
-
-        string json = File.ReadAllText("Settings.json");
-
-        Debug.Log($"Loaded settings : {json}");
-        return JsonUtility.FromJson<SoundSettings>(json);
-    }
+  
 
     public void PlayClickInGame()
     {

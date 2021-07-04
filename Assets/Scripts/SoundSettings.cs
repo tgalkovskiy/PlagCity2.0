@@ -4,6 +4,4 @@ using UnityEngine;
 
 public class SoundSettings
 {
-    public float soundValue;
-    public float musicValue;
 }

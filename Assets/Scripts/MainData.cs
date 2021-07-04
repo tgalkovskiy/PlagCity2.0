@@ -5,60 +5,71 @@ using UnityEngine.UI;
 
 public class MainData : MonoBehaviour
 {
-    [HideInInspector] static public int Day = 1;
+    [HideInInspector] static public int Day;
     //Все умершие люди
-    [HideInInspector] static public int AllDeath=0;
-    [HideInInspector] static public int AllInfected = 0;
+    [HideInInspector] static public int AllDeath;
+    [HideInInspector] static public int AllInfected;
     //Все не похороненные люди
-    [HideInInspector] static public int UnburiedPeople = 0;
-    [HideInInspector] static public int Vacina = 50;
-    [HideInInspector] static public int Money = 50;
-    [HideInInspector] static public int Volunteers = 2;
-    [HideInInspector] static public int MaxVolunteers = 2;
-    [HideInInspector] static public int Policemen = 0;
-    [HideInInspector] static public int MaxPolicemen = 0;
-    [HideInInspector] static public int Doctors = 0;
-    [HideInInspector] static public int MaxDoctors = 0;
-    [HideInInspector] static public int ImperatorReputation = 10;
-    [HideInInspector] static public int MinImperatorReputation = 10;
-    [HideInInspector] static public int WorkersReputation = 50;
-    [HideInInspector] static public int MinWorkersReputation = 0;
-    [HideInInspector] public static int WorkersRepPerDay = 5;
-    [HideInInspector] static public int RichReputation = 60;
-    [HideInInspector] static public int MinRichReputation = 20;
-    [HideInInspector] static public int PoorReputation = 40;
-    [HideInInspector] static public int MinPoorReputation = 20;
+    [HideInInspector] static public int UnburiedPeople;
+    [HideInInspector] static public int Vacina;
+    [HideInInspector] static public int Money;
+    [HideInInspector] static public int Volunteers;
+    [HideInInspector] static public int MaxVolunteers;
+    [HideInInspector] static public int Policemen;
+    [HideInInspector] static public int MaxPolicemen;
+    [HideInInspector] static public int Doctors;
+    [HideInInspector] static public int MaxDoctors;
+    [HideInInspector] static public int ImperatorReputation;
+    [HideInInspector] static public int MinImperatorReputation;
+    [HideInInspector] static public int WorkersReputation;
+    [HideInInspector] static public int MinWorkersReputation;
+    [HideInInspector] public static int WorkersRepPerDay;
+    [HideInInspector] static public int RichReputation;
+    [HideInInspector] static public int MinRichReputation;
+    [HideInInspector] static public int PoorReputation;
+    [HideInInspector] static public int MinPoorReputation;
 
     [HideInInspector] static public int AllPeople;
 
-    [HideInInspector] static public int NewInfectedPeople = 0;
-    [HideInInspector] static public int NewDeadPeople = 0;
+    [HideInInspector] static public int NewInfectedPeople;
+    [HideInInspector] static public int NewDeadPeople;
 
-    public static int MoneyPerRichDistrict = 60;
-    public static int MoneyPerRiotRichDistrict = 20;
+    public static int MoneyPerRichDistrict;
+    public static int MoneyPerRiotRichDistrict;
 
-    public static int InHouseCoef = 85;
-    public static int NewHouseCoef = 70;
-    public static int NewHouseDefaultCoef = 70;
-    public static int NewHouseDopCoef = 0;
-    public static int AnotherDistrictCoef = 15;
-    public static int AnotherDistrictDefaultCoef = 15;
-    public static int AnotherDistrictDopCoef = 0;
-    public static int DeathCoef = 45;
-    public static int RecoveryCoef = 0;
+    public static int InHouseCoef;
+    public static int NewHouseCoef;
+    public static int NewHouseDefaultCoef;
+    public static int NewHouseDopCoef;
+    public static int AnotherDistrictCoef;
+    public static int AnotherDistrictDefaultCoef;
+    public static int AnotherDistrictDopCoef;
+    public static int DeathCoef;
+    public static int RecoveryCoef;
 
-    public static int BreadPrice = 30;
-    public static int RepPerBread = 20;
+    public static int BreadPrice;
+    public static int RepPerBread;
 
-    public static int RepPerSearch = 5;
-    public static int RepPerLockHouse = 3;
-    public static int RepPerLockRoad = 5;
+    public static int RepPerSearch;
+    public static int RepPerLockHouse;
+    public static int RepPerLockRoad;
 
-    public static bool IsFirstRiot = false;
+    public static bool IsFirstRiot;
 
-    public static int DayTimeScaleDefault = 7;
-    public static int DayTimeScale = 7;
-    
+    public static int DayTimeScaleDefault;
+    public static int DayTimeScale;
+
+    public static int preAverageCoef;
+    public static int preImperatorRep;
+    public static int preRichRep;
+    public static int preWorkersRep;
+
+    public static int savedHouses;
+
+    private void Awake()
+    {
+        Reload();
+    }
 
     public static void Reload()
     {
@@ -154,17 +165,22 @@ public class MainData : MonoBehaviour
 
     }
 
-    public static int preAverageCoef = 0;
-    public static int preImperatorRep = 0;
-    public static int preRichRep = 0;
-    public static int preWorkersRep = 0;
-
-    public static int savedHouses = 0;
 
     public static void PreStatistics()
     {
         preImperatorRep = ImperatorReputation;
         preRichRep = RichReputation;
         preWorkersRep = WorkersReputation;
+    }
+
+    public static int CheckClamp(int i)
+    {
+        if (i < 0)
+            return 0;
+
+        if (i > 100)
+            return 100;
+
+        return i;
     }
 }

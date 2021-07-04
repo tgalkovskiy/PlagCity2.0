@@ -428,6 +428,7 @@ public class MainScript : MonoBehaviour
         MainData.Vacina += 3;
         City.CountDeath = MainData.AllDeath;
         MainData.WorkersReputation -= MainData.WorkersRepPerDay;
+        MainData.WorkersReputation = MainData.CheckClamp(MainData.WorkersReputation);
 
         tempstate = GameState.City;
 
@@ -566,12 +567,12 @@ public class MainScript : MonoBehaviour
     {
         TimeGameText.text = $"{(int)TimeGame:00}";
         MinuteGameText.text = $"{(int)Minutes:00}";
-        DayText.text = "День: " + MainData.Day.ToString();
+        DayText.text = /*"День: " +*/ MainData.Day.ToString();
         MoneyText.text = MainData.Money.ToString();
         NameDistrictText.text = NameDistrict;
-        AllPeopleDistrictText.text = "Всего людей: " + NumberPeopleDistrict;
-        NumbersOfViolentText.text = "Заражённых: " + NumbersOfViolent;
-        NumbersOfDeathText.text = "Умерших: " + NumbersOfDeath;
+        AllPeopleDistrictText.text = /*"Всего людей: " +*/ NumberPeopleDistrict;
+        NumbersOfViolentText.text = /*"Заражённых: " +*/ NumbersOfViolent;
+        NumbersOfDeathText.text = /*"Умерших: " +*/ NumbersOfDeath;
     }
 
     bool isDayDone = false; //чтобы 300 раз не подписывался на НекстДей
@@ -657,12 +658,15 @@ public class MainScript : MonoBehaviour
             {
                 case DistrictType.Poor:
                     MainData.PoorReputation -= MainData.RepPerSearch;
+                    MainData.PoorReputation = MainData.CheckClamp(MainData.PoorReputation);
                     break;
                 case DistrictType.Workers:
                     MainData.WorkersReputation -= MainData.RepPerSearch;
+                    MainData.WorkersReputation = MainData.CheckClamp(MainData.WorkersReputation);
                     break;
                 case DistrictType.Rich:
                     MainData.RichReputation -= MainData.RepPerSearch;
+                    MainData.RichReputation = MainData.CheckClamp(MainData.RichReputation);
                     break;
             }
             var HousesDistrict = d.Houses;

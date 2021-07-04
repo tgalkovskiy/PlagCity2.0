@@ -12,9 +12,9 @@ public class Tooltip : MonoBehaviour
 	public Color textColor = Color.black;
 	public enum ProjectMode { Tooltip3D = 0, Tooltip2D = 1 };
 	public ProjectMode tooltipMode = ProjectMode.Tooltip3D;
-	public int fontSize = 14; // размер шрифта
-	public int maxWidth = 250; // максимальная ширина Tooltip
-	public int border = 10; // ширина обводки
+	public int fontSize; // размер шрифта
+	public int maxWidth; // максимальная ширина Tooltip
+	public int border; // ширина обводки
 	public RectTransform box;
 	public Text boxText;
 	public Camera _camera;
@@ -83,18 +83,23 @@ public class Tooltip : MonoBehaviour
 
 		boxText.text = text;
 		float width = maxWidth;
-		if (boxText.preferredWidth <= maxWidth - border) width = boxText.preferredWidth + border;
+
+		if (boxText.preferredWidth <= maxWidth - border)
+			width = boxText.preferredWidth + border;
+
 		box.sizeDelta = new Vector2(width, boxText.preferredHeight + border);
 
-		float arrowShift = width / 4; // сдвиг позиции стрелки по Х
+		float arrowShift = width / 3; // сдвиг позиции стрелки по Х   width/2  
+		if (arrowShift < 60)
+			arrowShift = 60;
 
 		if (show || isUI)
 		{
 
-			float curY = Input.mousePosition.y + box.sizeDelta.y / 2;
+			float curY = Input.mousePosition.y + 60; //box.sizeDelta.y / 2
 			if (curY + box.sizeDelta.y / 2 > Screen.height) // если Tooltip выходит за рамки экрана, в данном случаи по высоте
 			{
-				curY = Input.mousePosition.y - box.sizeDelta.y / 2;
+				curY = Input.mousePosition.y - 60; //box.sizeDelta.y / 2
 			}
 
 			float curX = Input.mousePosition.x + arrowShift;

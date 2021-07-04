@@ -59,7 +59,7 @@ public class LettersManager : MonoBehaviour
     [SerializeField] private int maxY;
     [SerializeField] private int deltaX;
 
-
+    public string itogiNoEvents;
 
     private void Awake()
     {
@@ -347,7 +347,7 @@ public class LettersManager : MonoBehaviour
         }
 
         if (itogiText == "")
-            itogiText = "Особых событий не произошло";
+            itogiText = itogiNoEvents;
 
         Reactions.Clear();
     }

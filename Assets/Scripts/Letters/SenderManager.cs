@@ -62,7 +62,6 @@ public class SenderManager : MonoBehaviour
     [SerializeField] private bool[] LettersActivate;
     [SerializeField] private bool[] LettersIsPauseGame;
     [SerializeField] private int[] LettersDuration;
-
     [SerializeField] private string[] LettersNames;
     [SerializeField] private string[] LettersTexts;
     [SerializeField] private string[] LettersAnswer1Texts;
@@ -87,9 +86,59 @@ public class SenderManager : MonoBehaviour
             Instance = this;
         else
             Destroy(gameObject);
+    }
 
-        Debug.Log("AWAKE");
-        int R = Random.Range(56, 57);
+    public void OnDataLoad()
+    {
+        Debug.LogWarning("SenderManager OnDataLoaded");
+
+        LettersActivate = ArrayStringToBool(TextLoader.data.LettersActivate);
+        LettersIsPauseGame = ArrayStringToBool(TextLoader.data.LettersIsPauseGame);
+        LettersDuration = ArrayStringToInt(TextLoader.data.LettersDuration);
+        LettersNames = TextLoader.data.LettersNames;
+        LettersTexts = TextLoader.data.LettersTexts;
+        LettersAnswer1Texts = TextLoader.data.LettersAnswer1Texts;
+        LettersAnswer1BookTexts = TextLoader.data.LettersAnswer1BookTexts;
+        LettersAnswer2Texts = TextLoader.data.LettersAnswer2Texts;
+        LettersAnswer2BookTexts = TextLoader.data.LettersAnswer2BookTexts;
+        LettersIgnorTexts = TextLoader.data.LettersIgnorTexts;
+
+        DialogsNames = TextLoader.data.DialogsNames;
+        DialogsTexts = TextLoader.data.DialogsTexts;
+        DialogsAnswer1Texts = TextLoader.data.DialogsAnswer1Texts;
+        DialogsAnswer1BookTexts = TextLoader.data.DialogsAnswer1BookTexts;
+        DialogsAnswer2Texts = TextLoader.data.DialogsAnswer2Texts;
+        DialogsAnswer2BookTexts = TextLoader.data.DialogsAnswer2BookTexts;
+        DialogsAnswer3Texts = TextLoader.data.DialogsAnswer3Texts;
+        DialogsAnswer3BookTexts = TextLoader.data.DialogsAnswer3BookTexts;
+        DialogsIgnorTexts = TextLoader.data.DialogsIgnorTexts;
+    }
+
+    private bool[] ArrayStringToBool(string[] array)
+    {
+        bool[] newArray = new bool[array.Length];
+
+        for(int i = 0; i < array.Length; i++)
+        {
+            if (array[i] == "1")
+                newArray[i] = true;
+            else
+                newArray[i] = false;
+        }
+
+        return newArray;
+    }
+    private int[] ArrayStringToInt(string[] array)
+    {
+        int[] newArray = new int[array.Length];
+
+        for (int i = 0; i < array.Length; i++)
+        {
+            if (!int.TryParse(array[i], out newArray[i]))
+                Debug.LogError("Ошибка конвертации стринг в инт, скорее всего в массиве <Длительность письма>. Чекните");
+        }
+
+        return newArray;
     }
 
     //Проверка условий на создание письма
@@ -269,7 +318,7 @@ public class SenderManager : MonoBehaviour
             tempLetter.IgnorText = LettersIgnorTexts[10];
             tempLetter.IgnorReactions = new AnswerReaction[] { new AnswerReaction(ReactionType.RichRep, -2) };
 
-            //событие 56
+            //события 56 и 57
             int R = Random.Range(0, 100);
             if (R > 50)
             {
@@ -299,8 +348,6 @@ public class SenderManager : MonoBehaviour
                 tempLetter.IgnorText = LettersIgnorTexts[56];
                 //tempLetter.IgnorReactions = new AnswerReaction[] { new AnswerReaction(ReactionType.RichRep, 5) };
             }
-
-
 
             //событие 46
             tempLetter = Gazeta.AddLetter(LettersActivate[46], LettersIsPauseGame[46], LettersDuration[46], LettersNames[46], LettersTexts[46]);
@@ -420,7 +467,7 @@ public class SenderManager : MonoBehaviour
                 new Answer(LettersAnswer2Texts[18]));
             tempLetter.Answer_1.ReactionText = LettersAnswer1BookTexts[18];
             tempLetter.Answer_2.ReactionText = LettersAnswer2BookTexts[18];
-            tempLetter.Answer_1.Reactions = new AnswerReaction[] { new AnswerReaction(ReactionType.Money, 300) };
+            tempLetter.Answer_1.Reactions = new AnswerReaction[] { new AnswerReaction(ReactionType.Money, 700) };
             tempLetter.Answer_1.Conditions = new AnswerCondition[] { new AnswerCondition(ConditionType.Volunteer, 1) };
             tempLetter.IgnorText = LettersIgnorTexts[18];
 
@@ -450,6 +497,7 @@ public class SenderManager : MonoBehaviour
             VisitorsManager.Instance.AddVisitorToShow(visitor);
 
 
+
             //событие 21
             tempLetter = Workers.AddLetter(LettersActivate[21], LettersIsPauseGame[21], LettersDuration[21], LettersNames[21], LettersTexts[21],
                 new Answer(LettersAnswer1Texts[21]),
@@ -463,6 +511,7 @@ public class SenderManager : MonoBehaviour
                                                                    new AnswerReaction(ReactionType.CoefInfectOutDistrict, 5) };
             tempLetter.IgnorReactions = new AnswerReaction[] { new AnswerReaction(ReactionType.CoefInfectInDistrict, 7),
                                                                    new AnswerReaction(ReactionType.CoefInfectOutDistrict, 5) };
+
 
             //событие 57
             tempLetter = Official.AddLetter(LettersActivate[58], LettersIsPauseGame[58], LettersDuration[58], LettersNames[58], LettersTexts[58],

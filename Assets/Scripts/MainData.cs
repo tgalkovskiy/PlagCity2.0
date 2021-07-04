@@ -86,8 +86,9 @@ public class MainData : MonoBehaviour
         Doctors = 0;
         MaxDoctors = 0;
         ImperatorReputation = 10;
+        MinImperatorReputation = 10;
         WorkersReputation = 50;
-        MinWorkersReputation = 0;
+        MinWorkersReputation = 1;
         WorkersRepPerDay = 5;
         RichReputation = 60;
         MinRichReputation = 20;
@@ -118,7 +119,6 @@ public class MainData : MonoBehaviour
         preImperatorRep = 0;
         preRichRep = 0;
         preWorkersRep = 0;
-        MinImperatorReputation = 10;
     }
 
 

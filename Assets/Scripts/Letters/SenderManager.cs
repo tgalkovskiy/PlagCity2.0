@@ -172,6 +172,7 @@ public class SenderManager : MonoBehaviour
 
         if (MainData.Day == 1 && !OnDay1Done)
         {
+
             //событие 0
             tempLetter = Tutorial.AddLetter(LettersActivate[0], LettersIsPauseGame[0], LettersDuration[0], LettersNames[0], LettersTexts[0]);
             //событие 43
@@ -675,6 +676,7 @@ public class SenderManager : MonoBehaviour
                 visitor.IgnorReactions = null;
                 visitor.Answer_1 = new Answer(DialogsAnswer1Texts[3]);
                 visitor.Answer_1.ReactionText = DialogsAnswer1BookTexts[3];
+                visitor.Answer_1.Chosen += GoToPir12Hours;
                 visitor.Answer_2 = new Answer(DialogsAnswer2Texts[3]);
                 visitor.Answer_2.ReactionText = DialogsAnswer2BookTexts[3];
                 visitor.Answer_2.Conditions = new AnswerCondition[] { new AnswerCondition(ConditionType.Volunteer, 2) };
@@ -1096,6 +1098,11 @@ public class SenderManager : MonoBehaviour
     private void GoToPir4Hours()
     {
         MainScript.TimeStartDayPlus4 = true;
+    }
+
+    private void GoToPir12Hours()
+    {
+        MainScript.TimeStartDayPlus12 = true;
     }
 
     private void Event10()

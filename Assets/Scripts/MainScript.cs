@@ -467,8 +467,14 @@ public class MainScript : MonoBehaviour
 
         if (TimeStartDayPlus4)
         {
-            TimeGame = 4;
+            TimeGame = 8;
             TimeStartDayPlus4 = false;
+        }
+
+        if (TimeStartDayPlus12)
+        {
+            TimeGame = 12;
+            TimeStartDayPlus12 = false;
         }
 
         if (InfectRandomHouse)
@@ -737,6 +743,7 @@ public class MainScript : MonoBehaviour
     }
 
     public bool TimeStartDayPlus4 = false;
+    public bool TimeStartDayPlus12 = false;
     public bool InfectRandomHouse = false;
     public bool Recovery5Houses = false;
 
